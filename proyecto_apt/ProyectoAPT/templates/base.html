@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Odontológica</title>
-    <link rel="stylesheet" href='/FRONTEND/css/estilos.css'>
+    <link rel="stylesheet" href='{% static "css/style_basic.css" %}'> <!--This loads? IDK XD, nop, but why it doesn't load?-->
     <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -15,7 +15,7 @@
     <div class="content">
         <nav>
             <label for="" class="brand">
-                <a href=""><img src="/FRONTEND/img/logo 2.jpg" alt=""></a>
+                <a href=""><img src="{% static 'img/logo_2.jpg' %}" alt=""></a>
             </label>
             <ul>
                 <li><a href="#inicio">Inicio</a></li>
