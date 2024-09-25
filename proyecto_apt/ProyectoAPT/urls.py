@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include # Setup include to allow other app's urls to 
-
+from . import views # COMO QUE NO EXISTE? XD
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include("ProyectoAPT.urls"))
+    path('', views.index, name='Home'),
 ]
