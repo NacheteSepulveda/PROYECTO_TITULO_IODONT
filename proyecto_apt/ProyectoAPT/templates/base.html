@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Odontológica</title>
     <link rel="stylesheet" href='{% static "css/style_basic.css" %}'> 
-    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
@@ -15,13 +14,17 @@
     <div class="content">
         <nav>
             <label for="" class="brand">
-                <a href=""><img src="{% static 'img/logo_2.jpg' %}" alt=""></a>
+                <a href=""><img src="{% static 'img/logo.jpg' %}" alt=""></a>
             </label>
             <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="">Servicios</a></li>
                 <li><a href="#contacto">Contacto</a></li>
-                <li><a href="#login">Iniciar Sesión</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Cerrar Sesion</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                {% endif %}
             </ul>
         </nav>
     {% block content %}

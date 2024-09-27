@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include # Setup include to allow other app's urls to 
 from . import views # COMO QUE NO EXISTE? XD
+
+
 urlpatterns = [
-    path('', views.index, name='Home'),
+    path('', views.index, name='index'),
+    path('login/', views.loginUser, name='login'),
+    path('registro/', views.register, name='registro'),
+    path('logout/', views.custom_logout, name='logout')
 ]

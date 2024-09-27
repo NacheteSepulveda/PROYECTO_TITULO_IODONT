@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load crispy_forms_tags %}
+{% block title %}Inicio Sesion{% endblock %}
+{% block titulo %}Inicio Sesion{% endblock %}
+{% block content %}
+{% load static %}
+
+<link type="text/css" rel="stylesheet" href='{% static "css/login.css" %}'>
+<script>
+
+    $(document).ready(function(){
+
+        // Función para agregar la clase g-col-6 a los elementos con la ID mencionada
+        function addClassToItems() {
+
+            var screenWidth = window.screen.width;
+            var items = document.querySelectorAll("[id^='formLoginRegister']");
+
+            if (screenWidth <= 992) {
+                // Si la pantalla es menor a 992px, eliminar la clase formLoginRegister a los elementos
+                items.forEach(function (item) {0
+                    item.classList.remove('formLoginRegister')
+                    if(item.id=='formLoginRegister-1'){
+                        item.classList.remove('loginRegister')
+                    }
+                });
+            } else {
+                // Si la pantalla es mayor o igual a 992px, añadir la clase formLoginRegister de los elementos
+                items.forEach(function (item) {
+                    item.classList.add("formLoginRegister");
+                    if(item.id=='formLoginRegister-1'){
+                        item.classList.remove('loginRegister')
+                    }
+                });
+            }
+        }
+        // Función para manejar el evento de cambio de tamaño de la ventana
+        function handleResizeEvent() {
+            // Llama a la función para agregar o eliminar la clase según el tamaño de la pantalla
+            addClassToItems();
+        }
+
+        // Registrar el evento de cambio de tamaño de la ventana
+        window.addEventListener("resize", handleResizeEvent);
+
+        // Llamar a la función inicialmente al cargar la página
+        addClassToItems();
+
+    })
+
+
+</script>
+<!--CONTENIDO HTML AQUI-->
+<div id="formLoginRegister-1" class="loginRegister d-flex justify-content-center">
+    <main id="formLoginRegister-2" class="form-signin w-100 formLoginRegister">
+        <form method="POST" class="container-fluid">
+            {% csrf_token %}
+                <legend class=" mb-3">Iniciar sesión</legend>
+                    <div class="mb-3">
+                        {{ form|crispy }}
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-lg btn-primary" type="submit">Login</button>
+                    </div>
+        
+                    <div class="row">
+                        <small class="text-muted">
+                            Need An Account? <a class="ml-2" href="{% url 'registro' %}">Sign Up Now</a>
+                        </small><br>
+                        
+            
+                    </div>
+                </div>
+            
+    
+        </form>
+
+    </main>
+</div>
+
+{% endblock %}

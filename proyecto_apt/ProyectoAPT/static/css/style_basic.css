@@ -80,9 +80,9 @@ nav ul li a {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.brand img{
-    width: 67px;
-    margin: 1px 20px -58px 3px;
+.brand img {
+    width: 194px;
+    margin: 1px 41px -50px 1px;
 }
 
 #hero {
@@ -161,4 +161,24 @@ h2 {
 
 .agenda {
     text-align: center;
+}
+
+#parrafos {
+    font-weight: bold;
+
+}
+
+.imagenes {
+    display: flex;
+    justify-content: center; /* Centra el grupo de imágenes horizontalmente */
+    align-items: center; /* Alinea verticalmente en caso de que tengan diferentes alturas */
+    gap: 15px; /* Espacio entre las imágenes */
+    margin-top: 20px; /* Espacio arriba del contenedor de imágenes */
+}
+
+.imagen_estilo {
+    width: 200px; /* Ajusta el ancho de las imágenes */
+    height: 130px; /* Ajusta la altura de las imágenes */
+    object-fit: cover; /* Asegura que las imágenes mantengan su proporción */
+    border-radius: 8px; /* Bordes redondeados opcionales */
 }

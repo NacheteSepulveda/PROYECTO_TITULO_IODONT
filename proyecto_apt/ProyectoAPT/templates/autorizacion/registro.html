@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load crispy_forms_tags %}
+{% block title %}Lista de Salas{% endblock %}
+{% block titulo %}Lista de salas{% endblock %}
+{% block content %}
+{% load static %}
+<link type="text/css" rel="stylesheet" href='{% static "css/register.css" %}'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function formateaRut(rut) {
+        var actual = rut.replace(/^0+/, "");
+        if (actual != '' && actual.length > 1) {
+            var sinPuntos = actual.replace(/\./g, "");
+            var actualLimpio = sinPuntos.replace(/-/g, "");
+            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
+            var rutPuntos = "";
+            var i = 0;
+            var j = 1;
+            for (i = inicio.length - 1; i >= 0; i--) {
+                var letra = inicio.charAt(i);
+                rutPuntos = letra + rutPuntos;
+                if (j % 3 == 0 && j <= inicio.length - 1) {
+                    rutPuntos = "." + rutPuntos;
+                }
+                j++;
+            }
+            var dv = actualLimpio.substring(actualLimpio.length - 1);
+            rutPuntos = rutPuntos + "-" + dv;
+        }
+        return rutPuntos;
+    }
+
+    $(document).ready(function () {
+        $("#id_rut").focusout(function () {
+            var rut = $(this).val();
+            var rut_formateado = formateaRut(rut);
+            $(this).val(rut_formateado);
+        });
+
+        // Añade los valores de los items a modificar:
+        itemsModify = formLoginRegister
+        // Función para agregar la clase g-col-6 a los elementos con la ID mencionada
+        function addClassToItems() {
+
+            var screenWidth = window.screen.width;
+            var items = document.querySelectorAll("[id^='formLoginRegister']");
+
+
+            if (screenWidth <= 992) {
+                // Si la pantalla es menor a 992px, eliminar la clase formLoginRegister a los elementos
+                items.forEach(function (item) {0
+                    item.classList.remove('formLoginRegister')
+                });
+            } else {
+                // Si la pantalla es mayor o igual a 992px, añadir la clase formLoginRegister de los elementos
+                items.forEach(function (item) {
+                    item.classList.add("formLoginRegister");
+                });
+            }
+        }
+
+        // Función para manejar el evento de cambio de tamaño de la ventana
+        function handleResizeEvent() {
+            // Llama a la función para agregar o eliminar la clase según el tamaño de la pantalla
+            addClassToItems();
+        }
+
+        // Registrar el evento de cambio de tamaño de la ventana
+        window.addEventListener("resize", handleResizeEvent);
+
+        // Llamar a la función inicialmente al cargar la página
+        addClassToItems();
+
+
+    });
+</script>
+
+<div class="loginRegister d-flex justify-content-center">
+    <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
+        <form action="" method="post">
+            <h1>Registrarse</h1>
+            {% csrf_token %}
+            <div class="grupo">
+                <label for="id_email">Ingrese email:</label>
+                {{ form.email}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.email.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_username">Ingrese nombre de usuario:</label>
+                {{ form.username}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.username.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_first_name">Ingrese nombre:</label>
+                {{ form.first_name}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.first_name.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_last_name">Ingrese apellido:</label>
+                {{ form.last_name}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.last_name.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_id_tipo_user">Ingrese tipo de usuario:</label>
+                {{ form.id_tipo_user}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.tipo_user.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_password1">Ingrese contraseña:</label>
+                {{ form.password1}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.password1.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_password2">Confirme contraseña:</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                <div class="error">{{ form.password2.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_rut">Ingrese RUT:</label>
+                {{ form.rut }}
+                {% if form.username.errors %}
+                <div class="error">{{ form.rut.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors|join:", " }}</div>
+            {% endif %}
+            <button type="submit" class="registerbtn">Enviar</button>
+        </form>
+    </main>
+</div>
+
+{% endblock %}
