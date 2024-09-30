@@ -1,0 +1,129 @@
+/* ESTA PARTE ES PARA EL FORMULARIO DE LOGIN */
+
+/* General styles for the login form */
+.form-signin {
+    max-width: 400px;
+    padding: 15px;
+    margin: auto;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 190px; /* Ajusta este valor a tu gusto */
+    margin-bottom: 50px; /* Ajusta este valor a tu gusto */
+}
+
+/* Center the form both horizontally and vertically */
+.loginRegister {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Occupies full vertical height */
+}
+
+/* Styling for the login button */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 10px;
+    width: 100%;
+}
+
+/* Styling for the form's input fields */
+input[type="text"], input[type="password"], input[type="email"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 96%;
+    font-size: 1em;
+}
+
+/* Text center for small notes below the form */
+.text-muted {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+/* Spacing for small text and links */
+.text-muted a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.text-muted a:hover {
+    text-decoration: underline;
+}
+
+/* For smaller screens, make sure the form adapts */
+@media (max-width: 768px) {
+    .form-signin {
+        padding: 10px;
+        max-width: 100%;
+    }
+}
+
+
+
+
+/* AQUI PARTE EL FORMULARIO DE REGISTRO */
+
+/* General styles for the registration form */
+.form-signin {
+    max-width: 500px;
+    padding: 70px;
+    margin: auto;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Center the form both horizontally and vertically */
+.loginRegister {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full vertical height */
+}
+
+/* Styling for the input fields */
+input[type="text"], input[type="password"], input[type="email"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 12px;
+    width: 100%;
+    font-size: 1em;
+    margin-bottom: 15px;
+}
+
+/* Styling for the register button */
+.registerbtn {
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1em;
+    padding: 10px;
+    width: 80%;
+    border: none;
+    border-radius: 5px;
+}
+
+.registerbtn:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .form-signin {
+        max-width: 90%;
+        padding: 15px;
+    }
+}
+
+#tipoUsuario {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.2em;
+    height: 100px;
+}
