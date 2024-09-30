@@ -32,16 +32,11 @@ def register(request):
         context={"form": form}
         )
 
-
-
 @login_required
 def custom_logout(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect('/')
-
-
-
 
 @user_not_authenticated
 def loginUser(request):
@@ -70,10 +65,7 @@ def loginUser(request):
             else:
                 pass
         else:
-            for key, error in list(form.errors.items()):
-                if key == 'captcha' and error[0] == 'This field is required.':
-                    messages.error(request, "You must pass the reCAPTCHA test")
-                    continue                
+            for key, error in list(form.errors.items()):          
                 messages.error(request, error) 
 
     form = UserLoginForm()
