@@ -21,6 +21,8 @@ from . import views # COMO QUE NO EXISTE? XD
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('Horarios', views.registroHoras, name='horarios'),
+    # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
     path('logout/', views.custom_logout, name='logout')

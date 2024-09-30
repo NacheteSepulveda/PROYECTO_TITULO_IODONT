@@ -36,13 +36,6 @@
             </p>
         </div>
     </div>
-    <div>
-        <h3>
-            Las atenciones con los estudiantes
-        </h3>
-        <p id="parrafos">IODONT conecta a los estudiantes más disciplinados y confiables para que el paciente esté siempre cómodo y
-            satisfecho.</p>
-    </div>
     <!--Row, -->
     <div class="row">
         <div class="col-12"></div>
@@ -55,10 +48,11 @@
     <!--Row, list of images, to check -->
 </main>
 
-<!-- <div>
+<div>
     <h1 class="agenda">Agenda una hora! Nuestros estudiantes estarán listos para atenderte.</h1>
-    <button class="button">Agendar Hora</button>
-</div> -->
+    <!--  -->
+     <a href="{% url 'horarios' %}"><button class="button">Agendar Hora</button></a>
+</div>
 
 <div class="imagenes">
     <img src="{% static 'img/DENTAL_1.jpg' %}" alt="Imagen 1" class="imagen_estilo">
@@ -69,13 +63,14 @@
 
 
 <!--Footer, 2 rows, 1 big with contact sites & map, the other one with menu links & contact info...-->
-<footer class="footer">
+<!-- 
+<footer class="">
     <p id="contacto">CONTACTANOS!</p>
     <div class="contact-info">
         <i class="fas fa-phone-alt"> +569 8673 5309</i>
         <i class="fas fa-mail-bulk"> iodont@gmail.com</i>
         <i class="fas fa-search-location"> Avenida Beauchef 850 8370448 Santiago</i>
     </div>
-    <p id="contacto">© 2024 IODONT</p>
+    <p id="contacto">© 2024 IODONT</p> -->
 </footer>
 {% endblock %}

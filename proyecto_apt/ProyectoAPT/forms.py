@@ -70,3 +70,29 @@ class UserLoginForm(AuthenticationForm):
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    
+class horariosForm(forms.Form):
+    class Meta:
+         model = horarios
+         fields ="__all__"
+
+    def __init__(self, *args: Any, **kwargs):
+        super(horariosForm, self).__init__(*args, **kwargs)
+        #Add tipo de tratamiento
+        self.fields['tratamiento'] = forms.ModelChoiceField(
+            queryset=tipoTratamiento.objects.all(),
+            empty_label=None,
+            widget=forms.Select(attrs={'class':'form-control'})
+        )
+        self.fields['tratamiento'].label = "Tipo de tratamiento"
+        self.fields['fecha_seleccionada'] = forms.DateField()
+        self.fields['fecha_seleccionada'].label = "Seleccione su fecha!"
+        idTipoEstudiante = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
+        self.fields['estudiante'] = forms.ModelChoiceField(
+            queryset=customuser.objects.filter(id_tipo_user=idTipoEstudiante), #Modificable
+            empty_label=None,
+            widget=forms.Select(attrs={'class':'form-control'})
+        )
+        self.fields['estudiante'].label = "Estudiante"
+        # Personalizar el label para mostrar el 'first_name'
+        self.fields['estudiante'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"

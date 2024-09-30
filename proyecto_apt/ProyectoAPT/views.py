@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
 from django.contrib import messages
-from .forms import CustomUserCreationForm, UserLoginForm
+from .forms import CustomUserCreationForm, UserLoginForm # USERS LOGIN FORMS
+from .forms import horariosForm # HORARIOS CHECK
 from .models import *
 
 def index(request):
@@ -74,3 +75,20 @@ def loginUser(request):
         template_name="autorizacion/login.html",
         context={"form": form}
         )
+
+def registroHoras(request):
+    form = horariosForm(request.POST or None)
+    if(request.method == 'GET'):
+        print("XD")
+    else: #METHOD == POST?
+        if(form.is_valid()):
+            try:
+                idForms = request.cleaned_data['tratamiento']
+                tratamiento = tipoTratamiento.objects.get(id = idForms).first()
+                idEstudiante = request.cleaned_data['estudiante']
+                estudiante = customuser.objects.get(id=idEstudiante).first()
+                
+            except Exception as ex:
+                print("ERROR = "+ex)
+    context = {'form':form}
+    return render(request, 'APT/horarios.html', context)
