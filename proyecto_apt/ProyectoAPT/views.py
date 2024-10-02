@@ -92,3 +92,7 @@ def registroHoras(request):
                 print("ERROR = "+ex)
     context = {'form':form}
     return render(request, 'APT/horarios.html', context)
+
+
+def servicios(request):
+    return render(request, 'APT/servicios.html')

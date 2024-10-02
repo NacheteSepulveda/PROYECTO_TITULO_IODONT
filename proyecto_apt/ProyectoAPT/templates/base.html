@@ -21,7 +21,7 @@
             </label>
             <ul>
                 <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="">Servicios</a></li>
+                <li><a href="{% url 'servicios' %}">Servicios</a></li>
                 <li><a href="#contacto">Contacto</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'logout' %}">Cerrar Sesion</a></li>

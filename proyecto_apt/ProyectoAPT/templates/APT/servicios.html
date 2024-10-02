@@ -1,0 +1,79 @@
+{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
+{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
+{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+<link type="text/css" rel="stylesheet" href='{% static "css/servicios.css" %}'>
+
+
+
+    <section id="servicios">
+        <div class="container">
+            <h2>Servicios ofrecidos por nuestros estudiantes</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/exodoncia.jpg' %}" alt="Limpieza dental">
+                        <h3>Exodoncia</h3>
+                        <p>Procedimiento de extracción dental en casos de dientes dañados, fracturados o que generan problemas de espacio, realizado de manera segura y sin dolor.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/cavidadesacceso.jpg' %}" alt="Extracción de muelas">
+                        <h3>Cavidades de Acceso</h3>
+                        <p>Apertura en la corona del diente para acceder a los conductos radiculares y realizar el tratamiento endodóntico (tratamiento de conducto).</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/protesisremo.jpg' %}" alt="Implantes dentales">
+                        <h3>Confección y Diseño de Prótesis Removibles:</h3>
+                        <p>Elaboración de prótesis dentales que pueden retirarse, diseñadas para reemplazar dientes perdidos, mejorando la función y estética.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/periodontitis.png' %}" alt="Implantes dentales">
+                        <h3>Tratamiento Periodontal</h3>
+                        <p>Terapia destinada a tratar y prevenir enfermedades de las encías y los tejidos de soporte dental, como gingivitis y periodontitis.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/sellantes.jpeg' %}" alt="Implantes dentales">
+                        <h3>Sellantes</h3>
+                        <p>Aplicación de una capa protectora sobre los molares y premolares para prevenir la aparición de caries, especialmente en niños y adolescentes.</p>
+                    </div>
+                </div>     
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/endodoncia.jpg' %}" alt="Implantes dentales">
+                        <h3>Endodoncia</h3> 
+                        <p>Conocido como "tratamiento de conducto", consiste en eliminar la pulpa dental infectada, limpiar los conductos y sellarlos para salvar el diente.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/restauraciones.jpg' %}" alt="Implantes dentales">
+                        <h3>Restauraciones</h3>
+                        <p>Reparación de dientes dañados por caries o fracturas mediante empastes o reconstrucciones estéticas que devuelven la forma y función.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/endodoncia_ninos.jpg' %}" alt="Implantes dentales">
+                        <h3>Endodoncia en Niños</h3>
+                        <p>Procedimiento especializado para tratar infecciones o lesiones en los dientes primarios de los niños, conservando su salud dental.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="servicio">
+                        <img src="{% static 'img/protesis.jpg' %}" alt="Implantes dentales">
+                        <h3>Prótesis Fija</h3>
+                        <p>Colocación de coronas, puentes u otros elementos que reemplazan dientes perdidos de forma permanente, mejorando la función y la apariencia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
