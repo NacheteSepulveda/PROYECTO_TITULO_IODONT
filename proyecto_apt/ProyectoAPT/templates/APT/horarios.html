@@ -1,0 +1,44 @@
+{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
+{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
+{% load crispy_forms_tags %}
+{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+
+<main>
+    <!--Vamos a mencionar el formulario con los datos a seleccionar del tratamiento...
+    Segun el tipo de tratamiento vamos a mostrar una semana con el horario disponible y el estudiante disponible-->
+    <form  method="POST" class="">
+        {%csrf_token%}
+        <div class="mb-3">
+            <div class="row">
+                <div class="col-6">
+                    {{form.tratamiento.label}}                    
+                </div>
+                <div class="col-6">
+                    {{ form.tratamiento }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{form.fecha_seleccionada.label}}                    
+                </div>
+                <div class="col-6">
+                    {{ form.fecha_seleccionada }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {{form.estudiante.label}}                    
+                </div>
+                <div class="col-6">
+                    {{ form.estudiante }}
+                </div>
+            </div>
+            
+        </div>
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary" type="submit">Registrar</button>
+        </div>
+    </form>
+</main>
+
+{%endblock%}

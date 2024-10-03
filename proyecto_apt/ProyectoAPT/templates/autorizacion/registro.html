@@ -5,8 +5,6 @@
 {% block titulo %}Lista de salas{% endblock %}
 {% block content %}
 {% load static %}
-
-
 <link type="text/css" rel="stylesheet" href='{% static "css/login_y_registro.css" %}'>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -82,16 +80,7 @@
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
         <form action="" method="post">
             <h1>Registrarse</h1>
-
             {% csrf_token %}
-            <div class="grupo">
-                <label for="id_id_tipo_user">Ingrese tipo de usuario:</label>
-                {{ form.id_tipo_user}}
-                {% if form.username.errors %}
-                <div class="error">{{ form.tipo_user.errors|join:", " }}</div>
-                {% endif %}
-            </div>
-
             <div class="grupo">
                 <label for="id_email">Ingrese email:</label>
                 {{ form.email}}
@@ -118,6 +107,13 @@
                 {{ form.last_name}}
                 {% if form.username.errors %}
                 <div class="error">{{ form.last_name.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_id_tipo_user">Ingrese tipo de usuario:</label>
+                {{ form.id_tipo_user}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.tipo_user.errors|join:", " }}</div>
                 {% endif %}
             </div>
             <div class="grupo">

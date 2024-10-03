@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
 from django.contrib import messages
-from .forms import CustomUserCreationForm, UserLoginForm
+from .forms import CustomUserCreationForm, UserLoginForm # USERS LOGIN FORMS
+from .forms import horariosForm # HORARIOS CHECK
 from .models import *
 
 def index(request):
@@ -32,16 +33,11 @@ def register(request):
         context={"form": form}
         )
 
-
-
 @login_required
 def custom_logout(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect('/')
-
-
-
 
 @user_not_authenticated
 def loginUser(request):
@@ -70,10 +66,7 @@ def loginUser(request):
             else:
                 pass
         else:
-            for key, error in list(form.errors.items()):
-                if key == 'captcha' and error[0] == 'This field is required.':
-                    messages.error(request, "You must pass the reCAPTCHA test")
-                    continue                
+            for key, error in list(form.errors.items()):          
                 messages.error(request, error) 
 
     form = UserLoginForm()
@@ -82,3 +75,24 @@ def loginUser(request):
         template_name="autorizacion/login.html",
         context={"form": form}
         )
+
+def registroHoras(request):
+    form = horariosForm(request.POST or None)
+    if(request.method == 'GET'):
+        print("XD")
+    else: #METHOD == POST?
+        if(form.is_valid()):
+            try:
+                idForms = request.cleaned_data['tratamiento']
+                tratamiento = tipoTratamiento.objects.get(id = idForms).first()
+                idEstudiante = request.cleaned_data['estudiante']
+                estudiante = customuser.objects.get(id=idEstudiante).first()
+                
+            except Exception as ex:
+                print("ERROR = "+ex)
+    context = {'form':form}
+    return render(request, 'APT/horarios.html', context)
+
+
+def servicios(request):
+    return render(request, 'APT/servicios.html')
