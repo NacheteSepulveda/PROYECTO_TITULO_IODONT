@@ -20,7 +20,8 @@ class customuser(AbstractUser):
         id= models.BigAutoField(primary_key= True)
         rut =  models.CharField(max_length=100, unique=True)
         id_tipo_user = models.ForeignKey(TipoUsuario, on_delete=models.SET_NULL,null=True)
-
+        descripcion = models.TextField(null=True)
+        imageBlob = models.ImageField(upload_to='imagenes_usuario/', blank=True, null=True)
         def rutt(self):
             return str(self.rut)
 

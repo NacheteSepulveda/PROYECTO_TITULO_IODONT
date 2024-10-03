@@ -10,6 +10,48 @@
         {%csrf_token%}
         <div class="mb-3">
             <div class="row">
+                {% for estudiantes in form.fields.estudiante.queryset %}
+                <div class="penseenunrowXD">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card header">
+                                <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">{{estudiantes.first_name}} {{estudiantes.last_name}}</h3>
+                                <p class="card-text">{{estudiantes.descripcion|linebreaksbr }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a
+                                    name="redireccion"
+                                    id="estudiante-{{estudiantes}}"
+                                    class="btn btn-primary"
+                                    href="#"
+                                    role="button"
+                                    >Agendar Cita</a
+                                >
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                {% for tratamientos in form.fields.tratamiento.queryset %}
+                    <div class="col-4">
+                        <!--Imagen de tratamiento, to see-->
+                        <a
+                        name=""
+                        id=""
+                        class="btn btn-primary"
+                        href="#"
+                        role="button"
+                        >{{tratamientos.nombreTratamiento}}</a
+                        >   
+                    </div>                    
+                {% endfor %}
+            </div>
                 <div class="col-6">
                     {{form.tratamiento.label}}                    
                 </div>
