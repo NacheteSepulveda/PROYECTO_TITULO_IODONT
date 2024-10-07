@@ -26,5 +26,11 @@ urlpatterns = [
     # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
-    path('logout/', views.custom_logout, name='logout')
+    path('logout/', views.custom_logout, name='logout'),
+    path('calendario_est/', views.calendar_est, name="calendario"),
+    path('infopersonal/', views.infoestudiante, name="infoestudiante"),
+    path('notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
+    path('pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
+    path('publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
+
 ]
