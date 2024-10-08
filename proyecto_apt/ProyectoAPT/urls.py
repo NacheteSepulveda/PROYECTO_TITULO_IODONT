@@ -26,6 +26,12 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('Horarios', views.registroHoras, name='horarios'),
     path('servicios/', views.servicios, name='servicios'),
+    path('horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
+    # There we will enable the horario LIST
+    path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
+
+
+
     # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),

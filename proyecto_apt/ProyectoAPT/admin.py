@@ -31,3 +31,10 @@ admin.site.register(TipoUsuario,TipoUsuarioAdmin)
 class TipoUsuarioTratamiento(admin.ModelAdmin):
     fields= ['nombreTratamiento', 'descripcion']
 admin.site.register(tipoTratamiento,TipoUsuarioTratamiento)
+
+class HorariosAdmin(admin.ModelAdmin):
+    fields= ['tipoTratamiento',
+             'HoraInicial',
+             'fecha_seleccionada',
+             'estudiante']
+admin.site.register(horarios,HorariosAdmin)

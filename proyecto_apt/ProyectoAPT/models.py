@@ -39,15 +39,9 @@ class tipoTratamiento(models.Model):
 class horarios(models.Model):
     id = models.BigAutoField(primary_key=True)
     tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete = models.SET_NULL, null=True, default=None)
-    HoraInicial = models.TimeField()
+    inicio = models.TimeField()
     fecha_seleccionada = models.DateField()
     estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
-    # Lun = models.CharField(max_length=1)
-    # Mar = models.CharField(max_length=1)
-    # Mier = models.CharField(max_length=1)
-    # Jue = models.CharField(max_length=1)
-    # Vie = models.CharField(max_length=1)
-    # Sab = models.CharField(max_length=1) # a modificar segun necesidad
     def __str__(self):
          return str(self.id)
     
