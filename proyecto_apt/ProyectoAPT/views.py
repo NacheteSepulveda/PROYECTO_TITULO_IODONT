@@ -78,7 +78,7 @@ def loginUser(request):
         template_name="autorizacion/login.html",
         context={"form": form}
         )
-
+@login_required
 def registroHoras(request):
     form = horariosForm(request.POST or None)
     horarios_disponibles = []  # Inicializa la lista para almacenar los horarios
@@ -110,7 +110,7 @@ def obtener_horarios_disponibles(request):
 
         # Devolvemos la respuesta como JSON
         return JsonResponse(horarios_list, safe=False)
-
+@login_required
 def tratamientosForm(request, estudianteID):
     form = horariosForm(request.POST or None)
 
