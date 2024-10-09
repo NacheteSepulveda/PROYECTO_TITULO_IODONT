@@ -34,7 +34,7 @@ admin.site.register(tipoTratamiento,TipoUsuarioTratamiento)
 
 class HorariosAdmin(admin.ModelAdmin):
     fields= ['tipoTratamiento',
-             'HoraInicial',
+             'inicio',
              'fecha_seleccionada',
              'estudiante']
 admin.site.register(horarios,HorariosAdmin)

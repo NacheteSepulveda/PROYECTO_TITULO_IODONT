@@ -50,11 +50,9 @@
                             {{ form.fecha_seleccionada }}
                         </div>
                         
-                        
-
                         <!-- Horarios disponibles -->
                         <div class="form-group">
-                            <label for="id_horarios_disponibles">Horarios Disponibles</label>
+                            <label for="id_HorIni">Horarios Disponibles</label>
                             {{ form.inicio }}
                         </div>
                     </div>
@@ -71,60 +69,31 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Obtener todos los elementos necesarios
         var modalTratamiento = document.getElementById('modalTratamiento');
-        var tratamientoInput = document.getElementById('id_tratamiento');
-        var estudianteID = document.getElementById('id_estudiante');
-        var estudianteIDSeleccionado = document.getElementById('EstudianteIDInput');
-        var horariosSelect = document.getElementById('id_horarios_disponibles');
-        var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); // Cambiar a selector de atributos
-        // Verificar si todos los elementos existen
+        var tratamientoInput = document.getElementById('id_tipoTratamiento');  // Campo oculto que se enviará
+        var horariosSelect = document.getElementById('id_HorIni');
+        var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); 
 
-        if (!modalTratamiento || !tratamientoInput || !estudianteIDSeleccionado || !horariosSelect || !fechaSeleccionadaInput) {
-            console.error('No se encontraron todos los elementos necesarios en el DOM');
-            return;  // Detener la ejecución si faltan elementos
-        }
-
-        // Asignar ID de estudiante
-        estudianteID.value = estudianteIDSeleccionado.value;
-
-        // Agregar evento al modal
         modalTratamiento.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;  // Botón que abrió el modal
             var tratamientoId = button.getAttribute('data-tratamiento-id');
             var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
-            tratamientoInput.value = tratamientoId;  // Establecer tratamiento seleccionado
 
-            // Establecer tratamiento seleccionado
-            tratamientoInput.value = tratamientoId;  
-            document.getElementById('id_tipoTratamiento').value = tratamientoId; // Actualizar el campo oculto
+            // Actualizar el campo oculto con el ID del tratamiento
+            tratamientoInput.value = tratamientoId;
 
             // Actualizar el nombre del tratamiento en el modal
             var tratamientoNombreElement = document.getElementById('tratamientoNombre');
             tratamientoNombreElement.textContent = tratamientoNombre;
 
-            // Actualizar el nombre del tratamiento en el modal
-            var tratamientoNombreElement = document.getElementById('tratamientoNombre');
-            tratamientoNombreElement.textContent = tratamientoNombre;
-            console.log("Tratamiento??")
             // Cuando se selecciona una fecha, obtenemos los horarios disponibles
-            fechaSeleccionadaInput.addEventListener('change', function () { //Evento change no esta funcionando...?
-                //No pasa de aqui! se vera y trabajara mañana....
-                console.log("Fecha cambiada o seleccionada!")
+            fechaSeleccionadaInput.addEventListener('change', function () {
                 var fechaSeleccionada = this.value;
-                console.log('Fecha seleccionada:', fechaSeleccionada);
 
                 if (tratamientoId && fechaSeleccionada) {
-                    console.log("Inside tratamientoID or fechaSeleccionada!")
                     // Llamada AJAX para obtener los horarios disponibles
                     fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error en la red al obtener los horarios disponibles');
-                        }
-                        console.log("RESPUESTA: "+response.json())
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         horariosSelect.innerHTML = '';  // Limpiar los horarios previos
 
@@ -146,6 +115,5 @@
         });
     });
 </script>
-
 
 {% endblock %}

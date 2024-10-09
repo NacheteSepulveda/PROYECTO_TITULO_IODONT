@@ -85,10 +85,6 @@ def registroHoras(request):
 
     if request.method == 'POST' and form.is_valid():
         # Aquí puedes obtener el tratamiento y la fecha seleccionada
-        tratamiento_id = form.cleaned_data['tratamiento'].id
-        fecha_seleccionada = form.cleaned_data['fecha_seleccionada']
-
-        # Llama a la función que devuelve los horarios disponibles
         horarios_disponibles = obtener_horarios_disponibles(request)
 
     context = {
@@ -117,22 +113,11 @@ def obtener_horarios_disponibles(request):
 
 def tratamientosForm(request, estudianteID):
     form = horariosForm(request.POST or None)
-    print(estudianteID)
 
     context = {'form':form,'estudianteID':estudianteID}
     if request.method=='POST':
         form = horariosForm(request.POST)
-        print(request.POST)
-        # Form is not valid, Why?
-        # Tratamiento field is not valid, to fix...
-        # I will apply fields values into the HTML with Jinja
-        # First, take Tratamiento value and set to Hidden Value
-        # FIRST TASK COMPLETED!
-        # Second we will take 'Horarios disponibles'
-        # To make this one work we will create a def to deliver us
-        # the function that allow us to know the values disp 
-        # SECOND PASS READY
-        # third, we save the data
+
         if form.is_valid():
             
             form.save()
