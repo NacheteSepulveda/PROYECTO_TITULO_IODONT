@@ -84,7 +84,7 @@
             <div class="grupo">
                 <label for="id_email">Ingrese email:</label>
                 {{ form.email}}
-                {% if form.username.errors %}
+                {% if form.email.errors %}
                 <div class="error">{{ form.email.errors|join:", " }}</div>
                 {% endif %}
             </div>
