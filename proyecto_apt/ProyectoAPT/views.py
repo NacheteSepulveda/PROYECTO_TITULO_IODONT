@@ -6,6 +6,9 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm, UserLoginForm # USERS LOGIN FORMS
 from .forms import horariosForm # HORARIOS CHECK
 from .models import *
+from django.http import JsonResponse
+from datetime import time, timedelta, datetime
+
 
 def index(request):
     return render(request, 'APT/index.html')
@@ -78,21 +81,49 @@ def loginUser(request):
 
 def registroHoras(request):
     form = horariosForm(request.POST or None)
-    if(request.method == 'GET'):
-        print("XD")
-    else: #METHOD == POST?
-        if(form.is_valid()):
-            try:
-                idForms = request.cleaned_data['tratamiento']
-                tratamiento = tipoTratamiento.objects.get(id = idForms).first()
-                idEstudiante = request.cleaned_data['estudiante']
-                estudiante = customuser.objects.get(id=idEstudiante).first()
-                
-            except Exception as ex:
-                print("ERROR = "+ex)
-    context = {'form':form}
+    horarios_disponibles = []  # Inicializa la lista para almacenar los horarios
+
+    if request.method == 'POST' and form.is_valid():
+        # Aquí puedes obtener el tratamiento y la fecha seleccionada
+        horarios_disponibles = obtener_horarios_disponibles(request)
+
+    context = {
+        'form': form,
+        'horarios_disponibles': horarios_disponibles,  # Agregamos los horarios disponibles al contexto
+    }
     return render(request, 'APT/horarios.html', context)
 
+# Vista para obtener los horarios disponibles para un tratamiento en una fecha específica
+def obtener_horarios_disponibles(request):
+    if request.method == 'GET':
+        tratamiento_id = request.GET.get('tratamiento_id')
+        fecha_seleccionada = request.GET.get('fecha_seleccionada')
+
+        # Obtenemos los horarios disponibles para el tratamiento y la fecha seleccionada
+        horarios_disponibles = horarios.objects.filter(
+            tipoTratamiento_id=tratamiento_id,
+            fecha_seleccionada=fecha_seleccionada
+        ).values('HoraInicial')
+
+        # Convertimos los horarios en una lista para enviarlos en formato JSON
+        horarios_list = list(horarios_disponibles)
+
+        # Devolvemos la respuesta como JSON
+        return JsonResponse(horarios_list, safe=False)
+
+def tratamientosForm(request, estudianteID):
+    form = horariosForm(request.POST or None)
+
+    context = {'form':form,'estudianteID':estudianteID}
+    if request.method=='POST':
+        form = horariosForm(request.POST)
+
+        if form.is_valid():
+            
+            form.save()
+        else:
+            print(form.errors)
+    return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
 def servicios(request):
     return render(request, 'APT/servicios.html')

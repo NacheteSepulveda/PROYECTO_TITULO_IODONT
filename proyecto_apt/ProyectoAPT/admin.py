@@ -7,7 +7,7 @@ from .models import *
 
 class usuariosAdmin(admin.ModelAdmin):
     # full_name= ('first_name'.join('last_name'))
-    list_display = ['id', 'rut', 'getTipoUsuario', 'username', 'getfullname', 'getEmail', 'isSuperAdmin'] #I want to get 'first_name' and last_name togheter
+    list_display = ['id', 'rut', 'getTipoUsuario', 'username', 'getfullname', 'getEmail', 'isSuperAdmin', 'descripcion', 'imageBlob'] #I want to get 'first_name' and last_name togheter
     def getfullname(self, obj):
         return f"{obj.first_name} {obj.last_name}"
     def getTipoUsuario(self, obj):
@@ -27,3 +27,14 @@ class TipoUsuarioAdmin(admin.ModelAdmin): #Esto entrega 2 tipos de usuario
     fields = ["id", "nombre_tipo_usuario", "descripcion"]
 
 admin.site.register(TipoUsuario,TipoUsuarioAdmin)
+
+class TipoUsuarioTratamiento(admin.ModelAdmin):
+    fields= ['nombreTratamiento', 'descripcion']
+admin.site.register(tipoTratamiento,TipoUsuarioTratamiento)
+
+class HorariosAdmin(admin.ModelAdmin):
+    fields= ['tipoTratamiento',
+             'inicio',
+             'fecha_seleccionada',
+             'estudiante']
+admin.site.register(horarios,HorariosAdmin)

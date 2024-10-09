@@ -18,11 +18,20 @@ from django.contrib import admin
 from django.urls import path, include # Setup include to allow other app's urls to 
 from . import views # COMO QUE NO EXISTE? XD
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('Horarios', views.registroHoras, name='horarios'),
     path('servicios/', views.servicios, name='servicios'),
+    path('horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
+    # There we will enable the horario LIST
+    path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
+
+
+
     # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
@@ -34,3 +43,6 @@ urlpatterns = [
     path('publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
 
 ]
+# Solo en modo de desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
