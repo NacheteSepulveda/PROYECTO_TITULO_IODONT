@@ -44,4 +44,6 @@ class horarios(models.Model):
     estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
     def __str__(self):
          return str(self.id)
+
+
     

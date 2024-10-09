@@ -20,11 +20,6 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['email'].label = "Direccion de Email: "
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
 
-        # Add Username field
-        self.fields['username'] = forms.CharField()
-        self.fields['username'].label = "Nombre de usuario: "
-        self.fields['username'].widget.attrs.update({'class': 'form-control'})
-
         # Add first_name field
         self.fields['first_name'] = forms.CharField()
         self.fields['first_name'].label = "Nombre: "
@@ -57,7 +52,6 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
             model=customuser
             fields=('email',
-            'username', 
             'first_name', 
             'last_name', 
             'id_tipo_user',

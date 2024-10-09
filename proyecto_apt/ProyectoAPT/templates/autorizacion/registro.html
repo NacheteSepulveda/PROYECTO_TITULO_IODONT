@@ -89,13 +89,6 @@
                 {% endif %}
             </div>
             <div class="grupo">
-                <label for="id_username">Ingrese nombre de usuario:</label>
-                {{ form.username}}
-                {% if form.username.errors %}
-                <div class="error">{{ form.username.errors|join:", " }}</div>
-                {% endif %}
-            </div>
-            <div class="grupo">
                 <label for="id_first_name">Ingrese nombre:</label>
                 {{ form.first_name}}
                 {% if form.username.errors %}
