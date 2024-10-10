@@ -82,11 +82,16 @@ WSGI_APPLICATION = 'proyecto_apt.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'citaodonto',                 # Replace with your desired database name
+            'USER': 'root',                     # Your username on MYSQL
+            'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
+            'HOST': 'localhost',                # Host to setup the database
+            'PORT': '3307',                     # Specify your MySQL port
+            'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
+        }
     }
-}
 
 
 # Password validation

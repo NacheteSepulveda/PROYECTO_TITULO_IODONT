@@ -46,20 +46,10 @@ def custom_logout(request):
 def loginUser(request):
     if request.method == "POST":
         form = UserLoginForm(request=request, data=request.POST)
-        def get_username_by_mail(email):
-                try:
-                    username = customuser.objects.get(email=email).username
-                    return username
-                except:
-                    username= email
-                    return email 
-        mutable_data = form.data.copy()
-        mutable_data['username'] = get_username_by_mail(form.data["username"])
-        form.data = mutable_data
         if form.is_valid():
             
             user = authenticate(
-                username=form.cleaned_data["username"],
+                email=form.cleaned_data["username"],
                 password=form.cleaned_data["password"],
             )
             if user is not None:
