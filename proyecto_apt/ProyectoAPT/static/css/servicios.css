@@ -9,6 +9,7 @@
     font-size: 60px;
 }
 
+
 .servicio {
     background-color: #3498db;
     padding: 20px;
@@ -57,3 +58,85 @@
         width: 100%;
     }
 }
+
+
+/* CSS DEL FILTRO DE*/
+/* Contenedor general */
+.layout-contenedor {
+    display: grid;
+    grid-template-columns: 250px auto; /* Panel de filtro a la izquierda, contenido a la derecha */
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Estilo del panel de filtro */
+.filter-panel {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 250px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título del filtro */
+.filter-panel h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Estilos de categoría */
+.category-filter {
+    margin-bottom: 20px;
+}
+
+.category-toggle {
+    background-color: #007bff;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+/* Inputs del filtro de precio */
+.price-filter input {
+    width: 48%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Botón aplicar */
+#apply-filters {
+    background-color: #28a745;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Pequeños ajustes en el contenedor */
+.subcategory-list {
+    margin-top: 10px;
+}
+
+.subcategory-list div {
+    padding: 5px 0;
+}
+
+/* Ajuste para ítems */
+label {
+    margin-left: 8px;
+}
+/* CSS APLICADO EN HTML*/
