@@ -1,0 +1,60 @@
+/* Estilos básicos */
+body {
+  font-family: sans-serif;
+  display: flex;
+}
+
+  .container {
+    display: flex;
+  }
+
+  .sidebar {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    width: 200px;
+  }
+
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px 0;
+  }
+
+  .sidebar a:hover {
+    text-decoration: underline;
+}
+
+  .content {
+    padding: 20px;
+    flex-grow: 1;
+  }
+
+  .patient-card {
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+
+  .patient-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .patient-info h3 {
+    margin-top: 0;
+  }
+
+  .button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+

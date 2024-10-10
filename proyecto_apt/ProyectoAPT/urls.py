@@ -24,9 +24,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='index'),
+    # Horarios
     path('Horarios', views.registroHoras, name='horarios'),
-    path('servicios/', views.servicios, name='servicios'),
-    path('horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
+    path('Horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
     # There we will enable the horario LIST
     path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
 
@@ -35,7 +35,17 @@ urlpatterns = [
     # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
-    path('logout/', views.custom_logout, name='logout')
+    path('logout/', views.custom_logout, name='logout'),
+
+    #Servicios
+    path('servicios/', views.servicios, name='servicios'),
+    # Añadir a subPage de Estudiante....
+    path('Estudiantes/calendario_est/', views.calendar_est, name="calendario"),
+    path('Estudiantes/infopersonal/', views.infoestudiante, name="infoestudiante"),
+    path('Estudiantes/notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
+    path('Estudiantes/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
+    path('Estudiantes/publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
+
 ]
 # Solo en modo de desarrollo
 if settings.DEBUG:

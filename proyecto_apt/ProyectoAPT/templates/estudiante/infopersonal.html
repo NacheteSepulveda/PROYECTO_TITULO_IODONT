@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="text/css" rel="stylesheet" href='{% static "css/infopersonal.css" %}'>
+  <title>Información Personal</title>
+  
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Perfil</h2>
+    <a href="infopersonal.html">Modificar Perfil</a>
+
+    <h2>Mis Pacientes</h2>
+    <a href="pacientes_estudiante.html">Ver Pacientes</a>
+
+    <h2>Publicación</h2>
+    <a href="publicacion_estudiante.html">Publicación en lodont</a>
+
+    <h2>Notificaciones</h2>
+    <a href="notificaciones_estudiante.html">Ver Notificaciones</a>
+
+    <h2>Mi Calendario</h2>
+    <a href="calendario_est.html">Organizar horarios</a>
+  </div>
+
+  <div class="content">
+    <h1>Información Personal</h1>
+
+    <form>
+      <label for="nombre">Nombre Completo:</label><br>
+      <input type="text" id="nombre" name="nombre" value="Sofia S.c."><br>
+
+      <label for="email">Direccion de correo electronico:</label><br>
+      <input type="email" id="email" name="email" value="Sofia.S@UChile.cl"><br>
+
+      <label for="id">ID estudiante:</label><br>
+      <input type="text" id="id" name="id" value="20202020"><br>
+
+      <label for="sexo">Sexo:</label><br>
+      <input type="text" id="sexo" name="sexo" value="Femenino"><br>
+
+      <label for="nacimiento">Nacimiento:</label><br>
+      <input type="date" id="nacimiento" name="nacimiento" value="2000-10-10"><br>
+
+      <label for="carrera">Carrera:</label><br>
+      <input type="text" id="carrera" name="carrera" value="Odontología"><br><br>
+    </form>
+
+    <div class="logo">
+      <img src="logo.jpg" alt="Logo"> 
+    </div>
+  </div>
+
+</body>
+</html>
