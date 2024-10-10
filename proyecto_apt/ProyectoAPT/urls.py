@@ -18,19 +18,35 @@ from django.contrib import admin
 from django.urls import path, include # Setup include to allow other app's urls to 
 from . import views # COMO QUE NO EXISTE? XD
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.index, name='index'),
+    # Horarios
     path('Horarios', views.registroHoras, name='horarios'),
-    path('servicios/', views.servicios, name='servicios'),
+    path('Horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
+    # There we will enable the horario LIST
+    path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
+
+
+
     # AUTH
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
     path('logout/', views.custom_logout, name='logout'),
-    path('calendario_est/', views.calendar_est, name="calendario"),
-    path('infopersonal/', views.infoestudiante, name="infoestudiante"),
-    path('notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
-    path('pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
-    path('publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
+
+    #Servicios
+    path('servicios/', views.servicios, name='servicios'),
+    # Añadir a subPage de Estudiante....
+    path('Estudiantes/calendario_est/', views.calendar_est, name="calendario"),
+    path('Estudiantes/infopersonal/', views.infoestudiante, name="infoestudiante"),
+    path('Estudiantes/notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
+    path('Estudiantes/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
+    path('Estudiantes/publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
 
 ]
+# Solo en modo de desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

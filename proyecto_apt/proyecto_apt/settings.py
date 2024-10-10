@@ -83,11 +83,16 @@ WSGI_APPLICATION = 'proyecto_apt.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'citaodonto',                 # Replace with your desired database name
+            'USER': 'root',                     # Your username on MYSQL
+            'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
+            'HOST': 'localhost',                # Host to setup the database
+            'PORT': '3307',                     # Specify your MySQL port
+            'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
+        }
     }
-}
 
 
 # Password validation
@@ -126,6 +131,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+# Enable baseDir and static images uploads
+
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# La carpeta donde se guardan los archivos de medios
+MEDIA_URL = '/media/'  
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

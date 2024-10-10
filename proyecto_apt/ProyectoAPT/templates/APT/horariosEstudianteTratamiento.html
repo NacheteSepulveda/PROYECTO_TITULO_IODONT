@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+<main>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            {% for tratamiento in form.fields.tipoTratamiento.queryset %}
+                <div class="col-4">
+                    <!-- Opción de tratamiento -->
+                    <a
+                    name="tratamiento"
+                    id="id_tratamiento_{{ tratamiento.id }}"
+                    class="btn btn-primary"
+                    role="button"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalTratamiento"
+                    data-tratamiento-id="{{ tratamiento.id }}"
+                    data-tratamiento-nombre="{{ tratamiento.nombreTratamiento }}"
+                    >{{ tratamiento.nombreTratamiento }}</a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row" id="hiddenValues">
+            <!-- Aquí se aplicarán los datos seleccionados -->
+            {{form.tratamiento}} 
+            {{form.estudiante}}
+            <input type="text" id="EstudianteIDInput" hidden value="{{estudianteID}}">
+            <input type="hidden" name="tipoTratamiento" id="id_tipoTratamiento" value="">
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalTratamiento" tabindex="-1" aria-labelledby="modalTratamientoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalTratamientoLabel">Seleccionar Fecha</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Nombre del tratamiento -->
+                        <h3 id="tratamientoNombre"></h3>
+
+                        <!-- Fecha seleccionada -->
+                        <div class="form-group">
+                            <label for="id_fecha_seleccionada">{{ form.fecha_seleccionada.label }}</label>
+                            {{ form.fecha_seleccionada }}
+                        </div>
+                        
+                        <!-- Horarios disponibles -->
+                        <div class="form-group">
+                            <label for="id_HorIni">Horarios Disponibles</label>
+                            {{ form.inicio }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Agendar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalTratamiento = document.getElementById('modalTratamiento');
+        var tratamientoInput = document.getElementById('id_tipoTratamiento');  // Campo oculto que se enviará
+        var horariosSelect = document.getElementById('id_HorIni');
+        var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); 
+
+        modalTratamiento.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;  // Botón que abrió el modal
+            var tratamientoId = button.getAttribute('data-tratamiento-id');
+            var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
+
+            // Actualizar el campo oculto con el ID del tratamiento
+            tratamientoInput.value = tratamientoId;
+
+            // Actualizar el nombre del tratamiento en el modal
+            var tratamientoNombreElement = document.getElementById('tratamientoNombre');
+            tratamientoNombreElement.textContent = tratamientoNombre;
+
+            // Cuando se selecciona una fecha, obtenemos los horarios disponibles
+            fechaSeleccionadaInput.addEventListener('change', function () {
+                var fechaSeleccionada = this.value;
+
+                if (tratamientoId && fechaSeleccionada) {
+                    // Llamada AJAX para obtener los horarios disponibles
+                    fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        horariosSelect.innerHTML = '';  // Limpiar los horarios previos
+
+                        // Agregar los horarios disponibles
+                        data.forEach(function(horario) {
+                            var option = document.createElement('option');
+                            option.value = horario.HoraInicial;
+                            option.text = horario.HoraInicial + (horario.disponible ? ' - Disponible' : ' - Ocupado');
+                            option.disabled = !horario.disponible;  // Deshabilitar horarios ocupados
+                            horariosSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Hubo un problema con la petición Fetch:', error);
+                    });
+                }
+            });
+
+        });
+    });
+</script>
+
+{% endblock %}
