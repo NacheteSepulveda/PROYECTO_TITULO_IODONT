@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'proyecto_apt.wsgi.application'
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'citaodonto',                 # Replace with your desired database name
+            'NAME': 'citaodontologica',                 # Replace with your desired database name
             'USER': 'root',                     # Your username on MYSQL
             'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
             'HOST': 'localhost',                # Host to setup the database
