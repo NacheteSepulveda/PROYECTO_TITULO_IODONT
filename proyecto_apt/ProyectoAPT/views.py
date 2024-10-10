@@ -34,13 +34,14 @@ def register(request):
         {"form": form}
     )
 
+
 @login_required
 def custom_logout(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect('/')
 
-@user_not_authenticated
+
 @user_not_authenticated
 def loginUser(request):
     if request.method == "POST":
