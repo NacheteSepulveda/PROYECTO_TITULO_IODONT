@@ -9,66 +9,35 @@ from datetime import datetime, timedelta, time
 # Set default values to use:
 inicioB = ["",time(9,0),time(9,30), time(10,0), time(10,30), time(11,0), time(11,30), time(12,0), time(12,30), time(13,0), time(13,30), time(14,0), time(14,30), time(15,0), time(15,30), time(16,0), time(16,30)]
 
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import customuser
+
 class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = customuser
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2']
 
-    # Define id_tipo_user correctamente
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
-        # Add Email field
-        self.fields['email'] = forms.EmailField()
-        self.fields['email'].label = "Direccion de Email: "
-        self.fields['email'].widget.attrs.update({'class': 'form-control'})
-
-        # Add first_name field
-        self.fields['first_name'] = forms.CharField()
-        self.fields['first_name'].label = "Nombre: "
-        self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
-
-        # Add last_name field
-        self.fields['last_name'] = forms.CharField()
-        self.fields['last_name'].label = "Apellido: "
-        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
-
-        # Add id_tipo_user field
-        self.fields['id_tipo_user'] = forms.ModelChoiceField(
-            queryset=TipoUsuario.objects.all(),
-            empty_label=None,
-            widget=forms.Select(attrs={'class': 'form-control'})  # Establece atributos del widget
-        )
-        self.fields['id_tipo_user'].label = "Tipo de usuario"
-
-        # Add password1 field
-        self.fields['password1'] = forms.CharField(widget=forms.PasswordInput)
-        self.fields['password1'].label = "Contraseña: "
-        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-
-        # Add password2 field
-        self.fields['password2']   = forms.CharField(widget=forms.PasswordInput)
-        self.fields['password2'].label = "Repita la contraseña: "
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
-
-
-    class Meta(UserCreationForm.Meta):
-            model=customuser
-            fields=('email',
-            'first_name', 
-            'last_name', 
-            'id_tipo_user',
-            'password1', 
-            'password2',
-            'rut')
-
-
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Nombre'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Apellido'})
+        self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
 
 class UserLoginForm(AuthenticationForm):
+    username = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
-    username = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Email'}),
-        label="Email")
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
 
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    def clean_username(self):
+        email = self.cleaned_data.get('username')
+        if not customuser.objects.filter(email=email).exists():
+            raise forms.ValidationError("No existe un usuario con este email.")
+        return email
     
 class horariosForm(forms.ModelForm):
     class Meta:

@@ -20,21 +20,19 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            # messages.success(request, f"New account created: {user.username}")
+            messages.success(request, "Tu cuenta ha sido creada con éxito.")
             return redirect('/')
-
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-
     else:
         form = CustomUserCreationForm()
 
     return render(
-        request=request,
-        template_name="autorizacion/registro.html",
-        context={"form": form}
-        )
+        request,
+        "autorizacion/registro.html",
+        {"form": form}
+    )
 
 @login_required
 def custom_logout(request):
@@ -43,31 +41,31 @@ def custom_logout(request):
     return redirect('/')
 
 @user_not_authenticated
+@user_not_authenticated
 def loginUser(request):
     if request.method == "POST":
         form = UserLoginForm(request=request, data=request.POST)
         if form.is_valid():
-            
             user = authenticate(
-                email=form.cleaned_data["username"],
+                email=form.cleaned_data["username"],  # `username` será el email
                 password=form.cleaned_data["password"],
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Bienvenido <b>{user.username}</b>! Has iniciado sesiÃ³n")
+                messages.success(request, f"Bienvenido <b>{user.email}</b>! Has iniciado sesión")
                 return redirect('/')
             else:
-                pass
+                messages.error(request, "Credenciales inválidas.")
         else:
-            for key, error in list(form.errors.items()):          
-                messages.error(request, error) 
+            for key, error in list(form.errors.items()):
+                messages.error(request, error)
 
     form = UserLoginForm()
     return render(
         request=request,
         template_name="autorizacion/login.html",
         context={"form": form}
-        )
+    )
 
 def registroHoras(request):
     form = horariosForm(request.POST or None)
