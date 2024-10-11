@@ -21,18 +21,24 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Tu cuenta ha sido creada con éxito.")
-            return redirect('/')
+
+            tipo_usuario = TipoUsuario.objects.get(id=user.id_tipo_user_id)
+
+
+             # Redirigimos según el tipo de usuario
+            if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
+                return redirect('infoestudiante')  # Redirige a la vista de infoestudiante
+            
+            elif tipo_usuario.nombre_tipo_usuario == 'Paciente':
+                return redirect('index')  # Redirige a la página principal o cualquier otra página
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
+
     else:
         form = CustomUserCreationForm()
 
-    return render(
-        request,
-        "autorizacion/registro.html",
-        {"form": form}
-    )
+    return render(request, "autorizacion/registro.html", {"form": form})
 
 
 @login_required
@@ -48,13 +54,21 @@ def loginUser(request):
         form = UserLoginForm(request=request, data=request.POST)
         if form.is_valid():
             user = authenticate(
-                email=form.cleaned_data["username"],  # `username` será el email
+                email=form.cleaned_data["username"],  # El campo 'username' se utiliza como email
                 password=form.cleaned_data["password"],
             )
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Bienvenido <b>{user.email}</b>! Has iniciado sesión")
-                return redirect('/')
+
+                # Redirige según el tipo de usuario
+                if user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Estudiante":
+                    return redirect('infoestudiante')  # Redirige a la vista de estudiante
+                elif user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Paciente":
+                    return redirect('index')  # Redirige a la vista de paciente
+                else:
+                    return redirect('/')  # Redirige a una vista por defecto si no se encuentra el tipo de usuario
+
             else:
                 messages.error(request, "Credenciales inválidas.")
         else:
@@ -66,11 +80,9 @@ def loginUser(request):
         request=request,
         template_name="autorizacion/login.html",
         context={"form": form}
+    )
 
-        )
 
-
-@login_required
 def registroHoras(request):
     form = horariosForm(request.POST or None)
     horarios_disponibles = []  # Inicializa la lista para almacenar los horarios

@@ -39,12 +39,14 @@ urlpatterns = [
 
     #Servicios
     path('servicios/', views.servicios, name='servicios'),
+    
     # Añadir a subPage de Estudiante....
-    path('Estudiantes/calendario_est/', views.calendar_est, name="calendario"),
-    path('Estudiantes/infopersonal/', views.infoestudiante, name="infoestudiante"),
-    path('Estudiantes/notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
-    path('Estudiantes/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
-    path('Estudiantes/publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
+    path('estudiante/calendario_est/', views.calendar_est, name="calendario"),
+    path('estudiante/infopersonal/', views.infoestudiante, name="infoestudiante"),
+    path('estudiante/notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),
+    path('estudiante/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
+    path('estudiante/publicacion_estudiante/', views.publicacion_est, name="publicacion_est")
+    
 
 ]
 # Solo en modo de desarrollo

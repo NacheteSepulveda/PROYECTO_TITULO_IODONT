@@ -1,4 +1,6 @@
-{% load static %}
+{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
+{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
+{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
 <html>
  <head>
   <title>
@@ -7,26 +9,29 @@
   <link rel="stylesheet" href='{% static "css/notificaciones_estudiante.css" %}'>
  </head>
  <body>
-    <div class="sidebar">
-        <h2>Perfil</h2>
-        <a href="infopersonal.html">Modificar Perfil</a>
+  
+  <div class="sidebar">
+    <h2>Perfil</h2>
+    <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
 
-        <h2>Mis Pacientes</h2>
-        <a href="pacientes_estudiante.html">Ver Pacientes</a>
+    <h2>Mis Pacientes</h2>
+    <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
 
-        <h2>Publicación</h2>
-        <a href="publicacion_estudiante.html">Publicación en lodont</a>
+    <h2>Publicación</h2>
+    <a href="{% url 'publicacion_est' %}">Publicación en lodont</a>
 
-        <h2>Notificaciones</h2>
-        <a href="notificaciones_estudiante.html">Ver Notificaciones</a>
+    <h2>Notificaciones</h2>
+    <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
 
-        <h2>Mi Calendario</h2>
-        <a href="calendario_est.html">Organizar horarios</a>
-    </div>
+    <h2>Mi Calendario</h2>
+    <a href="{% url 'calendario' %}">Organizar horarios</a>
+  </div>
 
   <div class="content">
    No tienes notificaciones por revisar
    <img alt="Notification icon" height="50" src="https://storage.googleapis.com/a1aa/image/3gtQfeoyxlqPvE1wSL4DQOqitfNnFMm5aCHUypLD9afANJOOB.jpg" width="50"/>
   </div>
+
+  {% endblock %}
  </body>
 </html>

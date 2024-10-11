@@ -76,9 +76,10 @@
     });
 </script>
 
+
 <div class="loginRegister d-flex justify-content-center">
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
-        <form action="" method="post">
+        <form action="{% url 'registro' %}" method="post">
             <h1>Registrarse</h1>
             {% csrf_token %}
             <div class="grupo">

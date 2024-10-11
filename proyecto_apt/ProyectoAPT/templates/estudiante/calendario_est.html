@@ -1,4 +1,6 @@
+{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
 {% load static %}
+{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
 <html>
 <head>
     <title>Google Calendar</title>
@@ -9,19 +11,19 @@
     
     <div class="sidebar">
         <h2>Perfil</h2>
-        <a href="infopersonal.html">Modificar Perfil</a>
+        <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
     
         <h2>Mis Pacientes</h2>
-        <a href="pacientes_estudiante.html">Ver Pacientes</a>
+        <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
     
         <h2>Publicación</h2>
-        <a href="publicacion_estudiante.html">Publicación en lodont</a>
+        <a href="{% url 'publicacion_est' %}">Publicación en lodont</a>
     
         <h2>Notificaciones</h2>
-        <a href="notificaciones_estudiante.html">Ver Notificaciones</a>
+        <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
     
         <h2>Mi Calendario</h2>
-        <a href="calendario_est.html">Organizar horarios</a>
+        <a href="{% url 'calendario' %}">Organizar horarios</a>
       </div>
 
   <div class="content">
@@ -241,5 +243,7 @@
     </div>
    </div>
   </div>
+
+  {% endblock %}
  </body>
 </html>
