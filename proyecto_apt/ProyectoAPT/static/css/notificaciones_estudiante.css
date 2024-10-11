@@ -8,7 +8,7 @@ body {
     background-color: #007bff;
     color: white;
     padding: 20px;
-    width: 200px;
+    width: 240px;
 }
 
 
@@ -29,7 +29,8 @@ body {
 
 a {
     text-decoration: none;
-    color: white;
+    color: white !important;
+    
 }
 
 .sidebar a:hover {

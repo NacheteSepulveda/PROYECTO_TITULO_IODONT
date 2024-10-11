@@ -135,11 +135,11 @@ def servicios(request):
 
 @login_required
 def calendar_est(request):
-    return render(request, 'estudiante/infopersonal.html', {'user': request.user})
+    return render(request, 'estudiante/calendario_est.html')
 
 @login_required
 def infoestudiante(request):
-    return render(request, 'estudiante/infopersonal.html')
+    return render(request, 'estudiante/infopersonal.html', {'user': request.user})
 
 @login_required
 def notifiaciones_est(request):
