@@ -82,7 +82,7 @@ def loginUser(request):
         context={"form": form}
     )
 
-
+@login_required
 def registroHoras(request):
     form = horariosForm(request.POST or None)
     horarios_disponibles = []  # Inicializa la lista para almacenar los horarios
@@ -128,21 +128,21 @@ def tratamientosForm(request, estudianteID):
         else:
             print(form.errors)
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
-
+@login_required
 def servicios(request):
     return render(request, 'APT/servicios.html')
-
+@login_required
 def calendar_est(request):
     return render(request, 'estudiante/calendario_est.html')
-
+@login_required
 def infoestudiante(request):
     return render(request, 'estudiante/infopersonal.html')
-
+@login_required
 def notifiaciones_est(request):
     return render(request, 'estudiante/notificaciones_estudiante.html')
-
+@login_required
 def pacientes_est(request):
     return render(request, 'estudiante/pacientes_estudiante.html')
-
+@login_required
 def publicacion_est(request):
     return render(request, 'estudiante/publicacion_estudiante.html')
