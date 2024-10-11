@@ -14,11 +14,20 @@
                     <div class="col-4">
                             <div class="card">
                                 <div class="card header">
-                                    <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
+                                    {% if estudiantes.imagesblob.url is null %}
+                                        <!--En caso de tener una imagen default en caso de que el usuario no tenga ninguna imagen colocar aqui-->
+                                    {% else %}
+                                        <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
+                                    {% endif %}
                                 </div>
                                 <div class="card-body">
                                     <h3 class="card-title">{{estudiantes.first_name}} {{estudiantes.last_name}}</h3>
+                                    {% if estudiantes.descripcion is null %}
+                                    <!--Colocar aqui info en caso de que la descripcion del estudiante sea nula-->
+                                    {% else %}
                                     <p class="card-text">{{estudiantes.descripcion|linebreaksbr }}</p>
+                                    {% endif %}
+
                                 </div>
                                 <div class="card-footer">
                                     <!-- Genera el enlace con el estudianteID -->
