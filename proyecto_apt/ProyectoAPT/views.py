@@ -128,21 +128,27 @@ def tratamientosForm(request, estudianteID):
         else:
             print(form.errors)
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
+
 @login_required
 def servicios(request):
     return render(request, 'APT/servicios.html')
+
 @login_required
 def calendar_est(request):
-    return render(request, 'estudiante/calendario_est.html')
+    return render(request, 'estudiante/infopersonal.html', {'user': request.user})
+
 @login_required
 def infoestudiante(request):
     return render(request, 'estudiante/infopersonal.html')
+
 @login_required
 def notifiaciones_est(request):
     return render(request, 'estudiante/notificaciones_estudiante.html')
+
 @login_required
 def pacientes_est(request):
     return render(request, 'estudiante/pacientes_estudiante.html')
+
 @login_required
 def publicacion_est(request):
     return render(request, 'estudiante/publicacion_estudiante.html')

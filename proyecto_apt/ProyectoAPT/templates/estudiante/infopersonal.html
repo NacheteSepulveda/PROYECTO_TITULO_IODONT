@@ -34,28 +34,15 @@
 
     <form>
       <label for="nombre">Nombre Completo:</label><br>
-      <input type="text" id="nombre" name="nombre" value="Sofia S.c."><br>
+      <input type="text" id="nombre" name="nombre" value="{{ user.first_name }} {{ user.last_name }}"><br>
 
       <label for="email">Direccion de correo electronico:</label><br>
-      <input type="email" id="email" name="email" value="Sofia.S@UChile.cl"><br>
+      <input type="email" id="email" name="email" value="{{ user.email }}"><br>
 
       <label for="id">ID estudiante:</label><br>
-      <input type="text" id="id" name="id" value="20202020"><br>
+      <input type="text" id="id" name="id" value="{{ user.id }}"><br>
 
-      <label for="sexo">Sexo:</label><br>
-      <input type="text" id="sexo" name="sexo" value="Femenino"><br>
-
-      <label for="nacimiento">Nacimiento:</label><br>
-      <input type="date" id="nacimiento" name="nacimiento" value="2000-10-10"><br>
-
-      <label for="carrera">Carrera:</label><br>
-      <input type="text" id="carrera" name="carrera" value="Odontología"><br><br>
     </form>
-
-    <div class="logo">
-      <img src="logo.jpg" alt="Logo"> 
-    </div>
-  </div>
 
   {% endblock %}
 
