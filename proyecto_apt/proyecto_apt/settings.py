@@ -88,9 +88,9 @@ DATABASES = {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'citaodontologica',                 # Replace with your desired database name
             'USER': 'root',                     # Your username on MYSQL
-            'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
+            'PASSWORD': 'Danii225454.',             # Your password on MYSQL
             'HOST': 'localhost',                # Host to setup the database
-            'PORT': '3307',                     # Specify your MySQL port
+            'PORT': '3306',                     # Specify your MySQL port
             'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
         }
     }

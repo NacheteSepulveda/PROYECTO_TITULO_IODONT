@@ -30,9 +30,13 @@ body {
     width: 100px;
   }
 
-  .content {
+  .infoPe {
     padding: 20px;
     flex-grow: 1;
+    float: right;
+    right: 630px;
+    position: absolute;
+    top: 100px;
   }
 
   input[type="text"],
