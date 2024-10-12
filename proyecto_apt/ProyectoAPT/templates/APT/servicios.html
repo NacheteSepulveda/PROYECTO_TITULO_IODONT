@@ -3,120 +3,9 @@
 {% load static %}
 <link type="text/css" rel="stylesheet" href='{% static "css/servicios.css" %}'>
 
-<head>
-    <style>.layout-contenedor {
-        display: grid;
-        grid-template-columns: 250px auto; /* Panel de filtro a la izquierda, contenido a la derecha */
-        gap: 20px;
-        padding: 20px;
-    }
-    
-    /* Estilo del panel de filtro */
-    .filter-panel {
-        background-color: #f1f1f1;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 250px;
-        position: sticky;
-        top: 20px;
-        height: fit-content;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Título del filtro */
-    .filter-panel h2 {
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 20px;
-        color: #333;
-    }
-    
-    /* Estilos de categoría */
-    .category-filter {
-        margin-bottom: 20px;
-    }
-    
-    .category-toggle {
-        background-color: #007bff;
-        color: white;
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        text-align: left;
-    }
-    
-    /* Inputs del filtro de precio */
-    .price-filter input {
-        width: 48%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-    }
-    
-    /* Botón aplicar */
-    #apply-filters {
-        background-color: #28a745;
-        color: white;
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-    
-    /* Pequeños ajustes en el contenedor */
-    .subcategory-list {
-        margin-top: 10px;
-    }
-    
-    .subcategory-list div {
-        padding: 5px 0;
-    }
-    
-    /* Ajuste para ítems */
-    label {
-        margin-left: 8px;
-    }</style>
-</head>
+
 
 <section class="layout-contenedor">
-    <!-- Filtro de búsqueda -->
-    <div class="filter-panel">
-        <h2>Filtra tu busqueda</h2>
-        <form id="filter-form">
-            <!-- Categorías de productos -->
-            <div class="category-filter">
-                <button type="button" class="category-toggle">Universidades <span class="toggle-icon">▼</span></button>
-                <div class="subcategory-list" style="display: none;">
-                    <div><input type="checkbox" id="poleras"> <label for="poleras">Universidad de Chile</label></div>
-                    <div><input type="checkbox" id="camisas"> <label for="camisas">Universidad Catolica</label></div>
-                    <div><input type="checkbox" id="pantalones"> <label for="pantalones">Universidad Autonoma</label></div>
-                </div>
-            </div>
-
-            <!-- Más categorías y filtros -->
-            <div class="category-filter">
-                <button type="button" class="category-toggle">Tratamientos <span class="toggle-icon">▼</span></button>
-                <div class="subcategory-list" style="display: none;">
-                    <div><input type="checkbox" id="zapatillas"> <label for="zapatillas">Exodoncia</label></div>
-                    <div><input type="checkbox" id="botas"> <label for="botas">Cavidades de Acceso</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Confección de protesis</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Tratamiento Periodontal</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Sellantes</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Endodoncia</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Restauraciones</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Endodoncia en niños</label></div>
-                    <div><input type="checkbox" id="sandalias"> <label for="sandalias">Protesis Fija</label></div>
-                </div>
-            </div>
-
-            <!-- Botón de aplicar filtros -->
-            <button type="submit" id="apply-filters">Aplicar Filtros</button>
-        </form>
     </div>
 
     <!-- Sección de servicios (contenido principal) -->
@@ -192,20 +81,6 @@
 
 </section>
 
-<!-- JavaScript para el filtro -->
-<script>
-   document.querySelectorAll('.category-toggle').forEach(button => {
-    button.addEventListener('click', function() {
-        const subcategoryList = this.nextElementSibling;
-        if (subcategoryList.style.display === 'block') {
-            subcategoryList.style.display = 'none';
-            this.querySelector('.toggle-icon').textContent = '▼';
-        } else {
-            subcategoryList.style.display = 'block';
-            this.querySelector('.toggle-icon').textContent = '▲';
-        }
-    });
-});
-</script>
+
 
 {% endblock %}

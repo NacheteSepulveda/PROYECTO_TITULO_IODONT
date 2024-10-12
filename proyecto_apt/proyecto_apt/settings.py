@@ -47,7 +47,11 @@ INSTALLED_APPS = [
     'ProyectoAPT',
     'bootstrap4',
     'crispy_forms',
+    'crispy_bootstrap4',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,7 +92,7 @@ DATABASES = {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'citaodontologica',                 # Replace with your desired database name
             'USER': 'root',                     # Your username on MYSQL
-            'PASSWORD': 'Danii225454.',             # Your password on MYSQL
+            'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
             'HOST': 'localhost',                # Host to setup the database
             'PORT': '3306',                     # Specify your MySQL port
             'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
@@ -147,3 +151,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'ProyectoAPT.customuser'
+

@@ -1,47 +1,67 @@
-{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
-{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
+{% extends "base.html" %}
+{% block content %}
 {% load crispy_forms_tags %}
-{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+{% load static %}
 
 <main>
-    <!--Vamos a mencionar el formulario con los datos a seleccionar del tratamiento...
-    Segun el tipo de tratamiento vamos a mostrar una semana con el horario disponible y el estudiante disponible-->
-    <form  method="POST" class="">
-        {%csrf_token%}
-        <div class="mb-3">
-            <div class="row">
-                {% for estudiantes in form.fields.estudiante.queryset %}
-                    <div class="col-4">
-                            <div class="card">
-                                <div class="card header">
-                                    {% if estudiantes.imagesblob.url is null %}
-                                        <!--En caso de tener una imagen default en caso de que el usuario no tenga ninguna imagen colocar aqui-->
-                                    {% else %}
-                                        <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
-                                    {% endif %}
-                                </div>
-                                <div class="card-body">
-                                    <h3 class="card-title">{{estudiantes.first_name}} {{estudiantes.last_name}}</h3>
-                                    {% if estudiantes.descripcion is null %}
-                                    <!--Colocar aqui info en caso de que la descripcion del estudiante sea nula-->
-                                    {% else %}
-                                    <p class="card-text">{{estudiantes.descripcion|linebreaksbr }}</p>
-                                    {% endif %}
+    <div class="content-panel">
+        <div class="container">
+            <h2>Filtrar Estudiantes</h2>
+            
+            <!-- Contenedor del filtro -->
+            <div class="filtro-container">
+                <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
+                
+                <select id="universitySelect">
+                    <option value="">Todas las Universidades</option>
+                    <option value="Universidad de chile">Universidad de chile</option>
+                    <option value="Universidad Catolica">Universidad Catolica</option>
+                    <option value="Universidad Autonoma">Universidad Autonoma</option>
+                </select>
+            
+                
+                <select id="treatmentSelect" onchange="filterServices()">
+                    <option value="">Todos los Tratamientos</option>
+                    <option value="exodoncia">Exodoncia</option>
+                    <option value="cavidades de acceso">Cavidades de Acceso</option>
+                    <option value="tratamiento periodontal">Tratamiento Periodontal</option>
+                    <option value="sellantes">Sellantes</option>
+                    <option value="restauraciones">Restauraciones</option>
+                    <option value="endodoncia en niños">Endodoncia en Niños</option>
+                    <option value="prótesis fija">Prótesis Fija</option>
+                    <option value="confección de prótesis removibles">Confección de Prótesis Removibles</option>
+                    <option value="endodoncia">Endodoncia</option>
+                </select>
+            </div>
 
-                                </div>
-                                <div class="card-footer">
-                                    <!-- Genera el enlace con el estudianteID -->
-                                    <a href="{% url 'tratamientosEstudiante' estudiantes.id %}" class="btn btn-primary" >Agendar Cita</a>
-                                </div>
+            <!-- Lista de estudiantes con filtro aplicado -->
+            <div class="row" id="servicesList">
+                {% for estudiantes in form.fields.estudiante.queryset %}
+                    <div class="col-md-4 servicio" data-university="{{ estudiantes.university|lower }}" data-treatment="{{ estudiantes.tratamiento|lower }}">
+                        <div class="card">
+                            <div class="card-header">
+                                {% if estudiantes.imagesblob.url is null %}
+                                    <!-- Imagen por defecto en caso de que el usuario no tenga ninguna -->
+                                {% else %}
+                                    <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
+                                {% endif %}
                             </div>
+                            <div class="card-body">
+                                <h3 class="card-title">{{ estudiantes.first_name }} {{ estudiantes.last_name }}</h3>
+                                <p class="card-text">{{ estudiantes.descripcion|linebreaksbr }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'tratamientosEstudiante' estudiantes.id %}" class="btn btn-primary">Agendar Cita</a>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
-        <div class="form-group">
-            <button class="btn btn-lg btn-primary" type="submit">Registrar</button>
-        </div>
-    </form>
+    </div>
 </main>
 
-{%endblock%}
+<!-- JavaScript para el filtro -->
+<script src="{% static 'js/filtro.js' %}"></script>
+
+{% endblock %}
