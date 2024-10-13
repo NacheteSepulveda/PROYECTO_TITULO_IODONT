@@ -22,9 +22,13 @@ body {
     font-size: 14px;
 }
 
-.content {
+.contentNoti {
     padding: 20px;
     flex-grow: 1;
+    float: right;
+    right: 730px;
+    position: absolute;
+    top: 160px;
 }
 
 a {

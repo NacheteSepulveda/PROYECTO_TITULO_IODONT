@@ -28,9 +28,15 @@ body {
     color: white !important;
 }
 
-.content {
+.contentPubli {
     padding: 20px;
     flex-grow: 1;
+    float: none;
+    right: 300px;
+    left: 250px;
+    position: absolute;
+    top: 87px;
+    background-color: white;
 }
 
 .content img {
