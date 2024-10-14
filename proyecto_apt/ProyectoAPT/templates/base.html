@@ -49,9 +49,16 @@
                                 <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
                         {% endif %}
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'infoestudiante' %}">Tu Perfil</a>
-                        </li>
+
+
+                        {% if user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Estudiante" %}    
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'infoestudiante' %}">Tu Perfil</a>
+                            </li>
+
+                            {% else %}
+                                <li><a href="{% url 'login' %}">Solo Estudiantes</a></li>
+                        {% endif %}
                         
                     </ul>
                 </div>
