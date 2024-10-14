@@ -52,9 +52,17 @@ body {
   .button {
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
+    padding: 15px 32px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
+    margin: initial;
   }
- .pacientesCss
+ .pacientesCss{
+  padding: 20px;
+  float: right;
+  right: 20px;
+  left: 271px;
+  position: absolute;
+  top: 177px;
+  background-color: white;
+ }
