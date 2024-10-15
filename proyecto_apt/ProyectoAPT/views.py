@@ -143,7 +143,11 @@ def infoestudiante(request):
 
 @login_required
 def notifiaciones_est(request):
-    return render(request, 'estudiante/notificaciones_estudiante.html')
+    notificaciones = horarios.objects.filter(estudiante=request.user)
+    context ={
+        'notificaciones':notificaciones
+    }
+    return render(request, 'estudiante/notificaciones_estudiante.html', context)
 
 @login_required
 def pacientes_est(request):
