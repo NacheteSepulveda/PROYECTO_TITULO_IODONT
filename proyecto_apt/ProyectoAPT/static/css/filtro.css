@@ -1,0 +1,40 @@
+/* Estilos del contenedor del filtro */
+.filtro-container {
+    display: flex; /* Utiliza flexbox para alinear los elementos */
+    justify-content: space-between; /* Espacio entre elementos */
+    align-items: center; /* Alineación vertical de los elementos */
+    margin-bottom: 20px; /* Espacio inferior */
+}
+
+/* Estilo del input de búsqueda */
+#searchInput {
+    width: 30%; /* Ancho del input */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde gris */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    transition: border-color 0.3s; /* Transición suave */
+}
+
+#searchInput:focus {
+    border-color: #007bff; /* Color del borde al enfocar */
+    outline: none; /* Sin contorno */
+}
+
+/* Estilo de los selects */
+select {
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde gris */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    margin-left: 10px; /* Margen izquierdo */
+    background-color: #fff; /* Fondo blanco para los selects */
+    cursor: pointer; /* Cambiar el cursor al pasar sobre el select */
+}
+
+/* Efecto al pasar el mouse sobre los selects */
+select:hover {
+    border-color: #007bff; /* Color del borde al pasar el mouse */
+}
+
+

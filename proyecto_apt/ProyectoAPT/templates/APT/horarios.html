@@ -2,7 +2,8 @@
 {% block content %}
 {% load crispy_forms_tags %}
 {% load static %}
-
+<head>
+    <link rel="stylesheet" href="{% static 'css/filtro.css' %}"></head>
 <main>
     <div class="content-panel">
         <div class="container">
@@ -12,14 +13,13 @@
             <div class="filtro-container">
                 <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
                 
-                <select id="universitySelect">
+                <select id="universitySelect" onchange="filterServices()">
                     <option value="">Todas las Universidades</option>
                     <option value="Universidad de chile">Universidad de chile</option>
                     <option value="Universidad Catolica">Universidad Catolica</option>
                     <option value="Universidad Autonoma">Universidad Autonoma</option>
                 </select>
             
-                
                 <select id="treatmentSelect" onchange="filterServices()">
                     <option value="">Todos los Tratamientos</option>
                     <option value="exodoncia">Exodoncia</option>
@@ -36,22 +36,22 @@
 
             <!-- Lista de estudiantes con filtro aplicado -->
             <div class="row" id="servicesList">
-                {% for estudiantes in form.fields.estudiante.queryset %}
-                    <div class="col-md-4 servicio" data-university="{{ estudiantes.university|lower }}" data-treatment="{{ estudiantes.tratamiento|lower }}">
+                {% for estudiante in form.fields.estudiante.queryset %}
+                    <div class="col-md-4 servicio" data-university="{{ estudiante.universidad|lower }}" data-treatment="{{ estudiante.tratamiento|lower }}">
                         <div class="card">
                             <div class="card-header">
-                                {% if estudiantes.imagesblob.url is null %}
-                                    <!-- Imagen por defecto en caso de que el usuario no tenga ninguna -->
+                                {% if estudiante.imageBlob %}
+                                    <img src="{{ estudiante.imageBlob.url }}" alt="Imagen del estudiante" width="150" height="150">
                                 {% else %}
-                                    <img src="{{ estudiantes.imageBlob.url }}" alt="Imagen del estudiante">
+                                    <img src="{% static 'path/to/default/image.png' %}" alt="Imagen por defecto" width="150" height="150"> <!-- Cambia el path a tu imagen por defecto -->
                                 {% endif %}
                             </div>
                             <div class="card-body">
-                                <h3 class="card-title">{{ estudiantes.first_name }} {{ estudiantes.last_name }}</h3>
-                                <p class="card-text">{{ estudiantes.descripcion|linebreaksbr }}</p>
+                                <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
+                                <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
                             </div>
                             <div class="card-footer">
-                                <a href="{% url 'tratamientosEstudiante' estudiantes.id %}" class="btn btn-primary">Agendar Cita</a>
+                                <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar Cita</a>
                             </div>
                         </div>
                     </div>
