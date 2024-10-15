@@ -116,17 +116,25 @@ def obtener_horarios_disponibles(request):
         return JsonResponse(horarios_list, safe=False)
 @login_required
 def tratamientosForm(request, estudianteID):
+    # Inicializa el formulario
     form = horariosForm(request.POST or None)
+    
+    # Prepara el contexto
+    context = {'form': form, 'estudianteID': estudianteID}
 
-    context = {'form':form,'estudianteID':estudianteID}
-    if request.method=='POST':
+    if request.method == 'POST':
         form = horariosForm(request.POST)
-
+        
         if form.is_valid():
+ 
+            horario = form.save(commit=False)            
+
+            horario.paciente = request.user
             
-            form.save()
+            horario.save()
         else:
             print(form.errors)
+
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
 @login_required

@@ -74,10 +74,10 @@ class horarios(models.Model):
     tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete = models.SET_NULL, null=True, default=None)
     inicio = models.TimeField()
     fecha_seleccionada = models.DateField()
-    estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
-    def __str__(self):
+    estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_estudiante")
+    paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_paciente_views")
+    def _str_(self):
          return str(self.id)
-    
 
 
 
