@@ -114,6 +114,7 @@ def obtener_horarios_disponibles(request):
 
         # Devolvemos la respuesta como JSON
         return JsonResponse(horarios_list, safe=False)
+    
 @login_required
 def tratamientosForm(request, estudianteID):
     # Inicializa el formulario
@@ -137,7 +138,7 @@ def tratamientosForm(request, estudianteID):
 
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
-@login_required
+
 def servicios(request):
     return render(request, 'APT/servicios.html')
 

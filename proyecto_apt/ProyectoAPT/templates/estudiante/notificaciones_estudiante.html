@@ -36,8 +36,8 @@
             Tipo de tratamiento: {{notificacion.tipoTratamiento.nombreTratamiento}}
             Hora de inicio del tratamiento: {{notificacion.inicio}}
             Fecha del tratamiento: {{notificacion.fecha_seleccionada}}
-            Nombre de paciente: {{notificacion.paciente.first_name}} {{notificacion.paciente.last_name}} 
-            Correo de paciente: {{notificacion.paciente.email}}
+            Nombre de paciente: {{notificacion.user.first_name}} {{notificacion.user.last_name}} 
+            Correo de paciente: {{notificacion.user.email}}
       {% endfor %}
    {% else %}
    <img alt="Notification icon" height="50" src="https://cdn.icon-icons.com/icons2/3863/PNG/512/message_icon_241079.png" width="50" height=""/>
