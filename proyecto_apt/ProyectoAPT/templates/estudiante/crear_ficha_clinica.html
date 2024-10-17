@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<html>
+<head>
+    <title>Crear Ficha Clínica</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Ficha Clínica del Paciente</h2>
+        <form method="POST" action="{% url 'guardar_ficha_clinica' %}">
+            {% csrf_token %}
+            
+            <!-- Información del Paciente -->
+            <h3>Información del Paciente</h3>
+            <div class="form-group">
+                <label for="nombre_completo">Nombre completo:</label>
+                <input type="text" class="form-control" id="nombre_completo" name="nombre_completo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edad">Edad:</label>
+                <input type="number" class="form-control" id="edad" name="edad" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sexo">Sexo:</label>
+                <select class="form-control" id="sexo" name="sexo" required>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="estado_civil">Estado civil:</label>
+                <select class="form-control" id="estado_civil" name="estado_civil" required>
+                    <option value="Soltero">Soltero</option>
+                    <option value="Casado">Casado</option>
+                    <option value="Divorciado">Divorciado</option>
+                    <option value="Viudo">Viudo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="rut">RUT:</label>
+                <input type="text" class="form-control" id="rut" name="rut" required>
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input type="text" class="form-control" id="direccion" name="direccion" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correo_electronico">Correo electrónico:</label>
+                <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" required>
+            </div>
+
+            <!-- Contacto en Caso de Emergencia -->
+            <h3>Contacto en Caso de Emergencia</h3>
+            <div class="form-group">
+                <label for="nombre_contacto_emergencia">Nombre completo:</label>
+                <input type="text" class="form-control" id="nombre_contacto_emergencia" name="nombre_contacto_emergencia" required>
+            </div>
+
+            <div class="form-group">
+                <label for="relacion_paciente">Relación con el paciente:</label>
+                <input type="text" class="form-control" id="relacion_paciente" name="relacion_paciente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono_contacto_emergencia">Teléfono de contacto:</label>
+                <input type="tel" class="form-control" id="telefono_contacto_emergencia" name="telefono_contacto_emergencia" required>
+            </div>
+
+            <!-- Datos Clínicos -->
+            <h3>Datos Clínicos</h3>
+            <div class="form-group">
+                <label for="fecha_ultima_consulta">Fecha de la última consulta médica:</label>
+                <input type="date" class="form-control" id="fecha_ultima_consulta" name="fecha_ultima_consulta" required>
+            </div>
+
+            <div class="form-group">
+                <label for="motivo_consulta">Motivo de la consulta actual:</label>
+                <textarea class="form-control" id="motivo_consulta" name="motivo_consulta" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="sintomas_actuales">Síntomas actuales:</label>
+                <textarea class="form-control" id="sintomas_actuales" name="sintomas_actuales" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="diagnostico">Diagnóstico:</label>
+                <textarea class="form-control" id="diagnostico" name="diagnostico" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tratamiento_actual">Tratamiento actual:</label>
+                <textarea class="form-control" id="tratamiento_actual" name="tratamiento_actual" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="proxima_cita">Próxima cita:</label>
+                <input type="date" class="form-control" id="proxima_cita" name="proxima_cita">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Ficha</button>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}

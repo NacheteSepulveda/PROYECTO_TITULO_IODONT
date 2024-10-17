@@ -81,6 +81,29 @@ class horarios(models.Model):
     
     def __str__(self):
         return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+    
+class FichaClinica(models.Model):
+    nombre_completo = models.CharField(max_length=100)
+    fecha_nacimiento = models.DateField()
+    edad = models.IntegerField()
+    sexo = models.CharField(max_length=10)
+    estado_civil = models.CharField(max_length=20)
+    rut = models.CharField(max_length=12)
+    direccion = models.CharField(max_length=200)
+    telefono = models.CharField(max_length=15)
+    correo_electronico = models.EmailField()
+    nombre_contacto_emergencia = models.CharField(max_length=100)
+    relacion_paciente = models.CharField(max_length=100)
+    telefono_contacto_emergencia = models.CharField(max_length=15)
+    fecha_ultima_consulta = models.DateField()
+    motivo_consulta = models.TextField()
+    sintomas_actuales = models.TextField()
+    diagnostico = models.TextField()
+    tratamiento_actual = models.TextField()
+    proxima_cita = models.DateField()
+
+    def __str__(self):
+        return self.nombre_completo
 
 # models.py
 

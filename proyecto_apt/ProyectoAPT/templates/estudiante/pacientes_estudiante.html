@@ -29,7 +29,9 @@
 <div class="pacientesCss">
     <div class="content">
       <h1>Mis Pacientes</h1>
-      <button class="button">Crear Ficha Paciente</button>
+      <a href="{% url 'crear_ficha_paciente' %}">
+        <button class="button">Crear Ficha Paciente</button>
+      </a>
 
       <div class="patient-card">
         <div class="patient-info">
