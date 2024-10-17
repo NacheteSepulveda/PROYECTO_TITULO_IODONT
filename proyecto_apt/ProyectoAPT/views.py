@@ -237,5 +237,6 @@ def citas_pac(request):
         'citas': citas  # Pasar las citas al contexto
     })
 
-
+def historial_medico(request):
+    return render(request, 'estudiante/historial_medico.html')
 
