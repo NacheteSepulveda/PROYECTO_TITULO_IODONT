@@ -52,8 +52,8 @@ class horariosForm(forms.ModelForm):
         #Add tipo de tratamiento
         self.fields['tipoTratamiento'] = forms.ModelChoiceField(
             queryset=tipoTratamiento.objects.all(),
-            empty_label=None,
-            widget=forms.Select(attrs={'class':'form-control','id':'id_tipoTratamiento',  'hidden':True})
+            empty_label="Seleccione un Tratamiento",
+            widget=forms.Select(attrs={'class':'form-control','id':'nombreTratamiento'})
         )
         self.fields['tipoTratamiento'].label = "Tipo de tratamiento"
 
@@ -80,3 +80,5 @@ class horariosForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
+
+

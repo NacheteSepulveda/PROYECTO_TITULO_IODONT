@@ -25,10 +25,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index, name='index'),
     # Horarios
-    path('Horarios', views.registroHoras, name='horarios'),
+    path('horarios/', views.registroHoras, name='horarios'),
     path('Horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
     # There we will enable the horario LIST
     path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
+
+    # Eliminar horario
+    path('eliminar-horario/<int:id>/', views.eliminar_horario, name='eliminar_horario'),
 
 
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
@@ -97,17 +97,23 @@ def registroHoras(request):
     }
     return render(request, 'APT/horarios.html', context)
 
+    
+
 # Vista para obtener los horarios disponibles para un tratamiento en una fecha específica
 def obtener_horarios_disponibles(request):
     if request.method == 'GET':
         tratamiento_id = request.GET.get('tratamiento_id')
         fecha_seleccionada = request.GET.get('fecha_seleccionada')
+        
+        # Obtener solo los horarios del estudiante con id_tipo_user = 2
+        estudiante_id = 2  # ID del estudiante
 
-        # Obtenemos los horarios disponibles para el tratamiento y la fecha seleccionada
+        # Obtenemos los horarios disponibles para el tratamiento, la fecha seleccionada y el estudiante
         horarios_disponibles = horarios.objects.filter(
             tipoTratamiento_id=tratamiento_id,
-            fecha_seleccionada=fecha_seleccionada
-        ).values('HoraInicial')
+            fecha_seleccionada=fecha_seleccionada,
+            estudiante__id_tipo_user_id=estudiante_id  # Filtrar solo por el estudiante
+        ).values('inicio')  # Cambia 'HoraInicial' a 'inicio' según tu modelo
 
         # Convertimos los horarios en una lista para enviarlos en formato JSON
         horarios_list = list(horarios_disponibles)
@@ -115,28 +121,44 @@ def obtener_horarios_disponibles(request):
         # Devolvemos la respuesta como JSON
         return JsonResponse(horarios_list, safe=False)
     
-@login_required
+@login_required 
 def tratamientosForm(request, estudianteID):
     # Inicializa el formulario
     form = horariosForm(request.POST or None)
+    
+    # Obtiene el estudiante usando el ID proporcionado
+    estudiante = get_object_or_404(customuser, id=estudianteID)
     
     # Prepara el contexto
     context = {'form': form, 'estudianteID': estudianteID}
 
     if request.method == 'POST':
         form = horariosForm(request.POST)
-        
         if form.is_valid():
- 
-            horario = form.save(commit=False)            
-
+            horario = form.save(commit=False)
+            
+            # Asigna el paciente actual y el estudiante
             horario.paciente = request.user
+            horario.estudiante = estudiante  # Asigna el estudiante al horario
             
             horario.save()
+            return redirect('index')  # Cambia 'nombre_de_la_vista' a la vista a la que deseas redirigir después de guardar
+            
         else:
             print(form.errors)
 
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
+
+
+def publicar_horario(request):
+    if request.method == 'POST':
+        form = (request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('calendario')
+    else:
+        form = horariosForm()
+    return render(request, 'publicar_horario.html', {'form': form})
 
 
 def servicios(request):
@@ -144,7 +166,33 @@ def servicios(request):
 
 @login_required
 def calendar_est(request):
-    return render(request, 'estudiante/calendario_est.html')
+    estudiante = request.user  # El estudiante que está logueado
+    horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
+
+    if request.method == 'POST':
+        form = horariosForm(request.POST)
+        if form.is_valid():
+            nuevo_horario = form.save(commit=False)
+            nuevo_horario.estudiante = estudiante
+            nuevo_horario.save()
+            return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
+    else:
+        form = horariosForm()
+
+    return render(request, 'estudiante/calendario_est.html', {
+        'horarios_disponibles': horarios_disponibles,
+        'form': form,
+    })
+
+@login_required
+def eliminar_horario(request, id):
+    horario = get_object_or_404(horarios, id=id)
+
+    if request.method == 'POST':
+        horario.delete()  # Elimina el horario de la base de datos
+        return redirect('calendario')  # Redirige a la vista de calendario o donde desees
+
+    return render(request, 'estudiante/eliminar_horario.html', {'horario': horario})
 
 @login_required
 def infoestudiante(request):

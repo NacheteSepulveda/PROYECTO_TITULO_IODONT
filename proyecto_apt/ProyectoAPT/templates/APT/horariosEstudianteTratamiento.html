@@ -25,11 +25,9 @@
         </div>
         <div class="row" id="hiddenValues">
             <!-- Aquí se aplicarán los datos seleccionados -->
-            {{form.tratamiento}} 
-            {{form.estudiante}}
-            <input type="text" id="EstudianteIDInput" hidden value="{{estudianteID}}">
+            {{ form.tratamiento }} 
+            <input type="text" id="EstudianteIDInput" hidden value="{{ estudianteID }}">
             <input type="hidden" name="tipoTratamiento" id="id_tipoTratamiento" value="">
-
         </div>
 
         <!-- Modal -->
@@ -53,7 +51,10 @@
                         <!-- Horarios disponibles -->
                         <div class="form-group">
                             <label for="id_HorIni">Horarios Disponibles</label>
-                            {{ form.inicio }}
+                            <select id="id_HorIni" name="inicio" class="form-select">
+                                <option value="">Seleccione una hora</option>
+                                <!-- Aquí se agregarán las opciones de horarios mediante JavaScript -->
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -100,9 +101,8 @@
                         // Agregar los horarios disponibles
                         data.forEach(function(horario) {
                             var option = document.createElement('option');
-                            option.value = horario.HoraInicial;
-                            option.text = horario.HoraInicial + (horario.disponible ? ' - Disponible' : ' - Ocupado');
-                            option.disabled = !horario.disponible;  // Deshabilitar horarios ocupados
+                            option.value = horario.inicio;  // Cambia 'inicio' por el campo adecuado si es necesario
+                            option.text = horario.inicio;  // Cambia esto si deseas mostrar un texto diferente
                             horariosSelect.appendChild(option);
                         });
                     })

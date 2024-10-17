@@ -1,0 +1,105 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+.container {
+    display: flex; /* Usa flexbox para la disposición horizontal */
+}
+
+.sidebar {
+    width: 250px; /* Ancho fijo para la barra lateral */
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+}
+
+.sidebar h2, .sidebar p {
+    margin: 26px 0;
+}
+.sidebar h2 {
+    font-size: 26px;
+}
+.sidebar p {
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+    color: white;   
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+/* Styling for the form */
+form {
+    display: flex; /* Usar flexbox para alinear los botones */
+    flex-direction: column; /* Colocar botones en una columna */
+    align-items: center; /* Centrar los botones */
+    justify-content: center; /* Asegurar que el contenido esté centrado */
+    margin-top: 20px; /* Espacio superior del formulario */
+}
+
+/* Styling for the buttons */
+.btn {
+    padding: 10px 15px; /* Espaciado interno en los botones */
+    border-radius: 5px; /* Bordes redondeados para los botones */
+    text-align: center; /* Centrar el texto dentro del botón */
+    font-weight: bold; /* Texto en negrita */
+    width: auto; /* Cambiar a auto para centrar mejor */
+    min-width: 200px; /* Ancho mínimo para los botones */
+    margin: 10px; /* Margen alrededor de los botones */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cursor de puntero para indicar clickeable */
+}
+
+
+.btn-danger {
+    background-color: #dc3545; /* Color de fondo rojo */
+    color: white; /* Texto blanco */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Color de fondo gris */
+    color: white; /* Texto blanco */
+}
+
+/* Hover effects for buttons */
+.btn-danger:hover {
+    background-color: #c82333; /* Color más oscuro en hover */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Color más oscuro en hover */
+}
+
+/* For smaller screens, ensure the layout adapts */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px; /* Menos padding en pantallas pequeñas */
+        max-width: 100%; /* Ancho completo en pantallas pequeñas */
+    }
+
+    h2 {
+        font-size: 1.5em; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    }
+
+    p {
+        font-size: 0.9em; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    }
+}
+
+/* Estilos para el contenedor del box */
+.box {
+    max-width: 400px; /* Ancho máximo para el box */
+    padding: 20px; /* Espaciado interno */
+    margin: auto; /* Centrar el box en la página */
+    background-color: #ffffff; /* Color de fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Asegúrate de que el resto del CSS siga funcionando como se espera */

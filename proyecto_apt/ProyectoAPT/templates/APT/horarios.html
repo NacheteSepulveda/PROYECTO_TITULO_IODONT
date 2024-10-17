@@ -50,6 +50,7 @@
                                 <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
                                 <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
                             </div>
+                            
                             <div class="card-footer">
                                 <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar Cita</a>
                             </div>
