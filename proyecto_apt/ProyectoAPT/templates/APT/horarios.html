@@ -1,68 +1,68 @@
-{% extends "base.html" %}
-{% block content %}
-{% load crispy_forms_tags %}
-{% load static %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/filtro.css' %}"></head>
-<main>
-    <div class="content-panel">
-        <div class="container">
-            <h2>Filtrar Estudiantes</h2>
-            
-            <!-- Contenedor del filtro -->
-            <div class="filtro-container">
-                <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
+    {% extends "base.html" %}
+    {% block content %}
+    {% load crispy_forms_tags %}
+    {% load static %}
+    <head>
+        <link rel="stylesheet" href="{% static 'css/filtro.css' %}"></head>
+    <main>
+        <div class="content-panel">
+            <div class="container">
+                <h2>Filtrar Estudiantes</h2>
                 
-                <select id="universitySelect" onchange="filterServices()">
-                    <option value="">Todas las Universidades</option>
-                    <option value="Universidad de chile">Universidad de chile</option>
-                    <option value="Universidad Catolica">Universidad Catolica</option>
-                    <option value="Universidad Autonoma">Universidad Autonoma</option>
-                </select>
-            
-                <select id="treatmentSelect" onchange="filterServices()">
-                    <option value="">Todos los Tratamientos</option>
-                    <option value="exodoncia">Exodoncia</option>
-                    <option value="cavidades de acceso">Cavidades de Acceso</option>
-                    <option value="tratamiento periodontal">Tratamiento Periodontal</option>
-                    <option value="sellantes">Sellantes</option>
-                    <option value="restauraciones">Restauraciones</option>
-                    <option value="endodoncia en niños">Endodoncia en Niños</option>
-                    <option value="prótesis fija">Prótesis Fija</option>
-                    <option value="confección de prótesis removibles">Confección de Prótesis Removibles</option>
-                    <option value="endodoncia">Endodoncia</option>
-                </select>
-            </div>
+                <!-- Contenedor del filtro -->
+                <div class="filtro-container">
+                    <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
+                    
+                    <select id="universitySelect" onchange="filterServices()">
+                        <option value="">Todas las Universidades</option>
+                        <option value="Universidad de chile">Universidad de chile</option>
+                        <option value="Universidad Catolica">Universidad Catolica</option>
+                        <option value="Universidad Autonoma">Universidad Autonoma</option>
+                    </select>
+                
+                    <select id="treatmentSelect" onchange="filterServices()">
+                        <option value="">Todos los Tratamientos</option>
+                        <option value="exodoncia">Exodoncia</option>
+                        <option value="cavidades de acceso">Cavidades de Acceso</option>
+                        <option value="tratamiento periodontal">Tratamiento Periodontal</option>
+                        <option value="sellantes">Sellantes</option>
+                        <option value="restauraciones">Restauraciones</option>
+                        <option value="endodoncia en niños">Endodoncia en Niños</option>
+                        <option value="prótesis fija">Prótesis Fija</option>
+                        <option value="confección de prótesis removibles">Confección de Prótesis Removibles</option>
+                        <option value="endodoncia">Endodoncia</option>
+                    </select>
+                </div>
 
-            <!-- Lista de estudiantes con filtro aplicado -->
-            <div class="row" id="servicesList">
-                {% for estudiante in form.fields.estudiante.queryset %}
-                    <div class="col-md-4 servicio" data-university="{{ estudiante.universidad|lower }}" data-treatment="{{ estudiante.tratamiento|lower }}">
-                        <div class="card">
-                            <div class="card-header">
-                                {% if estudiante.imageBlob %}
-                                    <img src="{{ estudiante.imageBlob.url }}" alt="Imagen del estudiante" width="150" height="150">
-                                {% else %}
-                                    <img src="{% static 'path/to/default/image.png' %}" alt="Imagen por defecto" width="150" height="150"> <!-- Cambia el path a tu imagen por defecto -->
-                                {% endif %}
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
-                                <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
-                            </div>
-                            
-                            <div class="card-footer">
-                                <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar Cita</a>
+                <!-- Lista de estudiantes con filtro aplicado -->
+                <div class="row" id="servicesList">
+                    {% for estudiante in form.fields.estudiante.queryset %}
+                        <div class="col-md-4 servicio" data-university="{{ estudiante.universidad|lower }}" data-treatment="{{ estudiante.tratamiento|lower }}">
+                            <div class="card">
+                                <div class="card-header">
+                                    {% if estudiante.imageBlob %}
+                                        <img src="{{ estudiante.imageBlob.url }}" alt="Imagen del estudiante" width="150" height="150">
+                                    {% else %}
+                                        <img src="{% static 'path/to/default/image.png' %}" alt="Imagen por defecto" width="150" height="150"> <!-- Cambia el path a tu imagen por defecto -->
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
+                                    <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
+                                </div>
+                                
+                                <div class="card-footer">
+                                    <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar Cita</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<!-- JavaScript para el filtro -->
-<script src="{% static 'js/filtro.js' %}"></script>
+    <!-- JavaScript para el filtro -->
+    <script src="{% static 'js/filtro.js' %}"></script>
 
-{% endblock %}
+    {% endblock %}

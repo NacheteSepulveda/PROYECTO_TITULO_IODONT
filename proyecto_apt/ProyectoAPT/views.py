@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
 from django.contrib import messages
 from .forms import CustomUserCreationForm, UserLoginForm # USERS LOGIN FORMS
-from .forms import horariosForm # HORARIOS CHECK
+from .forms import horariosForm, CitaForm # HORARIOS CHECK
 from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
@@ -82,6 +82,8 @@ def loginUser(request):
         context={"form": form}
     )
 
+
+
 @login_required
 def registroHoras(request):
     form = horariosForm(request.POST or None)
@@ -135,11 +137,19 @@ def tratamientosForm(request, estudianteID):
     if request.method == 'POST':
         form = horariosForm(request.POST)
         if form.is_valid():
-            horario = form.save(commit=False)
+            print("flag 1")
             
+            horario = form.save(commit=False)
+            print(horario)
+
             # Asigna el paciente actual y el estudiante
             horario.paciente = request.user
+            print(horario.paciente)
+            print(request.user)
+
             horario.estudiante = estudiante  # Asigna el estudiante al horario
+            print(horario.estudiante)
+
             
             horario.save()
             return redirect('index')  # Cambia 'nombre_de_la_vista' a la vista a la que deseas redirigir después de guardar
@@ -147,7 +157,9 @@ def tratamientosForm(request, estudianteID):
         else:
             print(form.errors)
 
+
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
+
 
 
 def publicar_horario(request):
@@ -210,6 +222,20 @@ def notifiaciones_est(request):
 def pacientes_est(request):
     return render(request, 'estudiante/pacientes_estudiante.html')
 
+
 @login_required
 def publicacion_est(request):
     return render(request, 'estudiante/publicacion_estudiante.html')
+
+
+@login_required
+def citas_pac(request):
+    paciente_id = request.user  # Obtener el usuario logueado
+    citas = horarios.objects.filter(paciente=paciente_id)  # Filtrar las citas para el paciente logueado
+
+    return render(request, 'APT/citas.html', {
+        'citas': citas  # Pasar las citas al contexto
+    })
+
+
+

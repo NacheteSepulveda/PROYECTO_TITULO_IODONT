@@ -35,6 +35,8 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'servicios' %}">Servicios</a>
                         </li>
+
+                        
                         
                         {% if user.is_authenticated %}
                             <li class="nav-item dropdown">
@@ -56,6 +58,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'infoestudiante' %}">Tu Perfil</a>
                             </li>
+
+                            {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'citas' %}">Tus Citas</a>
+                            </li>
+
                         {% endif %}
                         
                     </ul>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+    <div class="container">
+        <h2>Mis Citas</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Tipo de Tratamiento</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td>{{ cita.estudiante.first_name }} {{ cita.estudiante.last_name }}</td>
+                    <td>{{ cita.tipoTratamiento.nombreTratamiento }}</td>
+                    <td>{{ cita.fecha_seleccionada }}</td>
+                    <td>{{ cita.inicio }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No tienes citas agendadas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

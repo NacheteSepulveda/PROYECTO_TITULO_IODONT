@@ -42,7 +42,12 @@ urlpatterns = [
 
     #Servicios
     path('servicios/', views.servicios, name='servicios'),
+
     
+
+    #Citas Paciente
+    path('citas/', views.citas_pac, name='citas'),
+
     # Añadir a subPage de Estudiante....
     path('estudiante/infopersonal/', views.infoestudiante, name="infoestudiante"),
     path('estudiante/notificaciones_estudiante/', views.notifiaciones_est, name="notificaciones"),

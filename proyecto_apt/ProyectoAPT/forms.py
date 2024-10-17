@@ -82,3 +82,19 @@ class horariosForm(forms.ModelForm):
         )
 
 
+# forms.py
+
+from django import forms
+from .models import Cita
+
+class CitaForm(forms.ModelForm):
+    class Meta:
+        model = Cita
+        fields = ['estudiante', 'tipo_tratamiento', 'fecha_seleccionada', 'inicio']
+
+    def __init__(self, *args, **kwargs):
+        super(CitaForm, self).__init__(*args, **kwargs)
+        self.fields['estudiante'].label = "Estudiante"
+        self.fields['tipo_tratamiento'].label = "Tipo de Tratamiento"
+        self.fields['fecha_seleccionada'].label = "Fecha de la Cita"
+        self.fields['inicio'].label = "Hora de Inicio"
