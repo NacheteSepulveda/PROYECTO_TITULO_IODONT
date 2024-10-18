@@ -8,6 +8,7 @@ from .forms import horariosForm, CitaForm # HORARIOS CHECK
 from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
+from .models import FichaClinica 
 
 
 def index(request):
@@ -39,6 +40,58 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "autorizacion/registro.html", {"form": form})
+
+#Crear Ficha Paciente
+def crear_ficha_paciente(request):
+    return render(request, 'estudiante/crear_ficha_clinica.html')
+
+def guardar_ficha_clinica(request):
+    if request.method == 'POST':
+        # Aquí procesas y guardas la ficha clínica
+        nombre_completo = request.POST.get('nombre_completo')
+        fecha_nacimiento = request.POST.get('fecha_nacimiento')
+        edad = request.POST.get('edad')
+        sexo = request.POST.get('sexo')
+        estado_civil = request.POST.get('estado_civil')
+        rut = request.POST.get('rut')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        correo_electronico = request.POST.get('correo_electronico')
+        fecha_ultima_consulta = request.POST.get('fecha_ultima_consulta')
+        motivo_consulta = request.POST.get('motivo_consulta')
+        sintomas_actuales = request.POST.get('sintomas_actuales')
+        diagnostico = request.POST.get('diagnostico')
+        tratamiento_actual = request.POST.get('tratamiento_actual')
+        proxima_cita = request.POST.get('proxima_cita')
+        
+        # Crear y guardar la instancia del modelo
+        ficha = FichaClinica(
+            nombre_completo=nombre_completo,
+            fecha_nacimiento=fecha_nacimiento,
+            edad=edad,
+            sexo=sexo,
+            estado_civil=estado_civil,
+            rut=rut,
+            direccion=direccion,
+            telefono=telefono,
+            correo_electronico=correo_electronico,
+            fecha_ultima_consulta=fecha_ultima_consulta,
+            motivo_consulta=motivo_consulta,
+            sintomas_actuales=sintomas_actuales,
+            diagnostico=diagnostico,
+            tratamiento_actual=tratamiento_actual,
+            proxima_cita=proxima_cita
+        )
+        ficha.save()
+
+        return redirect('lista_fichas_clinicas') 
+
+    return render(request, 'crear_ficha_clinica.html')  # O donde desees mostrar el formulario
+
+def lista_fichas_clinicas(request):
+    # Lógica de la vista aquí
+    return render(request, 'estudiante/lista_fichas_clinicas.html')
+
 
 
 @login_required
@@ -236,5 +289,6 @@ def citas_pac(request):
         'citas': citas  # Pasar las citas al contexto
     })
 
-
+def historial_medico(request):
+    return render(request, 'estudiante/historial_medico.html')
 

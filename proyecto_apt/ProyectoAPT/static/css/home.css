@@ -1,0 +1,221 @@
+/* Hero Section */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 110%;
+    object-fit: cover;
+}
+
+.hero-text {
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    z-index: 2;
+}
+
+.hero-text h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    background-color: #0088cc;
+    padding: 0.5rem 1.5rem;
+    display: inline-block;
+    margin: 0;
+}
+
+/* Content Sections */
+.content-section {
+    padding: 60px 0;
+}
+
+.light-bg {
+    background-color: #f8f9fa;
+}
+
+.section-title {
+    color: #0088cc;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-text {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Grid System */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 15px;
+}
+
+/* Image Grid */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.imagen_estilo {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Carousel */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.carousel {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.control-btn {
+    background-color: rgba(0, 136, 204, 0.8);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Gallery */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 40px;
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-block;
+    background-color: #0088cc;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #006699;
+}
+
+/* Utilities */
+.text-center {
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .col-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-text {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+}
+
+/* PIE DE PAGINA */
+.footer {
+    background-color: #006699; /* Color de fondo claro */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centra el texto */
+    position: relative; /* Posicionamiento relativo */
+}
+
+.footer-content {
+    display: flex; /* Flexbox para organizar las secciones */
+    justify-content: space-around; /* Espacio entre secciones */
+    margin-bottom: 15px; /* Espacio inferior entre contenido y pie */
+}
+
+.footer-section {
+    width: 30%; /* Ancho de las secciones del pie */
+}
+
+.footer-section h4 {
+    color: rgb(255, 255, 255); /* Color para los títulos */
+}
+
+.footer-bottom {
+    border-top: 1px solid #ccc; /* Línea superior para separar el contenido del pie */
+    padding-top: 10px; /* Espacio superior */
+    font-size: 0.9em; /* Tamaño de fuente más pequeño */
+    color: #fdffff; /* Color de texto para el pie */
+}
+
+.contact-info, .social-media {
+    margin: 10px 0;
+}
+
+.social-media {
+    display: flex;
+    justify-content: center; /* Centra los íconos */
+}
+
+.social-icon {
+    margin: 0 10px; /* Espacio entre los iconos */
+    color: #ffffff; /* Color de los iconos */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 24px; /* Tamaño de los íconos */
+}
+
+.social-icon:hover {
+    color: #007bff; /* Color al pasar el mouse */
+}

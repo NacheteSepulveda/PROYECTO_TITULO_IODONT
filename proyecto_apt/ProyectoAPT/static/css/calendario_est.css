@@ -39,3 +39,12 @@ a {
 .sidebar a:hover {
     text-decoration: underline;
 }
+
+#horario{
+    background-color:white ;
+    color: #063C98 ;
+}
+
+#horario h3 {
+    font-family: 'Times New Roman', Times, serif;
+}

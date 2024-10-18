@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Fichas Clínicas</title>
+    {% load static %} <!-- Cargar la etiqueta estática -->
+    <link rel="stylesheet" href="{% static 'css/guardar_ficha.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Fichas Clínicas</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Paciente</th>
+                    <th>Diagnóstico</th>
+                    <th>Fecha de Consulta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí puedes insertar dinámicamente las fichas -->
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        &copy; 2024 - Clínica Dental
+    </footer>
+</body>
+</html>

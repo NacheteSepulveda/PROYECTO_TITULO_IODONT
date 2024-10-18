@@ -1,68 +1,123 @@
-{% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
-{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
-{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+{% extends "base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+<link type="text/css" rel="stylesheet" href='{% static "css/home.css" %}'>
+
 <header>
-    <!--Image IODENT-->
-    <h1>Bienvenidos a IODONT!</h1> <!--Botton blue with-->
+    <!-- Sección de bienvenida con imagen -->
+    <div class="hero">
+        <img src="{% static 'img/BienvenidoIodont.jpg' %}" alt="Bienvenido a IODONT" class="hero-image">
+        <div class="hero-text">
+            <h1>Bienvenido a IODONT!</h1>
+        </div>
+    </div>
 </header>
 
 <main id="home">
-    <!--Row, col-4 TEXT, col-4 image 1, col-4 image 2-->
-    <div class="row">
-        <div class="col-4">
-            <h3>
-                ¿De qué se trata IODONT?
-            </h3>
-            <p>
-                IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, con la finalidad 
-                de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un método externo. Una buena 
-                oportunidad para estos jóvenes!
+    <!-- Primera fila: Texto de descripción y dos imágenes a la derecha -->
+    <div class="row content-section">
+        <div class="col-6 section">
+            <h3 class="section-title">¿De qué se trata IODONT?</h3>
+            <p class="section-text">
+                IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                método externo. Una buena oportunidad para estos jóvenes!
             </p>
         </div>
-            <h3>
-                Las atenciones con los estudiantes
-            </h3>
-            <p>
+        <div class="col-6 image-grid">
+            <img src="{% static 'img/DENTAL_1.jpg' %}" alt="Imagen 1" class="imagen_estilo">
+            <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Imagen 2" class="imagen_estilo">
+        </div>
+    </div>
+
+    <!-- Segunda fila: Descripción de las atenciones con los estudiantes y carrusel -->
+    <div class="row content-section light-bg">
+        <div class="col-6">
+            <div class="carousel-container">
+                <div class="carousel">
+                    <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Atención de estudiantes">
+                    <img src="{% static 'img/DENTAL_3.jpg' %}" alt="Atención de estudiantes">
+                </div>
+                <div class="carousel-controls">
+                    <button onclick="prevSlide()" class="control-btn">‹</button>
+                    <button onclick="nextSlide()" class="control-btn">›</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 section">
+            <h3 class="section-title">Las atenciones con los estudiantes</h3>
+            <p class="section-text">
                 IODONT conecta a los estudiantes más disciplinados y confiables para que el paciente esté siempre cómodo y
-                satisfecho
+                satisfecho.
             </p>
+            <a href="{% url 'horarios' %}" class="cta-button">Reserva Tu Hora</a>
         </div>
     </div>
-    <!--Row, -->
-    <div class="row">
-        <div class="col-12"></div>
+
+    <!-- Tercera fila: Equipo adecuado -->
+    <div class="row content-section text-center">
+        <h2 class="section-title">Equipo Adecuado.</h2>
+        <p class="section-text">Los estudiantes poseen el equipo adecuado para todos sus tratamientos.</p>
     </div>
-    <div class="row">
-        <h2>Equipo Adecuado.</h2>
-        <p id="parrafos">Los estudiantes poseen el equipo adecuado para todos sus tratamientos.</p>
-    </div>
-    <div class="row"></div>
-    <!--Row, list of images, to check -->
 </main>
 
-<div>
-    <h1 class="agenda">Agenda una hora! Nuestros estudiantes estarán listos para atenderte.</h1>
-    <!--  -->
-     <a href="{% url 'horarios' %}"><button class="button">Agendar Hora</button></a>
-</div>
-
-<div class="imagenes">
+<!-- Galería de imágenes -->
+<div class="gallery">
     <img src="{% static 'img/DENTAL_1.jpg' %}" alt="Imagen 1" class="imagen_estilo">
     <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Imagen 2" class="imagen_estilo">
     <img src="{% static 'img/DENTAL_3.jpg' %}" alt="Imagen 3" class="imagen_estilo">
     <img src="{% static 'img/odontanimado.jpg' %}" alt="Imagen 4" class="imagen_estilo">
 </div>
 
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel img');
 
-<!--Footer, 2 rows, 1 big with contact sites & map, the other one with menu links & contact info...-->
-<!-- 
-<footer class="">
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.display = (i === index) ? 'block' : 'none';
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    showSlide(currentSlide);
+</script>
+ <!-- Pie de página -->
+
+<!-- Footer -->
+<footer class="footer">
     <p id="contacto">CONTACTANOS!</p>
     <div class="contact-info">
         <i class="fas fa-phone-alt"> +569 8673 5309</i>
         <i class="fas fa-mail-bulk"> iodont@gmail.com</i>
         <i class="fas fa-search-location"> Avenida Beauchef 850 8370448 Santiago</i>
     </div>
-    <p id="contacto">© 2024 IODONT</p> -->
+    <p id="sobre">Sobre IODONT: Ofrecemos una plataforma que conecta estudiantes de odontología con pacientes.</p>
+    
+    <!-- Sección de redes sociales -->
+    <div class="social-media">
+        <a href="https://www.instagram.com/tu_perfil" target="_blank" class="social-icon">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://twitter.com/tu_perfil" target="_blank" class="social-icon">
+            <i class="fab fa-x"></i> <!-- O usa fa-twitter si prefieres -->
+        </a>
+    </div>
+    
+    <p id="contacto">© 2024 IODONT, Ltda. Todos los derechos reservados</p>
 </footer>
+
+
 {% endblock %}

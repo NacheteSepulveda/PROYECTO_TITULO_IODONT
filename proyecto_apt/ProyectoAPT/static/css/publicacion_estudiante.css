@@ -30,13 +30,11 @@ body {
 
 .contentPubli {
     padding: 20px;
-    flex-grow: 1;
-    float: none;
-    right: 300px;
-    left: 250px;
-    position: absolute;
-    top: 87px;
+    float: initial;
     background-color: white;
+    margin-left: 250px;
+    position: relative;
+    margin-top: -491px;
 }
 
 .content img {
