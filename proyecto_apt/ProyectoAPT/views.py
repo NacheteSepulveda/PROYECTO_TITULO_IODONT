@@ -41,13 +41,13 @@ def register(request):
 
     return render(request, "autorizacion/registro.html", {"form": form})
 
+
 @login_required
 def crear_ficha_paciente(request, user_id):
     try:
-        paciente = customuser.objects.get(id=user_id)
+        paciente = customuser.objects.get(id=user_id, id_tipo_user__nombre_tipo_usuario='Paciente')
     except customuser.DoesNotExist:
-        # Manejo de error si el paciente no se encuentra
-        return redirect('pacientes_est')  # O redirigir a otra página
+        return redirect('pacientes_est')
 
     if request.method == 'POST':
         form = FichaClinicaForm(request.POST)
@@ -55,7 +55,10 @@ def crear_ficha_paciente(request, user_id):
             ficha = form.save(commit=False)
             ficha.paciente = paciente
             ficha.save()
-            return redirect('pacientes_est')
+            return redirect('pacientes_est')  # O a otra vista según tu necesidad
+        else:
+            print("Errores del formulario:", form.errors)  # Muestra errores si hay
+
     else:
         form = FichaClinicaForm()
 
@@ -64,37 +67,6 @@ def crear_ficha_paciente(request, user_id):
         'form': form,
     })
 
-@login_required
-def crear_ficha_paciente(request, user_id):
-    try:
-        paciente = customuser.objects.get(id=user_id)
-    except customuser.DoesNotExist:
-        # Manejo de error si el paciente no se encuentra
-        return redirect('pacientes_est')  # O redirigir a otra página
-
-    if request.method == 'POST':
-        form = FichaClinicaForm(request.POST)
-        if form.is_valid():
-            ficha = form.save(commit=False)
-            ficha.paciente = paciente
-            ficha.save()
-            return redirect('ver_ficha_clinica', id_ficha=ficha.idFicha)  # Redirige a la vista de la ficha clínica
-    else:
-        form = FichaClinicaForm()
-
-    return render(request, 'estudiante/crear_ficha_clinica.html', {
-        'paciente': paciente,
-        'form': form,
-    })
-
-@login_required
-def ver_ficha_clinica(request, id_ficha):
-    ficha_clinica = get_object_or_404(FichaClinica, idFicha=id_ficha)
-    
-    return render(request, 'estudiante/ver_ficha_clinica.html', {
-        'ficha_clinica': ficha_clinica,
-        'paciente': ficha_clinica.paciente,  # Información del paciente asociada
-    })
 
 
 def lista_fichas_clinicas(request):
@@ -281,7 +253,10 @@ def notifiaciones_est(request):
 @login_required
 def pacientes_est(request):
     estudiante = request.user
-    pacientes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Paciente')
+    # Filtramos las citas donde el estudiante actual está involucrado
+    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True)
+    # Filtramos los pacientes utilizando los IDs de las citas agendadas
+    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
     
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,

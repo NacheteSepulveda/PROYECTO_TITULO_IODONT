@@ -78,14 +78,19 @@ class FichaClinica(models.Model):
     idFicha = models.BigAutoField(primary_key=True)
     paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
     tratamiento = models.ForeignKey(tipoTratamiento, on_delete=models.SET_NULL, null=True, default=None)
-    fecha_ultima_consulta = models.DateField()
-    motivo_consulta = models.TextField()
-    sintomas_actuales = models.TextField()
-    diagnostico = models.TextField()
-    tratamiento_actual = models.TextField()
-    proxima_cita = models.DateField()
-    nombre_contacto_emergencia = models.TextField()
-    telefono_contacto_emergencia = models.IntegerField()
+    fecha_ultima_consulta = models.DateField(null=True)
+    motivo_consulta = models.TextField(null=True)
+    sintomas_actuales = models.TextField(null=True)
+    diagnostico = models.TextField(null=True)
+    tratamiento_actual = models.TextField(null=True)
+    proxima_cita = models.DateField(null=True)
+    nombre_contacto_emergencia = models.TextField(null=True)
+    telefono_contacto_emergencia = models.IntegerField(null=True)
+
+    def __str__(self):
+        return str(self.idFicha)
+
+
 
 
 class horarios(models.Model):

@@ -42,7 +42,7 @@ class CustomUserCreationForm(UserCreationForm):
 class FichaClinicaForm(forms.ModelForm):
     class Meta:
         model = FichaClinica
-        fields = ['nombre_contacto_emergencia', 'telefono_contacto_emergencia', 'fecha_ultima_consulta', 'motivo_consulta', 'sintomas_actuales', 'diagnostico', 'tratamiento_actual', 'proxima_cita', 'tratamiento']
+        fields = ['nombre_contacto_emergencia', 'telefono_contacto_emergencia', 'fecha_ultima_consulta', 'motivo_consulta', 'sintomas_actuales', 'diagnostico', 'tratamiento_actual', 'proxima_cita']
 
     def __init__(self, *args, **kwargs):
         super(FichaClinicaForm, self).__init__(*args, **kwargs)
@@ -69,7 +69,6 @@ class FichaClinicaForm(forms.ModelForm):
             widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
 
         )
-        self.fields['tratamiento'].label = "Tipo de tratamiento"
 
 
         
