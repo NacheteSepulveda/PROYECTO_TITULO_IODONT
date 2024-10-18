@@ -20,7 +20,7 @@ from . import views # COMO QUE NO EXISTE? XD
 
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import guardar_ficha_clinica, lista_fichas_clinicas
+from .views import lista_fichas_clinicas
 
 
 urlpatterns = [
@@ -56,10 +56,11 @@ urlpatterns = [
     path('estudiante/publicacion_estudiante/', views.publicacion_est, name="publicacion_est"),
     path('estudiante/calendario_est/',  views.calendar_est, name="calendario"), 
     path('estudiante/historial_medico/',  views.historial_medico, name="historial_medico"), 
-     #crear ficha paciente
-    path('crear-ficha/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
-    path('guardar-ficha-clinica/', views.guardar_ficha_clinica, name='guardar_ficha_clinica'),  # Solo una definición
+
+    #crear ficha paciente
+    path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
     path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas'), 
+    path('ficha_clinica/ver/<int:id_ficha>/', views.ver_ficha_clinica, name='ver_ficha_clinica'),
 
     
 

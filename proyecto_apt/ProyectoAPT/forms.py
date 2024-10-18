@@ -16,16 +16,65 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Nombre'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Apellido'})
+
+        self.fields['fecha_nac'] = forms.DateField(
+            label="Seleccione su fecha!",
+            required=True,
+            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
+
+        )
+        self.fields['fecha_nac'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
+
+        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Numero'})
+        self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese Su Direccion'})
         self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
+
+
+class FichaClinicaForm(forms.ModelForm):
+    class Meta:
+        model = FichaClinica
+        fields = ['nombre_contacto_emergencia', 'telefono_contacto_emergencia', 'fecha_ultima_consulta', 'motivo_consulta', 'sintomas_actuales', 'diagnostico', 'tratamiento_actual', 'proxima_cita', 'tratamiento']
+
+    def __init__(self, *args, **kwargs):
+        super(FichaClinicaForm, self).__init__(*args, **kwargs)
+        self.fields['nombre_contacto_emergencia'].widget.attrs.update({'placeholder': 'Persona en caso de emergencia'})
+
+        self.fields['telefono_contacto_emergencia'].widget.attrs.update({'placeholder': 'Contacto de emergencia'})
+        self.fields['fecha_ultima_consulta'].widget.attrs.update({'placeholder': 'Apellido'})
+
+        self.fields['fecha_ultima_consulta'] = forms.DateField(
+            label="Indique Fecha de la Ultima Consulta",
+            required=True,
+            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
+
+        )
+        self.fields['fecha_ultima_consulta'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
+
+        self.fields['motivo_consulta'].widget.attrs.update({'placeholder': 'Ingrese Motivo'})
+        self.fields['sintomas_actuales'].widget.attrs.update({'placeholder': 'Ingrese Sintomas'})
+        self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
+
+        self.fields['proxima_cita'] = forms.DateField(
+            label="Indique su proxima cita",
+            required=True,
+            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
+
+        )
+        self.fields['tratamiento'].label = "Tipo de tratamiento"
+
+
+        
+
+        
 
 class UserLoginForm(AuthenticationForm):
     username = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'class': 'form-control'}))

@@ -68,3 +68,8 @@ footer {
     font-size: 14px;
     color: #777;
 }
+
+.form-control {
+    width: 50%; /* Cambia este valor para ajustar el ancho */
+    margin-bottom: 15px; /* Espaciado inferior entre campos */
+}

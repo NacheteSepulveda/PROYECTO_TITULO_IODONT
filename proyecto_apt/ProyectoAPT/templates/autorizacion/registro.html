@@ -104,6 +104,28 @@
                 {% endif %}
             </div>
             <div class="grupo">
+                <label for="id_num">Ingrese Numero:</label>
+                {{ form.num_tel}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.num_tel.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
+                <label for="id_direccion">Ingrese Direccion:</label>
+                {{ form.direccion}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.direccion.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-grupo">
+                <label for="id_fecha_nac">Ingrese Fecha de Nacimiento:</label>
+                {{ form.fecha_nac}}
+                {% if form.username.errors %}
+                <div class="error">{{ form.fecha_nac.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="grupo">
                 <label for="id_id_tipo_user">Ingrese tipo de usuario:</label>
                 {{ form.id_tipo_user}}
                 {% if form.username.errors %}
