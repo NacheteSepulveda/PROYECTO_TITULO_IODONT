@@ -184,15 +184,14 @@ def tratamientosForm(request, estudianteID):
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     
-    # Prepara el contexto
-    context = {'form': form, 'estudianteID': estudianteID}
-
+    actualUser = request.user.id
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser':actualUser}
+    print(context)
     if request.method == 'POST':
         form = CitaForm(request.POST)
         estudianteID=estudiante.id
-        actualUser = request.user.id
-        context = {'form': form, 'estudianteID': estudianteID, 'actualUser':actualUser}
         form.paciente = request.user.id
+        
         form.estudiante = estudiante.id
         print(form.data)
         if form.is_valid():
