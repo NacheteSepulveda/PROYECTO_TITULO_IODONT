@@ -59,8 +59,7 @@ urlpatterns = [
 
     #crear ficha paciente
     path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
-    path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas'), 
-    path('ficha_clinica/ver/<int:id_ficha>/', views.ver_ficha_clinica, name='ver_ficha_clinica'),
+    path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas')
 
     
 

@@ -87,15 +87,6 @@ def crear_ficha_paciente(request, user_id):
         'form': form,
     })
 
-@login_required
-def ver_ficha_clinica(request, id_ficha):
-    ficha_clinica = get_object_or_404(FichaClinica, idFicha=id_ficha)
-    
-    return render(request, 'estudiante/ver_ficha_clinica.html', {
-        'ficha_clinica': ficha_clinica,
-        'paciente': ficha_clinica.paciente,  # Información del paciente asociada
-    })
-
 
 def lista_fichas_clinicas(request):
     # Lógica de la vista aquí
@@ -281,7 +272,10 @@ def notifiaciones_est(request):
 @login_required
 def pacientes_est(request):
     estudiante = request.user
-    pacientes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Paciente')
+    # Filtramos las citas donde el estudiante actual está involucrado
+    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True)
+    # Filtramos los pacientes utilizando los IDs de las citas agendadas
+    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
     
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,
