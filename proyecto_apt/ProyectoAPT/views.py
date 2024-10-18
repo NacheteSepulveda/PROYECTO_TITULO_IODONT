@@ -41,13 +41,13 @@ def register(request):
 
     return render(request, "autorizacion/registro.html", {"form": form})
 
+
 @login_required
 def crear_ficha_paciente(request, user_id):
     try:
-        paciente = customuser.objects.get(id=user_id)
+        paciente = customuser.objects.get(id=user_id, id_tipo_user__nombre_tipo_usuario='Paciente')
     except customuser.DoesNotExist:
-        # Manejo de error si el paciente no se encuentra
-        return redirect('pacientes_est')  # O redirigir a otra página
+        return redirect('pacientes_est')
 
     if request.method == 'POST':
         form = FichaClinicaForm(request.POST)
@@ -55,30 +55,7 @@ def crear_ficha_paciente(request, user_id):
             ficha = form.save(commit=False)
             ficha.paciente = paciente
             ficha.save()
-            return redirect('pacientes_est')
-    else:
-        form = FichaClinicaForm()
-
-    return render(request, 'estudiante/crear_ficha_clinica.html', {
-        'paciente': paciente,
-        'form': form,
-    })
-
-@login_required
-def crear_ficha_paciente(request, user_id):
-    try:
-        paciente = customuser.objects.get(id=user_id)
-    except customuser.DoesNotExist:
-        # Manejo de error si el paciente no se encuentra
-        return redirect('pacientes_est')  # O redirigir a otra página
-
-    if request.method == 'POST':
-        form = FichaClinicaForm(request.POST)
-        if form.is_valid():
-            ficha = form.save(commit=False)
-            ficha.paciente = paciente
-            ficha.save()
-            return redirect('pacientes_est')  # Redirige a la vista de la ficha clínica
+            return redirect('ver_ficha_clinica', id_ficha=ficha.idFicha)  # Redirige a la vista de la ficha clínica
     else:
         form = FichaClinicaForm()
 
