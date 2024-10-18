@@ -86,19 +86,11 @@ class horarios(models.Model):
 
 class Cita(models.Model):
     paciente = models.ForeignKey(customuser, on_delete=models.CASCADE, related_name='citas_paciente')
-    estudiante = models.ForeignKey(customuser, on_delete=models.CASCADE, related_name='citas_estudiante', null=True)
-    tipo_tratamiento = models.ForeignKey(tipoTratamiento, on_delete=models.SET_NULL, null=True)
+    estudiante = models.ForeignKey(customuser, on_delete=models.CASCADE, related_name='citas_estudiante')
+    tipotratamiento = models.ForeignKey(tipoTratamiento, on_delete=models.SET_NULL, null=True)
     fecha_seleccionada = models.DateField()
     inicio = models.TimeField()
 
-    def save(self, *args, **kwargs):
-        # Si el tipo de tratamiento está definido, guarda su ID
-        if self.tipo_tratamiento:
-            self.tratamiento_id = self.tipo_tratamiento.id
-        super().save(*args, **kwargs)
-
     def __str__(self):
-        return f"Cita de {self.paciente.email} con {self.estudiante.email} para {self.tipo_tratamiento.nombreTratamiento} el {self.fecha_seleccionada} a las {self.inicio}"
+        return f"Cita de {self.paciente.email} con {self.estudiante.email} para {self.tipotratamiento.nombreTratamiento} el {self.fecha_seleccionada} a las {self.inicio}"
 
-
-    

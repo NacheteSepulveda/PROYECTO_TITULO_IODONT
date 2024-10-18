@@ -126,7 +126,7 @@ def obtener_horarios_disponibles(request):
 @login_required 
 def tratamientosForm(request, estudianteID):
     # Inicializa el formulario
-    form = horariosForm(request.POST or None)
+    form = CitaForm(request.POST or None)
     
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
@@ -135,24 +135,23 @@ def tratamientosForm(request, estudianteID):
     context = {'form': form, 'estudianteID': estudianteID}
 
     if request.method == 'POST':
-        form = horariosForm(request.POST)
+        form = CitaForm(request.POST)
+        estudianteID=estudiante.id
+        actualUser = request.user.id
+        context = {'form': form, 'estudianteID': estudianteID, 'actualUser':actualUser}
+        form.paciente = request.user.id
+        form.estudiante = estudiante.id
+        print(form.data)
         if form.is_valid():
-            print("flag 1")
-            
             horario = form.save(commit=False)
-            print(horario)
 
             # Asigna el paciente actual y el estudiante
             horario.paciente = request.user
-            print(horario.paciente)
-            print(request.user)
 
             horario.estudiante = estudiante  # Asigna el estudiante al horario
-            print(horario.estudiante)
-
             
             horario.save()
-            return redirect('index')  # Cambia 'nombre_de_la_vista' a la vista a la que deseas redirigir después de guardar
+            return redirect('index')
             
         else:
             print(form.errors)
@@ -231,7 +230,7 @@ def publicacion_est(request):
 @login_required
 def citas_pac(request):
     paciente_id = request.user  # Obtener el usuario logueado
-    citas = horarios.objects.filter(paciente=paciente_id)  # Filtrar las citas para el paciente logueado
+    citas = Cita.objects.filter(paciente=paciente_id)  # Filtrar las citas para el paciente logueado
 
     return render(request, 'APT/citas.html', {
         'citas': citas  # Pasar las citas al contexto

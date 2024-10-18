@@ -90,11 +90,45 @@ from .models import Cita
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
-        fields = ['estudiante', 'tipo_tratamiento', 'fecha_seleccionada', 'inicio']
+        fields =[
+            'tipotratamiento',
+            'inicio',
+            'fecha_seleccionada',
+            'estudiante',
+            'paciente']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs)
+        #Add tipo de tratamiento
+        self.fields['tipotratamiento'] = forms.ModelChoiceField(
+            queryset=tipoTratamiento.objects.all(),
+            empty_label="Seleccione un Tratamiento",
+            widget=forms.Select(attrs={'class':'form-control','id':'nombreTratamiento'})
+        )
+        self.fields['tipotratamiento'].label = "Tipo de tratamiento"
+
+        self.fields['fecha_seleccionada'] = forms.DateField(
+            label="Seleccione su fecha!",
+            required=True,
+            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
+
+        )
+        self.fields['fecha_seleccionada'].widget.attrs.update({'class': 'form-control', 'type':'date'})
+        idTipoEstudiante = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
+        self.fields['estudiante'] = forms.ModelChoiceField(
+            queryset=customuser.objects.filter(id_tipo_user=idTipoEstudiante), #Modificable
+            empty_label=None,
+            widget=forms.Select(attrs={'class':'form-control', 'hidden':True})
+        )
         self.fields['estudiante'].label = "Estudiante"
-        self.fields['tipo_tratamiento'].label = "Tipo de Tratamiento"
-        self.fields['fecha_seleccionada'].label = "Fecha de la Cita"
-        self.fields['inicio'].label = "Hora de Inicio"
+        # Personalizar el label para mostrar el 'first_name'
+        self.fields['estudiante'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+
+        self.fields['inicio'] = forms.ChoiceField(  #
+            label="Hora de inicio:",
+            choices=[(inicioB[i], str(inicioB[i])) for i in range(1, len(inicioB))],
+            widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
+            required=False
+        )
+        self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
+        self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})

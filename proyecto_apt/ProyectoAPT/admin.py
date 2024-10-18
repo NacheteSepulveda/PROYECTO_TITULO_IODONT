@@ -24,7 +24,7 @@ class usuariosAdmin(admin.ModelAdmin):
 admin.site.register(customuser,usuariosAdmin)
 
 class TipoUsuarioAdmin(admin.ModelAdmin): #Esto entrega 2 tipos de usuario
-    fields = ["id", "nombre_tipo_usuario", "descripcion"]
+    fields = ["nombre_tipo_usuario", "descripcion"]
 
 admin.site.register(TipoUsuario,TipoUsuarioAdmin)
 
@@ -38,3 +38,10 @@ class HorariosAdmin(admin.ModelAdmin):
              'fecha_seleccionada',
              'estudiante']
 admin.site.register(horarios,HorariosAdmin)
+
+class CitasAdmin(admin.ModelAdmin):
+        fields= ['tipoTratamiento',
+             'inicio',
+             'fecha_seleccionada',
+             'estudiante']
+admin.site.register(Cita,CitasAdmin)
