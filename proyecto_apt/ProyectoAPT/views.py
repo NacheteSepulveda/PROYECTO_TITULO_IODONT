@@ -78,7 +78,7 @@ def crear_ficha_paciente(request, user_id):
             ficha = form.save(commit=False)
             ficha.paciente = paciente
             ficha.save()
-            return redirect('ver_ficha_clinica', id_ficha=ficha.idFicha)  # Redirige a la vista de la ficha clínica
+            return redirect('pacientes_est')  # Redirige a la vista de la ficha clínica
     else:
         form = FichaClinicaForm()
 
@@ -86,6 +86,7 @@ def crear_ficha_paciente(request, user_id):
         'paciente': paciente,
         'form': form,
     })
+
 
 
 def lista_fichas_clinicas(request):
