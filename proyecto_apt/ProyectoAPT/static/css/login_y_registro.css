@@ -63,7 +63,12 @@ input[type="text"], input[type="password"], input[type="email"] {
     }
 }
 
-
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050; /* Para asegurar que esté por encima de otros elementos */
+}
 
 
 /* AQUI PARTE EL FORMULARIO DE REGISTRO */
@@ -127,3 +132,4 @@ input[type="text"], input[type="password"], input[type="email"] {
     font-size: 1.2em;
     height: 100px;
 }
+

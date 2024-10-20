@@ -21,7 +21,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Tu cuenta ha sido creada con éxito.")
+            messages.success(request, '¡Registro Exitoso!')
 
             tipo_usuario = TipoUsuario.objects.get(id=user.id_tipo_user_id)
 
@@ -75,7 +75,7 @@ def lista_fichas_clinicas(request):
 @login_required
 def custom_logout(request):
     logout(request)
-    messages.info(request, "Logged out successfully!")
+    messages.info(request, "Haz Cerrado Sesión!")
     return redirect('/')
 
 
@@ -90,7 +90,7 @@ def loginUser(request):
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Bienvenido <b>{user.email}</b>! Has iniciado sesión")
+                messages.success(request, f"Bienvenido {user.email} Has iniciado sesión")
 
                 # Redirige según el tipo de usuario
                 if user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Estudiante":
@@ -102,6 +102,7 @@ def loginUser(request):
 
             else:
                 messages.error(request, "Credenciales inválidas.")
+                return redirect('login')
         else:
             for key, error in list(form.errors.items()):
                 messages.error(request, error)
@@ -154,38 +155,47 @@ def obtener_horarios_disponibles(request):
         # Devolvemos la respuesta como JSON
         return JsonResponse(horarios_list, safe=False)
     
-@login_required 
+@login_required
 def tratamientosForm(request, estudianteID):
     # Inicializa el formulario
     form = CitaForm(request.POST or None)
-    
+
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
-    
     actualUser = request.user.id
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser':actualUser}
-    print(context)
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser}
+
     if request.method == 'POST':
         form = CitaForm(request.POST)
-        estudianteID=estudiante.id
-        form.paciente = request.user.id
-        
-        form.estudiante = estudiante.id
-        print(form.data)
         if form.is_valid():
-            horario = form.save(commit=False)
+            # Obtén los datos del formulario
+            tipo_tratamiento = form.cleaned_data['tipotratamiento']
+            fecha_seleccionada = form.cleaned_data['fecha_seleccionada']
+            hora_inicio = form.cleaned_data['inicio']
 
-            # Asigna el paciente actual y el estudiante
-            horario.paciente = request.user
+            # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
+            cita_existente = horarios.objects.filter(
+                estudiante=estudiante,
+                paciente=request.user,
+                tipoTratamiento=tipo_tratamiento,
+                fecha_seleccionada=fecha_seleccionada,
+                inicio=hora_inicio
+            ).exists()
 
-            horario.estudiante = estudiante  # Asigna el estudiante al horario
-            
-            horario.save()
-            return redirect('index')
-            
+            if cita_existente:
+                messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
+            else:
+                horario = form.save(commit=False)
+
+                # Asigna el paciente actual y el estudiante al horario
+                horario.paciente = request.user
+                horario.estudiante = estudiante
+                horario.save()
+                
+                messages.success(request, '¡Cita agendada con éxito!')
+                return redirect('index')
         else:
             print(form.errors)
-
 
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
@@ -241,9 +251,11 @@ def infoestudiante(request):
 
 @login_required
 def notifiaciones_est(request):
-    notificaciones = horarios.objects.filter(estudiante=request.user)
-    context ={
-        'notificaciones':notificaciones
+    # Filtramos las citas en las que el estudiante logueado está involucrado
+    citas = Cita.objects.filter(estudiante=request.user)
+    
+    context = {
+        'citas': citas,
     }
     return render(request, 'estudiante/notificaciones_estudiante.html', context)
 

@@ -76,6 +76,18 @@
     });
 </script>
 
+<!-- Bloque para mostrar mensajes de Django -->
+{% if messages %}
+  <div class="alert-container">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
 
 <div class="loginRegister d-flex justify-content-center">
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
