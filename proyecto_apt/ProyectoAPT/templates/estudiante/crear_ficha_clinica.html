@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+<link type="text/css" rel="stylesheet" href='{% static "css/guardar_ficha.css" %}'>
 <div class="container mt-5">
     <h2>Ficha Clínica del Paciente</h2>
     <div class="form-group">
@@ -107,6 +109,17 @@
       </div>
     {% endfor %}
   </div>
+{% endif %}
+
+<!-- Bloque para mostrar mensajes de error o éxito -->
+{% if messages %}
+<div>
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
 {% endif %}
 
 

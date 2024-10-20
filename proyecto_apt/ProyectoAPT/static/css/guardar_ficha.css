@@ -73,3 +73,10 @@ footer {
     width: 50%; /* Cambia este valor para ajustar el ancho */
     margin-bottom: 15px; /* Espaciado inferior entre campos */
 }
+
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050; /* Para asegurar que esté por encima de otros elementos */
+}

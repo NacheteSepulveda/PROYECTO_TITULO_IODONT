@@ -56,14 +56,20 @@ def crear_ficha_paciente(request, user_id):
     except customuser.DoesNotExist:
         return redirect('pacientes_est')
 
+    # Verifica si ya existe una ficha clínica para el paciente
+    ficha_existente = FichaClinica.objects.filter(paciente=paciente).exists()
+
     if request.method == 'POST':
         form = FichaClinicaForm(request.POST)
         if form.is_valid():
-            ficha = form.save(commit=False)
-            ficha.paciente = paciente
-            ficha.save()
-            messages.success(request, '¡Ficha Agendada con Exito!')
-            return redirect('pacientes_est')  # Redirige a la vista de la ficha clínica
+            if ficha_existente:
+                messages.error(request, 'Este paciente ya tiene una ficha clínica registrada.')
+            else:
+                ficha = form.save(commit=False)
+                ficha.paciente = paciente
+                ficha.save()
+                messages.success(request, '¡Ficha clínica creada con éxito!')
+                return redirect('pacientes_est')  # Redirige a la vista de la ficha clínica
     else:
         form = FichaClinicaForm()
 
