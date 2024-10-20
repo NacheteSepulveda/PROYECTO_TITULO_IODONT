@@ -1,3 +1,10 @@
 VirtualEnvironment
 venv
 *.pyc
+.env
+proyecto_apt/proyecto_apt/.env
+proyecto_apt/proyecto_apt/__pycache__
+./proyecto_apt/proyecto_apt/.env
+./proyecto_apt/proyecto_apt/__pycache__
+./proyecto_apt/proyecto_apt/.env
+./proyecto_apt/proyecto_apt/__pycache__/*
