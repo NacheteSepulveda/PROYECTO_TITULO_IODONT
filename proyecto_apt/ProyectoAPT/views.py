@@ -19,19 +19,26 @@ def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, '¡Registro Exitoso!')
+            email = form.cleaned_data.get('email')
+            rut = form.cleaned_data.get('rut')
 
-            tipo_usuario = TipoUsuario.objects.get(id=user.id_tipo_user_id)
+            # Verificar si el correo o el RUT ya están registrados
+            if customuser.objects.filter(email=email).exists():
+                messages.error(request, 'El correo ya está registrado. Por favor, utiliza otro.')
+            elif customuser.objects.filter(rut=rut).exists():
+                messages.error(request, 'El RUT ya está registrado. Por favor, utiliza otro.')
+            else:
+                user = form.save()
+                login(request, user)
+                messages.success(request, '¡Registro Exitoso!')
 
+                tipo_usuario = TipoUsuario.objects.get(id=user.id_tipo_user_id)
 
-             # Redirigimos según el tipo de usuario
-            if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
-                return redirect('infoestudiante')  # Redirige a la vista de infoestudiante
-            
-            elif tipo_usuario.nombre_tipo_usuario == 'Paciente':
-                return redirect('index')  # Redirige a la página principal o cualquier otra página
+                # Redirigimos según el tipo de usuario
+                if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
+                    return redirect('infoestudiante')  # Redirige a la vista de infoestudiante
+                elif tipo_usuario.nombre_tipo_usuario == 'Paciente':
+                    return redirect('index')  # Redirige a la página principal o cualquier otra página
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -175,10 +182,10 @@ def tratamientosForm(request, estudianteID):
             hora_inicio = form.cleaned_data['inicio']
 
             # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
-            cita_existente = horarios.objects.filter(
+            cita_existente = Cita.objects.filter(
                 estudiante=estudiante,
                 paciente=request.user,
-                tipoTratamiento=tipo_tratamiento,
+                tipotratamiento=tipo_tratamiento,
                 fecha_seleccionada=fecha_seleccionada,
                 inicio=hora_inicio
             ).exists()
