@@ -180,7 +180,7 @@ def registroHoras(request):
         estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
     
     universidades = Universidad.objects.all()
-    tratamientos = Tratamiento.objects.all() # Inicializa la lista para almacenar los horarios
+    tratamientos = tipoTratamiento.objects.all() # Inicializa la lista para almacenar los horarios
 
     if request.method == 'POST' and form.is_valid():
         # Aquí puedes obtener el tratamiento y la fecha seleccionada

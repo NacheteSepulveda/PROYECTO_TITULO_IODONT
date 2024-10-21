@@ -95,11 +95,7 @@ DATABASES = {
             'USERNAME': os.getenv('USERNAME'),
             'PASSWORD': os.getenv('PASSWORD'),
             'HOST': 'localhost',                # Host to setup the database
-<<<<<<< HEAD
-            'PORT': '3306',                     # Specify your MySQL port
-=======
             'PORT': os.getenv('PORT'),
->>>>>>> 25ceb7dc12335051b93fe0dcca9c63444f75ac1a
             'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
         }
     }
