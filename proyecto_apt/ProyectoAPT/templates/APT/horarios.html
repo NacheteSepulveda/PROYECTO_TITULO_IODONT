@@ -92,7 +92,6 @@
                     data-treatment="{{ estudiante.tratamientos.all|join:',' }}">
                     <h3>{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
 
-                    <a href="{% url 'tratamientosEstudiante' estudiante.id %}">Agendar Cita</a>
                 </div>
                 {% endfor %}
                 {% else %}
