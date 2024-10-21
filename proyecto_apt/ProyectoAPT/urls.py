@@ -56,11 +56,11 @@ urlpatterns = [
     path('estudiante/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
     path('estudiante/publicacion_estudiante/', views.publicacion_est, name="publicacion_est"),
     path('estudiante/calendario_est/',  views.calendar_est, name="calendario"), 
-    path('estudiante/historial_medico/',  views.historial_medico, name="historial_medico"), 
+    path('crear_historial_medico/<int:paciente_id>/', views.crear_historial_medico, name='crear_historial_medico'),
 
     #crear ficha paciente
     path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
-    path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas'),
+    path('lista_fichas_clinicas/', views.ver_ficha_clinica, name='lista_fichas_clinicas'),
     path('horarios/', filtrar_estudiantes, name='horarios'), 
     path('filtrar-estudiantes/', views.filtrar_estudiantes, name='filtrar_estudiantes'),
 

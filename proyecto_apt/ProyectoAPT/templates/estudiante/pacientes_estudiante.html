@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
-{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
-{%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+{% block content %} <!--Cargamos el bloque en la raiz para modificarlo-->
+{% load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
 <html>
 <head>
   <title>Mis Pacientes</title>
@@ -35,15 +35,23 @@
             <div class="patient-info">
                 <h3>{{ paciente.first_name }} {{ paciente.last_name }}</h3>
                 <p>Tratamiento de {{ paciente.tratamiento }}</p>
-                <a href="{% url 'crear_ficha_paciente' user_id=paciente.id %}">
+
+                <!-- Enlace para crear la ficha del paciente -->
+                <a href="{% url 'crear_ficha_paciente' paciente.id %}">
                     <button class="button">Crear Ficha</button>
+                </a>
+
+                <!-- Enlace para crear el historial médico del paciente -->
+                <a href="{% url 'crear_historial_medico' paciente.id %}">
+                  <button class="button">Crear Historial</button>
                 </a>
             </div>
         </div>
         {% endfor %}
     </div>
+  </div>
 </div>
-</div>
+
 <!-- Bloque para mostrar mensajes de Django -->
 {% if messages %}
   <div class="alert-container">
@@ -55,7 +63,7 @@
     {% endfor %}
   </div>
 {% endif %}
-  
-  {% endblock %}
+
+{% endblock %}
 </body>
 </html>

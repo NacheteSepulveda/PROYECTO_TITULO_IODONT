@@ -48,14 +48,6 @@
 
         <h3>Datos Clínicos</h3>
         <div class="form-group">
-            {{ form.fecha_ultima_consulta.label_tag }}
-            {{ form.fecha_ultima_consulta }}
-            {% if form.fecha_ultima_consulta.errors %}
-                <div class="alert alert-danger">{{ form.fecha_ultima_consulta.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
             {{ form.motivo_consulta.label_tag }}
             {{ form.motivo_consulta }}
             {% if form.motivo_consulta.errors %}
@@ -84,14 +76,6 @@
             {{ form.tratamiento_actual }}
             {% if form.tratamiento_actual.errors %}
                 <div class="alert alert-danger">{{ form.tratamiento_actual.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form.proxima_cita.label_tag }}
-            {{ form.proxima_cita }}
-            {% if form.proxima_cita.errors %}
-                <div class="alert alert-danger">{{ form.proxima_cita.errors }}</div>
             {% endif %}
         </div>
 

@@ -49,15 +49,7 @@ class Universidad(models.Model):
 
 
 
-#NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
-class Tratamiento(models.Model): #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
-    id = models.BigAutoField(primary_key=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
-    nombre = models.CharField(max_length=100, unique=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
-    descripcion = models.TextField(null=True, blank=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
-    
-    def __str__(self):
-        return self.nombre
-    
+
 
 
         
@@ -120,6 +112,10 @@ class FichaClinica(models.Model):
 
 
 
+
+
+
+
 class horarios(models.Model):
     id = models.BigAutoField(primary_key=True)
     tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete = models.SET_NULL, null=True, default=None)
@@ -150,3 +146,37 @@ class Cita(models.Model):
     def __str__(self):
         return f"Cita de {self.paciente.email} con {self.estudiante.email} para {self.tipotratamiento.nombreTratamiento} el {self.fecha_seleccionada} a las {self.inicio}"
 
+
+class Historial_Medico(models.Model):
+    idHistorial = models.BigAutoField(primary_key=True)
+    paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
+    fecha_cita = models.ForeignKey(Cita, on_delete=models.SET_NULL, null=True)
+    medicamentos = models.TextField(null=True, blank=True)
+    diagnostico = models.TextField(null=True, blank=True)
+
+    def _str_(self):
+         return str(self.idHistorial)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+class Tratamiento(models.Model): #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    id = models.BigAutoField(primary_key=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    nombre = models.CharField(max_length=100, unique=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    descripcion = models.TextField(null=True, blank=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    
+    def __str__(self):
+        return self.nombre
+    

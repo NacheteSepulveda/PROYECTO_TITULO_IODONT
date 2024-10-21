@@ -32,7 +32,7 @@ class CustomUserCreationForm(UserCreationForm):
         )
         self.fields['fecha_nac'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
 
-        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Numero'})
+        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Número - 9 digitos'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese Su Direccion'})
         self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
@@ -49,26 +49,11 @@ class FichaClinicaForm(forms.ModelForm):
         self.fields['nombre_contacto_emergencia'].widget.attrs.update({'placeholder': 'Persona en caso de emergencia'})
 
         self.fields['telefono_contacto_emergencia'].widget.attrs.update({'placeholder': 'Contacto de emergencia'})
-        self.fields['fecha_ultima_consulta'].widget.attrs.update({'placeholder': 'Apellido'})
-
-        self.fields['fecha_ultima_consulta'] = forms.DateField(
-            label="Indique Fecha de la Ultima Consulta",
-            required=True,
-            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
-
-        )
         self.fields['fecha_ultima_consulta'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
 
         self.fields['motivo_consulta'].widget.attrs.update({'placeholder': 'Ingrese Motivo'})
         self.fields['sintomas_actuales'].widget.attrs.update({'placeholder': 'Ingrese Sintomas'})
-        self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
-
-        self.fields['proxima_cita'] = forms.DateField(
-            label="Indique su proxima cita",
-            required=True,
-            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
-
-        )
+        self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Ingrese Diagnostico'})
 
 
         
@@ -130,11 +115,6 @@ class horariosForm(forms.ModelForm):
         )
 
 
-# forms.py
-
-from django import forms
-from .models import Cita
-
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
@@ -180,3 +160,15 @@ class CitaForm(forms.ModelForm):
         )
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
         self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})
+
+
+class HistorialForm(forms.ModelForm):
+    class Meta:
+         model = Historial_Medico
+         fields =['medicamentos',
+                  'diagnostico']
+
+    def __init__(self, *args: Any, **kwargs):
+        super(HistorialForm, self).__init__(*args, **kwargs)
+        self.fields['medicamentos'].widget.attrs.update({'placeholder': 'Ingrese Medicamentos'})
+        self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})

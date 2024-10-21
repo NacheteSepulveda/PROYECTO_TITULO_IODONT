@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
 from django.contrib import messages
 from .forms import CustomUserCreationForm, UserLoginForm # USERS LOGIN FORMS
-from .forms import horariosForm, CitaForm, FichaClinicaForm # HORARIOS CHECK
+from .forms import *
 from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
@@ -110,7 +110,7 @@ def crear_ficha_paciente(request, user_id):
 
 
 
-def lista_fichas_clinicas(request):
+def ver_ficha_clinica(request):
     # Lógica de la vista aquí
     return render(request, 'estudiante/lista_fichas_clinicas.html')
 
@@ -351,6 +351,31 @@ def citas_pac(request):
         'citas': citas  # Pasar las citas al contexto
     })
 
-def historial_medico(request):
-    return render(request, 'estudiante/historial_medico.html')
+@login_required
+def crear_historial_medico(request, paciente_id):
+    paciente = get_object_or_404(customuser, id=paciente_id, id_tipo_user__nombre_tipo_usuario='Paciente')
+    
+    try:
+        # Obtener la cita más reciente del paciente
+        cita = Cita.objects.filter(paciente=paciente).latest('fecha_seleccionada')
+    except Cita.DoesNotExist:
+        messages.error(request, 'No se encontró ninguna cita para este paciente.')
+        return redirect('pacientes_est')  # Cambia a la vista que corresponda
 
+    if request.method == 'POST':
+        form = HistorialForm(request.POST)
+        if form.is_valid():
+            historial = form.save(commit=False)
+            historial.fecha_seleccionada = cita
+            historial.paciente = paciente
+            historial.save()
+            messages.success(request, '¡Historial médico creado con éxito!')
+            return redirect('pacientes_est')  # Redirige a donde desees
+    else:
+        form = HistorialForm()
+
+    return render(request, 'estudiante/historial_medico.html', {
+        'form': form,
+        'cita': cita,
+        'paciente': paciente,
+    })
