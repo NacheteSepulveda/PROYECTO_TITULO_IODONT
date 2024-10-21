@@ -21,6 +21,7 @@ from . import views # COMO QUE NO EXISTE? XD
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import lista_fichas_clinicas
+from ProyectoAPT.views import filtrar_estudiantes
 
 
 urlpatterns = [
@@ -59,7 +60,9 @@ urlpatterns = [
 
     #crear ficha paciente
     path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
-    path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas')
+    path('lista-fichas/', views.lista_fichas_clinicas, name='lista_fichas_clinicas'),
+    path('horarios/', filtrar_estudiantes, name='horarios'), 
+    path('filtrar-estudiantes/', views.filtrar_estudiantes, name='filtrar_estudiantes'),
 
     
 

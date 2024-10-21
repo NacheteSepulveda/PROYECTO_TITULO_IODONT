@@ -37,6 +37,23 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('El superusuario debe tener is_superuser=True.')
 
         return self.create_user(email, password, **extra_fields)
+    
+    #filtros universidades y tratamientos
+class Universidad(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    direccion = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.nombre
+
+class Tratamiento(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.nombre
         
 #MODELO DE USUARIO;
 class customuser(AbstractUser):
@@ -49,6 +66,10 @@ class customuser(AbstractUser):
     fecha_nac = models.DateField(null=True)
     num_tel = models.IntegerField(null=True)
     direccion = models.TextField(null=True)
+    universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
+
+    
+    
 
     USERNAME_FIELD = 'email'  # Usar email para el inicio de sesión
     REQUIRED_FIELDS = []

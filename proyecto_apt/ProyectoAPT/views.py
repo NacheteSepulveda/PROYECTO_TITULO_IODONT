@@ -9,6 +9,8 @@ from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
 from .models import FichaClinica 
+from .models import customuser, Universidad, Tratamiento
+
 
 
 def index(request):
@@ -41,6 +43,34 @@ def register(request):
 
     return render(request, "autorizacion/registro.html", {"form": form})
 
+def filtrar_estudiantes(request):
+    estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
+    
+    query = request.GET.get('q')
+    universidad_id = request.GET.get('universidad')
+    tratamiento_id = request.GET.get('tratamiento')
+    
+    if query:
+        estudiantes = estudiantes.filter(
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+    
+    if universidad_id:
+        estudiantes = estudiantes.filter(universidad_id=universidad_id)
+    
+    if tratamiento_id:
+        estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
+    
+    universidades = Universidad.objects.all()
+    tratamientos = Tratamiento.objects.all()
+
+    context = {
+        'estudiantes': estudiantes,
+        'universidades': universidades,
+        'tratamientos': tratamientos,
+    }
+
+    return render(request, 'APT/debug_template.html', context)
 
 @login_required
 def crear_ficha_paciente(request, user_id):
@@ -120,7 +150,24 @@ def loginUser(request):
 @login_required
 def registroHoras(request):
     form = horariosForm(request.POST or None)
-    horarios_disponibles = []  # Inicializa la lista para almacenar los horarios
+    horarios_disponibles = [] 
+    query = request.GET.get('q')
+    universidad_id = request.GET.get('universidad')
+    tratamiento_id = request.GET.get('tratamiento')
+    estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
+    if query:
+        estudiantes = estudiantes.filter(
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+    
+    if universidad_id:
+        estudiantes = estudiantes.filter(universidad_id=universidad_id)
+    
+    if tratamiento_id:
+        estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
+    
+    universidades = Universidad.objects.all()
+    tratamientos = Tratamiento.objects.all() # Inicializa la lista para almacenar los horarios
 
     if request.method == 'POST' and form.is_valid():
         # Aquí puedes obtener el tratamiento y la fecha seleccionada
@@ -129,6 +176,9 @@ def registroHoras(request):
     context = {
         'form': form,
         'horarios_disponibles': horarios_disponibles,  # Agregamos los horarios disponibles al contexto
+        'universidades': universidades,
+        'tratamientos': tratamientos,
+        'estudiantes': estudiantes,
     }
     return render(request, 'APT/horarios.html', context)
 
@@ -164,7 +214,8 @@ def tratamientosForm(request, estudianteID):
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser}
+    
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
