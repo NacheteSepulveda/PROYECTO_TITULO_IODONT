@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-
+<div class="content">
   <div class="sidebar">
     <h2>Perfil</h2>
     <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
@@ -26,10 +26,8 @@
     <h2>Mi Calendario</h2>
     <a href="{% url 'calendario' %}">Organizar horarios</a>
   </div>
-
-
   <div class="pacientesCss">
-    <div class="content">
+    <div>
         <h1>Mis Pacientes</h1>
 
         {% for paciente in pacientes %}
@@ -45,7 +43,7 @@
         {% endfor %}
     </div>
 </div>
-
+</div>
 <!-- Bloque para mostrar mensajes de Django -->
 {% if messages %}
   <div class="alert-container">

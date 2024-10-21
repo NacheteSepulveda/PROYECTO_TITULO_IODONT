@@ -3,12 +3,16 @@ body {
     display: flex;
   }
 
-.sidebar {
+  .sidebar {
     background-color: #007bff;
     color: white;
     padding: 20px;
-    width: 250px;
-}
+    width: 260px;
+    position: fixed; /* Fijar la sidebar al lado derecho */
+    right: 0; /* Asegurar que esté pegada al lado derecho */
+    top: 0; /* Asegurar que esté pegada al tope */
+    height: 100%; /* Asegurar que ocupe toda la altura de la pantalla */
+  }
 
 .sidebar img {
     width: 100%;
@@ -30,11 +34,10 @@ body {
 
 .contentPubli {
     padding: 20px;
-    float: initial;
-    background-color: white;
-    margin-left: 250px;
-    position: relative;
-    margin-top: -491px;
+    flex-grow: 1;
+    display: block;
+    position: relative; /* Cambiar de absolute a relative */
+    margin-right: 260px; /* Asegurar que no se superponga con la sidebar */
 }
 
 .content img {

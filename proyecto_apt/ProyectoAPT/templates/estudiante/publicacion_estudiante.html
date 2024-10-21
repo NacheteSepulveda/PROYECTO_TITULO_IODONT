@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
  </head>
  <body>
-
+<div class="content">
   <div class="sidebar">
     <h2>Perfil</h2>
     <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
@@ -42,7 +42,7 @@
     <p>WhatsApp: +56 912312322</p>
     <p>Correo electrónico: {{ user.email }}</p>
 </div>
-
+</div>
   {% endblock %}
  </body>
 </html>

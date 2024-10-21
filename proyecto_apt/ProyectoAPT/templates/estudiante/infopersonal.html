@@ -1,6 +1,6 @@
 {% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
-{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
 {%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+{%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +12,7 @@
   
 </head>
 <body>
-
+  <div class="container">
   <div class="sidebar">
     <h2>Perfil</h2>
     <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
@@ -29,7 +29,7 @@
     <h2>Mi Calendario</h2>
     <a href="{% url 'calendario' %}">Organizar horarios</a>
   </div>
-
+</div>
   <!-- Bloque para mostrar mensajes de Django -->
 {% if messages %}
 <div class="alert-container">
@@ -57,8 +57,9 @@
 
       <label for="fecha_nacimiento">Fecha de Nacimiento: </label><br>
       <input type="text" id="id" name="id" value="{{ user.fecha_nac }}"><br>
-
     </form>
+  </div>
+  </div>
 
   {% endblock %}
 

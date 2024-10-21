@@ -3,22 +3,35 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+<link type="text/css" rel="stylesheet" href='{% static "css/agenda_cita.css" %}'>
+
 <main>
+    <!-- Bloque para mostrar mensajes de error o éxito -->
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form action="" method="post">
         {% csrf_token %}
-        <div class="row">
+        <div class="grid-container" style="width: 830px;">
             {% for tratamiento in form.fields.tipotratamiento.queryset %}
-                <div class="col-4">
-                    <!-- Opción de tratamiento -->
+                <div class="grid-item" style="height: 200px; width:168px;">
+                    <!-- Opción de tratamiento  class="btn btn-primary"-->
                     <a
-                    name="tratamiento"
-                    id="id_tratamiento_{{ tratamiento.id }}"
-                    class="btn btn-primary"
-                    role="button"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalTratamiento"
-                    data-tratamiento-id="{{ tratamiento.id }}"
-                    data-tratamiento-nombre="{{ tratamiento.nombreTratamiento }}"
+                        name="tratamiento"
+                        id="id_tratamiento_{{ tratamiento.id }}"
+                        class="anchor-item"
+                        role="button"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalTratamiento"
+                        data-tratamiento-id="{{ tratamiento.id }}"
+                        data-tratamiento-nombre="{{ tratamiento.nombreTratamiento }}"
                     >{{ tratamiento.nombreTratamiento }}</a>
                 </div>
             {% endfor %}
@@ -27,8 +40,8 @@
             <!-- Aquí se aplicarán los datos seleccionados -->
             {{ form.tratamiento }} 
             <input type="hidden" name="tipotratamiento" id="nombreTratamiento" value="">
-            <input type="text" name="paciente" id="id_paciente" hidden value={{actualUser}}>
-            {{ form.estudiante}}
+            <input type="text" name="paciente" id="id_paciente" hidden value="{{ actualUser }}">
+            {{ form.estudiante }}
         </div>
 
         <!-- Modal -->
@@ -65,7 +78,6 @@
                 </div>
             </div>
         </div>
-
     </form>
 </main>
 
@@ -112,7 +124,6 @@
                     });
                 }
             });
-
         });
     });
 </script>

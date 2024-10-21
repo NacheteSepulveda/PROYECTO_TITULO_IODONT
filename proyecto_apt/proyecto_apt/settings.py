@@ -21,8 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 from dotenv import main # type: ignore
 import os
 # SECURITY WARNING: keep the secret key used in production secret!
-main.load_dotenv()
-SECRET_KEY = 'django-insecure-oyw23el2o19&c43q3-&wt-52jfg-(x-083tk+i6kw0qmbj0@n@' #os.environ['SECRET_KEY']
+main.load_dotenv(override=True)
+SECRET_KEY = os.getenv('SECRET_KEY') #os.environ['SECRET_KEY']
 '''
 Make sure that you've installed ??? I mean, I got it installed....
 python-dotenv.... with pip install python-dotenv
@@ -87,14 +87,19 @@ WSGI_APPLICATION = 'proyecto_apt.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'citaodontologica',                 # Replace with your desired database name
-            'USER': 'root',                     # Your username on MYSQL
-            'PASSWORD': 'Pinkman345**',             # Your password on MYSQL
+            'USERNAME': os.getenv('USERNAME'),
+            'PASSWORD': os.getenv('PASSWORD'),
             'HOST': 'localhost',                # Host to setup the database
+<<<<<<< HEAD
             'PORT': '3306',                     # Specify your MySQL port
+=======
+            'PORT': os.getenv('PORT'),
+>>>>>>> 25ceb7dc12335051b93fe0dcca9c63444f75ac1a
             'AUTOCOMMIT': True,            # Enable auto-commit on BBDD
         }
     }
