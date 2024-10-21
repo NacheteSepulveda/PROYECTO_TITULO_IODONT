@@ -5,15 +5,23 @@ body {
 
 .container {
     display: flex; /* Usa flexbox para la disposición horizontal */
+    padding: 20px;
+    flex-grow: 1;
+    display: block;
+    position: relative; /* Cambiar de absolute a relative */
+    margin-right: 260px; /* Asegurar que no se superponga con la sidebar */
 }
 
 .sidebar {
-    width: 250px; /* Ancho fijo para la barra lateral */
     background-color: #007bff;
     color: white;
     padding: 20px;
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
-}
+    width: 260px;
+    position: fixed; /* Fijar la sidebar al lado derecho */
+    right: 0; /* Asegurar que esté pegada al lado derecho */
+    top: 0; /* Asegurar que esté pegada al tope */
+    height: 100%; /* Asegurar que ocupe toda la altura de la pantalla */
+  }
 
 .sidebar h2, .sidebar p {
     margin: 26px 0;

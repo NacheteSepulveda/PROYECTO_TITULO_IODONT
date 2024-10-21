@@ -19,14 +19,14 @@
 
     <form action="" method="post">
         {% csrf_token %}
-        <div class="row">
+        <div class="grid-container" style="width: 830px;">
             {% for tratamiento in form.fields.tipotratamiento.queryset %}
-                <div class="col-4">
-                    <!-- Opción de tratamiento -->
+                <div class="grid-item" style="height: 200px; width:168px;">
+                    <!-- Opción de tratamiento  class="btn btn-primary"-->
                     <a
                         name="tratamiento"
                         id="id_tratamiento_{{ tratamiento.id }}"
-                        class="btn btn-primary"
+                        class="anchor-item"
                         role="button"
                         data-bs-toggle="modal" 
                         data-bs-target="#modalTratamiento"
