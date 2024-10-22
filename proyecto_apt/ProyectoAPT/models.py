@@ -56,11 +56,11 @@ class Universidad(models.Model):
 #MODELO DE USUARIO;
 class customuser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True)
-    rut = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(unique=True, null=True)
+    rut = models.CharField(max_length=100, unique=True, null=True)
     id_tipo_user = models.ForeignKey('TipoUsuario', on_delete=models.SET_NULL, null=True)
     descripcion = models.TextField(null=True)
-    imageBlob = models.ImageField(upload_to='imagenes_usuario/', blank=True, null=True)
+    imageBlob = models.ImageField(default="imagenes_usuario/profiledefault.jpg", upload_to='imagenes_usuario/', blank=True, null=True)
     fecha_nac = models.DateField(null=True)
     num_tel = models.IntegerField(null=True)
     direccion = models.TextField(null=True)
