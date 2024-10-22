@@ -171,3 +171,6 @@ class HistorialForm(forms.ModelForm):
         super(HistorialForm, self).__init__(*args, **kwargs)
         self.fields['medicamentos'].widget.attrs.update({'placeholder': 'Ingrese Medicamentos'})
         self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
+
+
+
