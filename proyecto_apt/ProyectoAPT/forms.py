@@ -16,7 +16,7 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
@@ -37,6 +37,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
+        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
 
 
 class FichaClinicaForm(forms.ModelForm):
@@ -171,3 +172,22 @@ class HistorialForm(forms.ModelForm):
         super(HistorialForm, self).__init__(*args, **kwargs)
         self.fields['medicamentos'].widget.attrs.update({'placeholder': 'Ingrese Medicamentos'})
         self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
+
+
+class ModificarPerfil (forms.ModelForm):
+    class Meta:
+        model = customuser
+        fields = ['imageBlob','first_name', 'last_name','rut','fecha_nac', 'email', 'descripcion' , 'num_tel' ,'direccion']
+
+    def __init__(self, *args: Any, **kwargs):
+        super(ModificarPerfil, self).__init__(*args, **kwargs)
+        self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido'})
+        self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly':True})
+        self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly':True})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electronico', 'readonly':True})
+        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su numero de telefono'})
+        #self.fields['universidad'].widget.attrs.update({'placeholder': 'Ingrese su universidad' , 'readonly':True})
+        self.fields['descripcion'].widget.attrs.update({'placeholder': 'descripcion' })
+        self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})

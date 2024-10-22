@@ -9,7 +9,6 @@
 
 <main>
 
-
     <div class="content-panel">
         <div class="container">
             <h2>Filtrar Estudiantes</h2>
@@ -17,13 +16,9 @@
             <!-- Contenedor del filtro -->
             <form id="filterForm" method="get">
                 <div class="filtro-container">
-                    <input type="text" id="searchInput" name="q" placeholder="Buscar estudiante..." />
+                    <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
 
-                    <select id="categorySelect" name="categoria">
-                        <option value="">Seleccionar categoría</option>
-                        <option value="universidades">Universidades</option>
-                        <option value="tratamientos">Tratamientos</option>
-                    </select>
+
 
                     <select id="universitySelect" name="universidad"
                         style="display: inline-block !important; visibility: visible !important;">
@@ -44,8 +39,7 @@
                     <button type="submit">Filtrar</button>
                 </div>
             </form>
-
-            <!-- Lista de estudiantes con filtro aplicado -->
+<!-- Lista de estudiantes con filtro aplicado -->
             <div id="servicesList">
                 {% if estudiantes %}
                 {% for estudiante in estudiantes %}
@@ -65,33 +59,18 @@
                             <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
                             <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
                             <p>Universidad: {{ estudiante.universidad.nombre }}</p>
-                            <p>Tratamientos:</p>
+                            <p>Tratamientos: {{estudiante.tipotratamiento}}</p>
                             <ul>
                                 {% for tratamiento in estudiante.tratamientos.all %}
                                 <li>{{ tratamiento.nombre }}</li>
                                 {% endfor %}
                             </ul>
-                            
                         </div>
-
-                        <div class="card-footer">
+<div class="card-footer">
                             <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar
                                 Cita</a>
                         </div>
                     </div>
-                </div>
-                <div class="card-header">
-                    {% if estudiante.imageBlob %}
-                    <img src="{{ estudiante.imageBlob.url }}" alt="Imagen del estudiante" width="150" height="150">
-                    {% else %}
-                    <img src="{% static 'path/to/default/image.png' %}" alt="Imagen por defecto" width="150"
-                        height="150"> <!-- Cambia el path a tu imagen por defecto -->
-                    {% endif %}
-                </div>
-                <div class="student-card servicio" data-university="{{ estudiante.universidad.id }}"
-                    data-treatment="{{ estudiante.tratamientos.all|join:',' }}">
-                    <h3>{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
-
                 </div>
                 {% endfor %}
                 {% else %}

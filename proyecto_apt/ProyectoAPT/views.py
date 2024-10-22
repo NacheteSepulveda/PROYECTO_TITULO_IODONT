@@ -10,11 +10,44 @@ from django.http import JsonResponse
 from datetime import time, timedelta, datetime
 from .models import FichaClinica 
 from .models import customuser, Universidad, Tratamiento
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 
 def index(request):
     return render(request, 'APT/index.html')
+
+def register_user(request):
+        # Configurar los detalles del correo
+        subject = "Bienvenido a IODONT" #USAR
+
+        # Mensaje en HTML con estilos inline #USAR
+        html_message = """
+        <div style="font-family: Arial, sans-serif; color: #333;">
+                <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
+                <p>
+                    IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                    con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                    método externo. Una buena oportunidad para estos jóvenes!
+                </p>
+                <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
+                    por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
+            </div>
+            """
+
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [request.user.email] #USAR
+
+        # Enviar el correo con el mensaje HTML #USAR
+        send_mail(
+                subject,
+                "",
+                from_email,
+                recipient_list,
+                fail_silently=False,
+                html_message=html_message  # Aquí se incluye el mensaje HTML
+            )
 
 
 def register(request):
@@ -23,6 +56,10 @@ def register(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             rut = form.cleaned_data.get('rut')
+            
+            # Obtener dominio del correo para asociar la universidad
+            dominio = email.split('@')[1]
+            universidad = None
 
             # Verificar si el correo o el RUT ya están registrados
             if customuser.objects.filter(email=email).exists():
@@ -30,7 +67,18 @@ def register(request):
             elif customuser.objects.filter(rut=rut).exists():
                 messages.error(request, 'El RUT ya está registrado. Por favor, utiliza otro.')
             else:
-                user = form.save()
+                # Asignar la universidad automáticamente en función del dominio
+                if "uch.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
+                elif "ua.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad Autónoma")
+                elif "uc.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad Católica")
+                
+                user = form.save(commit=False)
+                user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
+                user.save()
+
                 login(request, user)
                 messages.success(request, '¡Registro Exitoso!')
 
@@ -49,6 +97,7 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "autorizacion/registro.html", {"form": form})
+
 
 def filtrar_estudiantes(request):
     estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
@@ -261,6 +310,44 @@ def tratamientosForm(request, estudianteID):
                 horario.paciente = request.user
                 horario.estudiante = estudiante
                 horario.save()
+
+                    # Configurar los detalles del correo
+                subject = "Bienvenido a IODONT" #USAR
+
+                # Mensaje en HTML con estilos inline #USAR
+                html_message = f"""
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                        <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
+                        <p>
+                            IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                            con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                            método externo. Una buena oportunidad para estos jóvenes!
+                        </p>
+                        <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
+                            por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
+
+                        <li>
+                            <ol>Tienes una cita con: {horario.estudiante}, {horario.estudiante.first_name}</ol>
+                            <ol>A las: {horario.inicio} </ol>
+                            <ol>El dia: {horario.fecha_seleccionada}</ol>
+                            <ol>Tratamiento: {horario.tipotratamiento}</ol>
+                        </li>
+                    </div>
+                    """
+
+                from_email = settings.EMAIL_HOST_USER
+                recipient_list = [request.user.email, {estudiante.email}] #USAR
+
+                # Enviar el correo con el mensaje HTML #USAR
+                send_mail(
+                        subject,
+                        "",
+                        from_email,
+                        recipient_list,
+                        fail_silently=False,
+                        html_message=html_message  # Aquí se incluye el mensaje HTML
+                    )
+
                 
                 messages.success(request, '¡Cita agendada con éxito!')
                 return redirect('index')
@@ -317,7 +404,17 @@ def eliminar_horario(request, id):
 
 @login_required
 def infoestudiante(request):
-    return render(request, 'estudiante/infopersonal.html', {'user': request.user})
+    estudiante=request.user
+    form = ModificarPerfil(instance=estudiante)
+    context = {'form': form,'user':estudiante , 'user': request.user}
+    if request.method == 'POST':
+        form = ModificarPerfil(request.POST, instance=estudiante)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+    return render(request, 'estudiante/infopersonal.html', context )
+
 
 @login_required
 def notifiaciones_est(request):

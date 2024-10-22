@@ -1,78 +1,58 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
 {% load crispy_forms_tags %}
-{% block title %}Lista de Salas{% endblock %}
-{% block titulo %}Lista de salas{% endblock %}
+{% block title %}Registro{% endblock %}
 {% block content %}
 {% load static %}
 <link type="text/css" rel="stylesheet" href='{% static "css/login_y_registro.css" %}'>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    function formateaRut(rut) {
-        var actual = rut.replace(/^0+/, "");
-        if (actual != '' && actual.length > 1) {
-            var sinPuntos = actual.replace(/\./g, "");
-            var actualLimpio = sinPuntos.replace(/-/g, "");
-            var inicio = actualLimpio.substring(0, actualLimpio.length - 1);
-            var rutPuntos = "";
-            var i = 0;
-            var j = 1;
-            for (i = inicio.length - 1; i >= 0; i--) {
-                var letra = inicio.charAt(i);
-                rutPuntos = letra + rutPuntos;
-                if (j % 3 == 0 && j <= inicio.length - 1) {
-                    rutPuntos = "." + rutPuntos;
-                }
-                j++;
-            }
-            var dv = actualLimpio.substring(actualLimpio.length - 1);
-            rutPuntos = rutPuntos + "-" + dv;
-        }
-        return rutPuntos;
-    }
-
     $(document).ready(function () {
+        // Función para mostrar u ocultar el campo de universidad según el tipo de usuario
+        function toggleUniversidadField() {
+            var tipoUsuario = $('#id_id_tipo_user').val();
+            if (tipoUsuario == '2') {  // '2' es el ID del tipo 'Estudiante', modificar si es otro
+                $('#universidad-group').show();  
+            } else {
+                $('#universidad-group').hide();  
+                $('#id_universidad').val('');  // Limpiar el campo de universidad si no es estudiante
+            }
+        }
+
+        // Función para asociar universidad según el correo electrónico
+        function asociarUniversidad() {
+            var email = $('#id_email').val();
+            var dominio = email.split('@')[1];
+            if (dominio == 'uch.cl') {
+                $('#id_universidad').val('2');  // ID de "Universidad de Chile"
+            } else if (dominio == 'ua.cl') {
+                $('#id_universidad').val('3');  // ID de "Universidad Autónoma"
+            } else if (dominio == 'uc.cl') {
+                $('#id_universidad').val('1');  // ID de "Universidad Católica"
+            } else {
+                $('#id_universidad').val('');  // Limpiar si no es un correo válido
+            }
+        }
+
+        // Mostrar/ocultar universidad según el tipo de usuario
+        toggleUniversidadField();
+
+        // Cada vez que se cambia el tipo de usuario
+        $('#id_id_tipo_user').change(function () {
+            toggleUniversidadField();
+        });
+
+        // Formatear el RUT al perder el enfoque
         $("#id_rut").focusout(function () {
             var rut = $(this).val();
             var rut_formateado = formateaRut(rut);
             $(this).val(rut_formateado);
         });
 
-        // Añade los valores de los items a modificar:
-        itemsModify = formLoginRegister
-        // Función para agregar la clase g-col-6 a los elementos con la ID mencionada
-        function addClassToItems() {
-
-            var screenWidth = window.screen.width;
-            var items = document.querySelectorAll("[id^='formLoginRegister']");
-
-
-            if (screenWidth <= 992) {
-                // Si la pantalla es menor a 992px, eliminar la clase formLoginRegister a los elementos
-                items.forEach(function (item) {0
-                    item.classList.remove('formLoginRegister')
-                });
-            } else {
-                // Si la pantalla es mayor o igual a 992px, añadir la clase formLoginRegister de los elementos
-                items.forEach(function (item) {
-                    item.classList.add("formLoginRegister");
-                });
-            }
-        }
-
-        // Función para manejar el evento de cambio de tamaño de la ventana
-        function handleResizeEvent() {
-            // Llama a la función para agregar o eliminar la clase según el tamaño de la pantalla
-            addClassToItems();
-        }
-
-        // Registrar el evento de cambio de tamaño de la ventana
-        window.addEventListener("resize", handleResizeEvent);
-
-        // Llamar a la función inicialmente al cargar la página
-        addClassToItems();
-
-
+        // Detectar cambios en el correo electrónico
+        $('#id_email').on('input', function () {
+            asociarUniversidad();  // Actualiza el campo de universidad automáticamente
+        });
     });
 </script>
 
@@ -88,69 +68,94 @@
   </div>
 {% endif %}
 
-
 <div class="loginRegister d-flex justify-content-center">
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
         <form action="{% url 'registro' %}" method="post">
             <h1>Registrarse</h1>
             {% csrf_token %}
+            
+            <!-- Tipo de usuario -->
+            <div class="grupo">
+                <label for="id_id_tipo_user">Seleccione tipo de usuario:</label>
+                {{ form.id_tipo_user }}
+                {% if form.id_tipo_user.errors %}
+                <div class="error">{{ form.id_tipo_user.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
             <div class="grupo">
                 <label for="id_email">Ingrese email:</label>
-                {{ form.email}}
+                {{ form.email }}
                 {% if form.email.errors %}
                 <div class="error">{{ form.email.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- Campo de universidad (se muestra solo si el usuario es "Estudiante") -->
+            <div class="grupo" id="universidad-group" style="display: none;">
+                <label for="id_universidad">Universidad:</label>
+                {{ form.universidad }}
+                {% if form.universidad.errors %}
+                <div class="error">{{ form.universidad.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Nombre -->
             <div class="grupo">
                 <label for="id_first_name">Ingrese nombre:</label>
-                {{ form.first_name}}
-                {% if form.username.errors %}
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
                 <div class="error">{{ form.first_name.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- Apellido -->
             <div class="grupo">
                 <label for="id_last_name">Ingrese apellido:</label>
-                {{ form.last_name}}
-                {% if form.username.errors %}
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
                 <div class="error">{{ form.last_name.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- Número de teléfono -->
             <div class="grupo">
-                <label for="id_num">Ingrese Número 9 digitos</label>
-                {{ form.num_tel}}
-                {% if form.username.errors %}
+                <label for="id_num_tel">Ingrese Número (9 dígitos):</label>
+                {{ form.num_tel }}
+                {% if form.num_tel.errors %}
                 <div class="error">{{ form.num_tel.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- Dirección -->
             <div class="grupo">
-                <label for="id_direccion">Ingrese Direccion:</label>
-                {{ form.direccion}}
-                {% if form.username.errors %}
+                <label for="id_direccion">Ingrese Dirección:</label>
+                {{ form.direccion }}
+                {% if form.direccion.errors %}
                 <div class="error">{{ form.direccion.errors|join:", " }}</div>
                 {% endif %}
             </div>
 
+            <!-- Fecha de nacimiento -->
             <div class="form-grupo">
                 <label for="id_fecha_nac">Ingrese Fecha de Nacimiento:</label>
-                {{ form.fecha_nac}}
-                {% if form.username.errors %}
+                {{ form.fecha_nac }}
+                {% if form.fecha_nac.errors %}
                 <div class="error">{{ form.fecha_nac.errors|join:", " }}</div>
                 {% endif %}
             </div>
-            <div class="grupo">
-                <label for="id_id_tipo_user">Ingrese tipo de usuario:</label>
-                {{ form.id_tipo_user}}
-                {% if form.username.errors %}
-                <div class="error">{{ form.tipo_user.errors|join:", " }}</div>
-                {% endif %}
-            </div>
+            
+            <!-- Contraseña -->
             <div class="grupo">
                 <label for="id_password1">Ingrese contraseña:</label>
-                {{ form.password1}}
-                {% if form.username.errors %}
+                {{ form.password1 }}
+                {% if form.password1.errors %}
                 <div class="error">{{ form.password1.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- Confirmación de contraseña -->
             <div class="grupo">
                 <label for="id_password2">Confirme contraseña:</label>
                 {{ form.password2 }}
@@ -158,16 +163,20 @@
                 <div class="error">{{ form.password2.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
+            <!-- RUT -->
             <div class="grupo">
                 <label for="id_rut">Ingrese RUT:</label>
                 {{ form.rut }}
-                {% if form.username.errors %}
+                {% if form.rut.errors %}
                 <div class="error">{{ form.rut.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
             {% if form.non_field_errors %}
             <div class="error">{{ form.non_field_errors|join:", " }}</div>
             {% endif %}
+            
             <button type="submit" class="registerbtn">Enviar</button>
         </form>
     </main>
