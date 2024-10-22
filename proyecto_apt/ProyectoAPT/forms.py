@@ -16,7 +16,7 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
@@ -37,6 +37,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
+        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
 
 
 class FichaClinicaForm(forms.ModelForm):

@@ -56,6 +56,10 @@ def register(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             rut = form.cleaned_data.get('rut')
+            
+            # Obtener dominio del correo para asociar la universidad
+            dominio = email.split('@')[1]
+            universidad = None
 
             # Verificar si el correo o el RUT ya están registrados
             if customuser.objects.filter(email=email).exists():
@@ -63,7 +67,18 @@ def register(request):
             elif customuser.objects.filter(rut=rut).exists():
                 messages.error(request, 'El RUT ya está registrado. Por favor, utiliza otro.')
             else:
-                user = form.save()
+                # Asignar la universidad automáticamente en función del dominio
+                if "uch.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
+                elif "ua.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad Autónoma")
+                elif "uc.cl" in dominio:
+                    universidad = get_object_or_404(Universidad, nombre="Universidad Católica")
+                
+                user = form.save(commit=False)
+                user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
+                user.save()
+
                 login(request, user)
                 messages.success(request, '¡Registro Exitoso!')
 
@@ -82,6 +97,7 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "autorizacion/registro.html", {"form": form})
+
 
 def filtrar_estudiantes(request):
     estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
