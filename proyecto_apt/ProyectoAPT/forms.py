@@ -174,4 +174,3 @@ class HistorialForm(forms.ModelForm):
         self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
 
 
-
