@@ -1,8 +1,6 @@
 {% extends "base.html" %} <!-- Extendemos del BASE.html en la raiz de templates-->
 {%load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
 {%block content%} <!--Cargamos el bloque en la raiz para modificarlo-->
-<!DOCTYPE html>
-<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,24 +42,19 @@
 
   <div class="infoPe">
     <h1>Información Personal</h1>
-
-    <form>
-      <label for="nombre">Nombre Completo:</label><br>
-      <input type="text" id="nombre" name="nombre" value="{{ user.first_name }} {{ user.last_name }}"><br>
-
-      <label for="email">Direccion de correo electronico:</label><br>
-      <input type="email" id="email" name="email" value="{{ user.email }}"><br>
-
-      <label for="id">ID estudiante:</label><br>
-      <input type="text" id="id" name="id" value="{{ user.id }}"><br>
-
-      <label for="fecha_nacimiento">Fecha de Nacimiento: </label><br>
-      <input type="text" id="id" name="id" value="{{ user.fecha_nac }}"><br>
-    </form>
+  <div class="img">
+    
+    <img src="{{ user.imageBlob.url }}" alt="Foto de perfil" width="150" height="150">
+    
+    
   </div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{form.as_p}}
+      <button type="submit">Guardar Cambios</button>
+    </form>
   </div>
 
   {% endblock %}
 
 </body>
-</html>

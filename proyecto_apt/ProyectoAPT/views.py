@@ -404,7 +404,17 @@ def eliminar_horario(request, id):
 
 @login_required
 def infoestudiante(request):
-    return render(request, 'estudiante/infopersonal.html', {'user': request.user})
+    estudiante=request.user
+    form = ModificarPerfil(instance=estudiante)
+    context = {'form': form,'user':estudiante , 'user': request.user}
+    if request.method == 'POST':
+        form = ModificarPerfil(request.POST, instance=estudiante)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+    return render(request, 'estudiante/infopersonal.html', context )
+
 
 @login_required
 def notifiaciones_est(request):
