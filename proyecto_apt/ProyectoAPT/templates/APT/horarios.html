@@ -59,7 +59,7 @@
                             <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
                             <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
                             <p>Universidad: {{ estudiante.universidad.nombre }}</p>
-                            <p>Tratamientos:</p>
+                            <p>Tratamientos: {{estudiante.tipotratamiento}}</p>
                             <ul>
                                 {% for tratamiento in estudiante.tratamientos.all %}
                                 <li>{{ tratamiento.nombre }}</li>

@@ -176,7 +176,7 @@ class HistorialForm(forms.ModelForm):
 class ModificarPerfil (forms.ModelForm):
     class Meta:
         model = customuser
-        fields = ['imageBlob','first_name', 'last_name','rut','fecha_nac', 'email', 'descripcion' , 'num_tel' ,'universidad','direccion']
+        fields = ['imageBlob','first_name', 'last_name','rut','fecha_nac', 'email', 'descripcion' , 'num_tel' ,'direccion']
 
     def __init__(self, *args: Any, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
@@ -187,6 +187,6 @@ class ModificarPerfil (forms.ModelForm):
         self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly':True})
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electronico', 'readonly':True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su numero de telefono'})
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Ingrese su universidad' , 'readonly':True})
+        #self.fields['universidad'].widget.attrs.update({'placeholder': 'Ingrese su universidad' , 'readonly':True})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'descripcion' })
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
