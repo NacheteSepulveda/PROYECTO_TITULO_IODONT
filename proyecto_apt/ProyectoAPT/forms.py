@@ -42,14 +42,13 @@ class CustomUserCreationForm(UserCreationForm):
 class FichaClinicaForm(forms.ModelForm):
     class Meta:
         model = FichaClinica
-        fields = ['nombre_contacto_emergencia', 'telefono_contacto_emergencia', 'fecha_ultima_consulta', 'motivo_consulta', 'sintomas_actuales', 'diagnostico', 'tratamiento_actual', 'proxima_cita']
+        fields = ['nombre_contacto_emergencia', 'telefono_contacto_emergencia', 'motivo_consulta', 'sintomas_actuales', 'diagnostico', 'tratamiento_actual']
 
     def __init__(self, *args, **kwargs):
         super(FichaClinicaForm, self).__init__(*args, **kwargs)
         self.fields['nombre_contacto_emergencia'].widget.attrs.update({'placeholder': 'Persona en caso de emergencia'})
 
-        self.fields['telefono_contacto_emergencia'].widget.attrs.update({'placeholder': 'Contacto de emergencia'})
-        self.fields['fecha_ultima_consulta'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
+        self.fields['telefono_contacto_emergencia'].widget.attrs.update({'placeholder': 'Contacto de emergencia'})   
 
         self.fields['motivo_consulta'].widget.attrs.update({'placeholder': 'Ingrese Motivo'})
         self.fields['sintomas_actuales'].widget.attrs.update({'placeholder': 'Ingrese Sintomas'})

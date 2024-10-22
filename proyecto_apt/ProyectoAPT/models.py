@@ -151,8 +151,8 @@ class Historial_Medico(models.Model):
     idHistorial = models.BigAutoField(primary_key=True)
     paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None)
     fecha_cita = models.ForeignKey(Cita, on_delete=models.SET_NULL, null=True)
-    medicamentos = models.TextField(null=True, blank=True)
-    diagnostico = models.TextField(null=True, blank=True)
+    medicamentos = models.TextField(null=True)
+    diagnostico = models.TextField(null=True)
 
     def _str_(self):
          return str(self.idHistorial)

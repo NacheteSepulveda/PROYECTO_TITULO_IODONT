@@ -100,6 +100,10 @@ def crear_ficha_paciente(request, user_id):
                 ficha.save()
                 messages.success(request, '¡Ficha clínica creada con éxito!')
                 return redirect('pacientes_est')  # Redirige a la vista de la ficha clínica
+        else:
+            # Mostrar los errores del formulario si no es válido
+            print(form.errors)
+            messages.error(request, 'Error en los datos ingresados. Verifica los campos.')
     else:
         form = FichaClinicaForm()
 
@@ -107,6 +111,7 @@ def crear_ficha_paciente(request, user_id):
         'paciente': paciente,
         'form': form,
     })
+
 
 
 
@@ -378,4 +383,18 @@ def crear_historial_medico(request, paciente_id):
         'form': form,
         'cita': cita,
         'paciente': paciente,
+    })
+
+@login_required
+def ver_ficha_clinica(request, paciente_id):
+    paciente = get_object_or_404(customuser, id=paciente_id)
+    try:
+        ficha_clinica = FichaClinica.objects.get(paciente=paciente)
+    except FichaClinica.DoesNotExist:
+        messages.error(request, 'Este paciente no tiene ficha clínica.')
+        return redirect('pacientes_est')
+
+    return render(request, 'estudiante/ver_ficha_clinica.html', {
+        'paciente': paciente,
+        'ficha_clinica': ficha_clinica,
     })

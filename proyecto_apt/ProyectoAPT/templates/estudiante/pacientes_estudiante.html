@@ -45,6 +45,11 @@
                 <a href="{% url 'crear_historial_medico' paciente.id %}">
                   <button class="button">Crear Historial</button>
                 </a>
+
+                <!-- Botón para ver la ficha clínica -->
+                <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="btn btn-info mb-3">
+                  Ver Ficha Clínica
+                </a>
             </div>
         </div>
         {% endfor %}
