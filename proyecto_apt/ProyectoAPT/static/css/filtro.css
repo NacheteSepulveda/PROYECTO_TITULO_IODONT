@@ -1,40 +1,97 @@
-/* Estilos del contenedor del filtro */
+/* Estilos para el contenedor del filtro */
 .filtro-container {
-    display: flex; /* Utiliza flexbox para alinear los elementos */
-    justify-content: space-between; /* Espacio entre elementos */
-    align-items: center; /* Alineación vertical de los elementos */
+    display: flex; /* Usar flexbox para organizar los elementos */
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan si no hay suficiente espacio */
+    gap: 10px; /* Espacio entre los elementos */
     margin-bottom: 20px; /* Espacio inferior */
 }
 
-/* Estilo del input de búsqueda */
+/* Estilo para el campo de búsqueda */
 #searchInput {
-    width: 30%; /* Ancho del input */
+    flex: 1; /* Permite que el campo de búsqueda ocupe el espacio disponible */
     padding: 10px; /* Espaciado interno */
-    border: 1px solid #ccc; /* Borde gris */
+    border: 1px solid #ccc; /* Borde gris claro */
     border-radius: 5px; /* Bordes redondeados */
     font-size: 16px; /* Tamaño de fuente */
-    transition: border-color 0.3s; /* Transición suave */
 }
 
-#searchInput:focus {
-    border-color: #007bff; /* Color del borde al enfocar */
-    outline: none; /* Sin contorno */
-}
-
-/* Estilo de los selects */
+/* Estilo para los select */
 select {
     padding: 10px; /* Espaciado interno */
-    border: 1px solid #ccc; /* Borde gris */
+    border: 1px solid #ccc; /* Borde gris claro */
     border-radius: 5px; /* Bordes redondeados */
     font-size: 16px; /* Tamaño de fuente */
-    margin-left: 10px; /* Margen izquierdo */
-    background-color: #fff; /* Fondo blanco para los selects */
-    cursor: pointer; /* Cambiar el cursor al pasar sobre el select */
+    flex-basis: 200px; /* Ancho fijo para los select */
 }
 
-/* Efecto al pasar el mouse sobre los selects */
-select:hover {
-    border-color: #007bff; /* Color del borde al pasar el mouse */
+/* Estilo para el botón de filtrar */
+button[type="submit"] {
+    padding: 10px 20px; /* Espaciado interno */
+    background-color: #007bff; /* Color de fondo azul */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor a mano */
+    font-size: 16px; /* Tamaño de fuente */
 }
 
+/* Cambiar el color del botón al pasar el mouse */
+button[type="submit"]:hover {
+    background-color: #0056b3; /* Color de fondo más oscuro al pasar el mouse */
+}
 
+/* Estilo general para el contenedor de los servicios */
+#servicesList {
+    display: flex; /* Usamos flexbox para el contenedor */
+    flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en varias filas */
+    gap: 20px; /* Espacio entre las tarjetas */
+}
+
+/* Estilo para cada tarjeta */
+.col-md-4.servicio {
+    flex: 1 1 calc(30% - 20px); /* Ajusta el ancho a aproximadamente 3 tarjetas por fila */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil para las tarjetas */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Para que los bordes redondeados funcionen bien */
+    max-width: 300px; /* Establece un ancho máximo para las tarjetas */
+}
+
+/* Estilo para las tarjetas */
+.card {
+    border: 1px solid #ddd; /* Borde de la tarjeta */
+    border-radius: 8px; /* Bordes redondeados para las tarjetas */
+    overflow: hidden; /* Para que el contenido no sobresalga */
+    height: 100%; /* Para que todas las tarjetas tengan la misma altura */
+}
+
+/* Estilo para el encabezado de la tarjeta */
+.card-header {
+    display: flex;
+    justify-content: center; /* Centra la imagen */
+    align-items: center; /* Centra la imagen verticalmente */
+    height: 150px; /* Altura fija para las imágenes */
+}
+
+/* Estilo para la imagen dentro de la tarjeta */
+.card-header img {
+    max-width: 100%; /* Ajusta la imagen al ancho de la tarjeta */
+    max-height: 100%; /* Ajusta la imagen a la altura de la tarjeta */
+    object-fit: cover; /* Asegura que la imagen mantenga su aspecto */
+}
+
+/* Estilo para el cuerpo de la tarjeta */
+.card-body {
+    padding: 15px; /* Espaciado interno */
+}
+
+/* Estilo para el pie de la tarjeta */
+.card-footer {
+    padding: 10px; /* Espaciado interno */
+    text-align: center; /* Centra el contenido del pie */
+}
+
+/* Asegúrate de que el nombre del estudiante esté dentro del card */
+.student-card {
+    padding: 10px; /* Espaciado interno para el nombre del estudiante */
+    text-align: center; /* Centra el texto */
+}

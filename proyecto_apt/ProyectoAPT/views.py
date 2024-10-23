@@ -9,9 +9,10 @@ from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
 from .models import FichaClinica 
-from .models import customuser, Universidad, Tratamiento
+from .models import customuser, Universidad, tipoTratamiento
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Q
 
 
 
@@ -231,10 +232,12 @@ def registroHoras(request):
         estudiantes = estudiantes.filter(universidad_id=universidad_id)
     
     if tratamiento_id:
-        estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
+        # Filtramos los estudiantes que tienen horarios con el tipo de tratamiento seleccionado
+        estudiantes = estudiantes.filter(horarios_estudiante__tipoTratamiento_id=tratamiento_id).distinct()
     
     universidades = Universidad.objects.all()
-    tratamientos = tipoTratamiento.objects.all() # Inicializa la lista para almacenar los horarios
+    tratamientos = tipoTratamiento.objects.all()
+    # Inicializa la lista para almacenar los horarios
 
     if request.method == 'POST' and form.is_valid():
         # Aquí puedes obtener el tratamiento y la fecha seleccionada
@@ -242,10 +245,13 @@ def registroHoras(request):
 
     context = {
         'form': form,
-        'horarios_disponibles': horarios_disponibles,  # Agregamos los horarios disponibles al contexto
+        'horarios_disponibles': horarios_disponibles,
         'universidades': universidades,
         'tratamientos': tratamientos,
         'estudiantes': estudiantes,
+        'universidad_seleccionada': universidad_id,
+        'tratamiento_seleccionado': tratamiento_id,
+        'query': query,
     }
     return render(request, 'APT/horarios.html', context)
 

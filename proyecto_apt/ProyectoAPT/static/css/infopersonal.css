@@ -1,5 +1,16 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
   display: flex;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .sidebar {
@@ -7,10 +18,17 @@
   color: white;
   padding: 20px;
   width: 260px;
-  position: fixed; /* Fijar la sidebar al lado derecho */
-  right: 0; /* Asegurar que esté pegada al lado derecho */
-  top: 0; /* Asegurar que esté pegada al tope */
-  height: 100%; /* Asegurar que ocupe toda la altura de la pantalla */
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar h2 {
+  font-size: 26px;
+  margin-top: 20px;
 }
 
 .sidebar a {
@@ -20,38 +38,95 @@
   padding: 20px 0;
 }
 
-.content img {
-  width: 150px;
-  border-radius: 50%;
-}
-
-.sidebar h2 {
-  font-size: 26px;
-}
-
-h2 {
-  width: 100px;
-}
-
 .infoPe {
-  padding: 20px;
   flex-grow: 1;
-  display: block;
-  position: relative; /* Cambiar de absolute a relative */
-  margin-right: 260px; /* Asegurar que no se superponga con la sidebar */
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 700px;
+  margin: 0 auto;
+  margin-left: calc(600px + 10%);
+  margin-right: 10%;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="date"] {
+.infoPe h1 {
+  color: #000000;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.img {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.img img {
+  border-radius: 50%;
+  border: 3px solid #4682B4;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+form {
+  display: grid;
+  gap: 20px;
+}
+
+form p {
+  margin: 0;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form textarea {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
   border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
   box-sizing: border-box;
+}
+
+form textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+form button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  width: 100%;
+}
+
+form button[type="submit"]:hover {
+  background-color: #36648B;
+}
+
+.alert-container {
+  margin-bottom: 20px;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
 .logo {
   text-align: center;
   margin-top: 20px;
 }
+
+
+nav {
+  margin-left: 1000px; /* Mismo ancho que el sidebar */
+}
+
