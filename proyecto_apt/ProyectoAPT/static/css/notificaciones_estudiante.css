@@ -1,63 +1,71 @@
 body {
-    font-family: sans-serif;
-    display: flex;
-  }
-
-
-.sidebar {
-  background-color: #007bff;
-  color: white;
-  padding: 20px;
-  width: 260px;
-  position: fixed; /* Fijar la sidebar al lado derecho */
-  right: 0; /* Asegurar que esté pegada al lado derecho */
-  top: 0; /* Asegurar que esté pegada al tope */
-  height: 100%; /* Asegurar que ocupe toda la altura de la pantalla */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    display: flex; /* Usa flexbox para la disposición horizontal */
-    padding: 20px;
-    flex-grow: 1;
-    display: block;
-    position: relative; /* Cambiar de absolute a relative */
-    margin-right: 260px; /* Asegurar que no se superponga con la sidebar */
+    display: flex;
+    width: 100%;
 }
 
-.sidebar h2, .sidebar p {
-    margin: 26px 0;
-}
-.sidebar h2 {
+.sidebar {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .sidebar h2 {
     font-size: 26px;
-}
-.sidebar p {
-    font-size: 14px;
-}
-
-/*.contentNoti {
-    padding: 20px;
-    flex-grow: 1;
-    float: right;
-    right: 730px;
-    position: absolute;
-    top: 160px;
-} */
-
-a {
+    margin-top: 20px;
+  }
+  
+  .sidebar a {
+    color: white;
     text-decoration: none;
-    color: white !important;
-    
-}
-
-.sidebar a:hover {
-    text-decoration: underline;
-}
-
+    display: block;
+    padding: 20px 0;
+  }
 .main-content {
-    margin-left: -170px; /* Deja espacio a la izquierda para la barra lateral */
-    flex-grow: 1;
+    flex: 1;
     padding: 20px;
-    margin-right: 100px;
+    margin-left: 260px; /* Ancho del sidebar */
 }
 
+.main-content h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
 
+.list-group-item {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.list-group-item img {
+    margin-right: 15px;
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert img {
+    margin-right: 15px;
+}
+nav {
+    margin-left: 1000px; /* Mismo ancho que el sidebar */
+  }
