@@ -10,14 +10,25 @@
     <link href='{% static "css/calendario_est.css" %}' rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
+
+    <!-- Bloque para mostrar mensajes de Django -->
+    {% if messages %}
+    <div class="alert-container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    
     <div class="container"> <!-- Contenedor flexible -->
         <div class="sidebar">
             <h2>Perfil</h2>
             <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
             <h2>Mis Pacientes</h2>
             <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
-            <h2>Publicación</h2>
-            <a href="{% url 'publicacion_est' %}">Publicación en Iodont</a>
             <h2>Notificaciones</h2>
             <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
             <h2>Mi Calendario</h2>
@@ -44,7 +55,7 @@
             <h3>Publicar un Nuevo Horario</h3>
             <form method="POST" class="form-publicar-horario">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form.as_p }}  <!-- Esto mostrará el formulario con los nombres del tratamiento -->
                 <button type="submit" class="btn btn-primary">Publicar Horario</button>
             </form>
         </div>

@@ -372,6 +372,8 @@ def publicar_horario(request):
 def servicios(request):
     return render(request, 'APT/servicios.html')
 
+
+
 @login_required
 def calendar_est(request):
     estudiante = request.user  # El estudiante que está logueado
@@ -383,6 +385,7 @@ def calendar_est(request):
             nuevo_horario = form.save(commit=False)
             nuevo_horario.estudiante = estudiante
             nuevo_horario.save()
+            messages.success(request, '¡Horario publicado con éxito!')
             return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
         form = horariosForm()
@@ -391,6 +394,8 @@ def calendar_est(request):
         'horarios_disponibles': horarios_disponibles,
         'form': form,
     })
+
+
 
 @login_required
 def eliminar_horario(request, id):
@@ -437,11 +442,6 @@ def pacientes_est(request):
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,
     })
-
-
-@login_required
-def publicacion_est(request):
-    return render(request, 'estudiante/publicacion_estudiante.html')
 
 
 @login_required
