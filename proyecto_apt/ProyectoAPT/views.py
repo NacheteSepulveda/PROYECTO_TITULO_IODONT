@@ -12,6 +12,9 @@ from .models import FichaClinica
 from .models import customuser, Universidad, Tratamiento
 from django.conf import settings
 from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 
 
 
@@ -413,9 +416,11 @@ def infoestudiante(request):
     form = ModificarPerfil(instance=estudiante)
     context = {'form': form,'user':estudiante , 'user': request.user}
     if request.method == 'POST':
-        form = ModificarPerfil(request.POST, instance=estudiante)
+        form = ModificarPerfil(request.POST,request.FILES, instance=estudiante)
+        print(request.POST)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect(reverse('infoestudiante'))
         else:
             print(form.errors)
     return render(request, 'estudiante/infopersonal.html', context )

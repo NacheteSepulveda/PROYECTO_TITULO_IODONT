@@ -31,8 +31,7 @@ class CustomUserCreationForm(UserCreationForm):
 
         )
         self.fields['fecha_nac'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
-
-        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Número - 9 digitos'})
+        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Número - 9 digitos','min':'4'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese Su Direccion'})
         self.fields['rut'].widget.attrs.update({'placeholder': 'RUT'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
