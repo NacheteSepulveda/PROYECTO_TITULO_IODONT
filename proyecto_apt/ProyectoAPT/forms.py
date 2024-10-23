@@ -89,6 +89,7 @@ class horariosForm(forms.ModelForm):
             widget=forms.Select(attrs={'class':'form-control','id':'nombreTratamiento'})
         )
         self.fields['tipoTratamiento'].label = "Tipo de tratamiento"
+        self.fields['tipoTratamiento'].label_from_instance = lambda obj: f"{obj.nombreTratamiento}"
 
         self.fields['fecha_seleccionada'] = forms.DateField(
             label="Seleccione su fecha!",
