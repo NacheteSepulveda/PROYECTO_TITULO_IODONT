@@ -28,12 +28,10 @@
                         {% endfor %}
                     </select>
 
-                    <select name="tratamiento">
+                    <select id="treatmentSelect" name="tratamiento">
                         <option value="">Todos los Tratamientos</option>
                         {% for tratamiento in tratamientos %}
-                            <option value="{{ tratamiento.id }}" {% if tratamiento.id|stringformat:"s" == tratamiento_seleccionado %}selected{% endif %}>
-                                {{ tratamiento.nombreTratamiento }}
-                            </option>
+                        <option value="{{ tratamiento.id }}">{{ tratamiento.nombreTratamiento }}</option>
                         {% endfor %}
                     </select>
 
