@@ -13,6 +13,9 @@ from .models import customuser, Universidad, tipoTratamiento
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 
 
 
@@ -119,7 +122,7 @@ def filtrar_estudiantes(request):
         estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
     
     universidades = Universidad.objects.all()
-    tratamientos = Tratamiento.objects.all()
+    tratamientos = tipoTratamiento.objects.all()
 
     context = {
         'estudiantes': estudiantes,
@@ -298,6 +301,11 @@ def tratamientosForm(request, estudianteID):
             fecha_seleccionada = form.cleaned_data['fecha_seleccionada']
             hora_inicio = form.cleaned_data['inicio']
 
+            # Verifica si el campo de la hora está vacío o no seleccionado
+            if not hora_inicio:
+                messages.error(request, 'Por favor, selecciona una hora válida.')
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
+
             # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
             cita_existente = Cita.objects.filter(
                 estudiante=estudiante,
@@ -317,44 +325,41 @@ def tratamientosForm(request, estudianteID):
                 horario.estudiante = estudiante
                 horario.save()
 
-                    # Configurar los detalles del correo
-                subject = "Bienvenido a IODONT" #USAR
-
-                # Mensaje en HTML con estilos inline #USAR
+                # Configurar los detalles del correo
+                subject = "Bienvenido a IODONT"
                 html_message = f"""
                 <div style="font-family: Arial, sans-serif; color: #333;">
-                        <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
-                        <p>
-                            IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
-                            con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
-                            método externo. Una buena oportunidad para estos jóvenes!
-                        </p>
-                        <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
-                            por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
+                    <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
+                    <p>
+                        IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                        con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                        método externo. ¡Una gran oportunidad para estos jóvenes!
+                    </p>
+                    <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
+                        por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
 
-                        <li>
-                            <ol>Tienes una cita con: {horario.estudiante}, {horario.estudiante.first_name}</ol>
-                            <ol>A las: {horario.inicio} </ol>
-                            <ol>El dia: {horario.fecha_seleccionada}</ol>
-                            <ol>Tratamiento: {horario.tipotratamiento}</ol>
-                        </li>
-                    </div>
-                    """
+                    <ul>
+                        <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
+                        <li>A las: {horario.inicio}</li>
+                        <li>El día: {horario.fecha_seleccionada}</li>
+                        <li>Tratamiento: {horario.tipotratamiento.nombreTratamiento}</li>
+                    </ul>
+                </div>
+                """
 
                 from_email = settings.EMAIL_HOST_USER
-                recipient_list = [request.user.email, {estudiante.email}] #USAR
+                recipient_list = [request.user.email, estudiante.email]
 
-                # Enviar el correo con el mensaje HTML #USAR
+                # Enviar el correo con el mensaje HTML
                 send_mail(
-                        subject,
-                        "",
-                        from_email,
-                        recipient_list,
-                        fail_silently=False,
-                        html_message=html_message  # Aquí se incluye el mensaje HTML
-                    )
+                    subject,
+                    "",
+                    from_email,
+                    recipient_list,
+                    fail_silently=False,
+                    html_message=html_message
+                )
 
-                
                 messages.success(request, '¡Cita agendada con éxito!')
                 return redirect('index')
         else:
@@ -378,6 +383,8 @@ def publicar_horario(request):
 def servicios(request):
     return render(request, 'APT/servicios.html')
 
+
+
 @login_required
 def calendar_est(request):
     estudiante = request.user  # El estudiante que está logueado
@@ -389,6 +396,7 @@ def calendar_est(request):
             nuevo_horario = form.save(commit=False)
             nuevo_horario.estudiante = estudiante
             nuevo_horario.save()
+            messages.success(request, '¡Horario publicado con éxito!')
             return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
         form = horariosForm()
@@ -397,6 +405,8 @@ def calendar_est(request):
         'horarios_disponibles': horarios_disponibles,
         'form': form,
     })
+
+
 
 @login_required
 def eliminar_horario(request, id):
@@ -414,9 +424,11 @@ def infoestudiante(request):
     form = ModificarPerfil(instance=estudiante)
     context = {'form': form,'user':estudiante , 'user': request.user}
     if request.method == 'POST':
-        form = ModificarPerfil(request.POST, instance=estudiante)
+        form = ModificarPerfil(request.POST,request.FILES, instance=estudiante)
+        print(request.POST)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect(reverse('infoestudiante'))
         else:
             print(form.errors)
     return render(request, 'estudiante/infopersonal.html', context )
@@ -443,11 +455,6 @@ def pacientes_est(request):
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,
     })
-
-
-@login_required
-def publicacion_est(request):
-    return render(request, 'estudiante/publicacion_estudiante.html')
 
 
 @login_required
