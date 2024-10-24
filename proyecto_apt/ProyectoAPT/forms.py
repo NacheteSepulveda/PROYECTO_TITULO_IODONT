@@ -8,6 +8,11 @@ from datetime import datetime, timedelta, time
 
 # Set default values to use:
 inicioB = ["",time(9,0), time(11,0), time(13,0), time(15,0), time(17,00), time(19,00)]
+inicioA = ["", str(time(9,0).strftime('%H:%M:%S') + ' - ' + time(10,59).strftime('%H:%M:%S')), 
+           str(time(11,0).strftime('%H:%M:%S') + ' - ' + time(12,59).strftime('%H:%M:%S')), 
+           str(time(13,0).strftime('%H:%M:%S') + ' - ' + time(14,59).strftime('%H:%M:%S')), 
+           str(time(15,0).strftime('%H:%M:%S') + ' - ' + time(16,59).strftime('%H:%M:%S')),
+           str(time(17,0).strftime('%H:%M:%S') + ' - ' + time(18,59).strftime('%H:%M:%S'))]
 
 
 
@@ -111,7 +116,7 @@ class horariosForm(forms.ModelForm):
         # Hora de inicio
         self.fields['inicio'] = forms.ChoiceField(
             label="Hora de inicio:",
-            choices=[(inicioB[i], str(inicioB[i])) for i in range(1, len(inicioB))],
+            choices=[(inicioB[i], str(inicioA[i])) for i in range(1, len(inicioA))],
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
@@ -156,7 +161,7 @@ class CitaForm(forms.ModelForm):
 
         self.fields['inicio'] = forms.ChoiceField(  #
             label="Hora de inicio:",
-            choices=[(inicioB[i], str(inicioB[i])) for i in range(1, len(inicioB))],
+            choices=[(inicioB[i], str(inicioA[i])) for i in range(1, len(inicioA))],
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )

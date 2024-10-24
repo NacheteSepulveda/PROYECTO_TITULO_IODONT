@@ -294,7 +294,7 @@ def tratamientosForm(request, estudianteID):
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
-    
+    #print(estudiante.obtenerTratamiento.nombreTratamiento())
     context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
 
     if request.method == 'POST':
