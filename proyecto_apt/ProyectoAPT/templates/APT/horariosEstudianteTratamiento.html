@@ -55,7 +55,7 @@
                         <div class="modal-body">
                             <!-- Nombre del tratamiento -->
                             <h3 id="tratamientoNombre"></h3>
-
+            
                             <!-- Fecha seleccionada -->
                             <div class="form-group">
                                 <label for="id_fecha_seleccionada">{{ form.fecha_seleccionada.label }}</label>
@@ -69,6 +69,9 @@
                                     <option value="">Seleccione una hora</option>
                                     <!-- Aquí se agregarán las opciones de horarios mediante JavaScript -->
                                 </select>
+                                <div id="no-horarios-message" style="display:none; color: red;">
+                                    No Hay Horarios Disponibles
+                                </div> <!-- Mensaje de no disponibilidad -->
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -87,37 +90,45 @@
             var tratamientoInput = document.getElementById('nombreTratamiento');  // Campo oculto que se enviará
             var horariosSelect = document.getElementById('id_HorIni');
             var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); 
-
+            var noHorariosMessage = document.getElementById('no-horarios-message');  // Elemento para mostrar el mensaje de "No Hay Horarios Disponibles"
+        
             modalTratamiento.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget;  // Botón que abrió el modal
                 var tratamientoId = button.getAttribute('data-tratamiento-id');
                 var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
-
+        
                 // Actualizar el campo oculto con el ID del tratamiento
                 tratamientoInput.value = tratamientoId;
-
+        
                 // Actualizar el nombre del tratamiento en el modal
                 var tratamientoNombreElement = document.getElementById('tratamientoNombre');
                 tratamientoNombreElement.textContent = tratamientoNombre;
-
+        
                 // Cuando se selecciona una fecha, obtenemos los horarios disponibles
                 fechaSeleccionadaInput.addEventListener('change', function () {
                     var fechaSeleccionada = this.value;
-
+        
                     if (tratamientoId && fechaSeleccionada) {
                         // Llamada AJAX para obtener los horarios disponibles
                         fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}`)
                         .then(response => response.json())
                         .then(data => {
                             horariosSelect.innerHTML = '';  // Limpiar los horarios previos
-
-                            // Agregar los horarios disponibles
-                            data.forEach(function(horario) {
-                                var option = document.createElement('option');
-                                option.value = horario.inicio;  // Cambia 'inicio' por el campo adecuado si es necesario
-                                option.text = horario.inicio;  // Cambia esto si deseas mostrar un texto diferente
-                                horariosSelect.appendChild(option);
-                            });
+        
+                            if (data.length > 0) {
+                                noHorariosMessage.style.display = 'none';  // Ocultar el mensaje si hay horarios disponibles
+        
+                                // Agregar los horarios disponibles
+                                data.forEach(function(horario) {
+                                    var option = document.createElement('option');
+                                    option.value = horario.inicio;
+                                    option.text = horario.inicio + ' - ' + horario.fin;  // Mostramos el rango de horas
+                                    horariosSelect.appendChild(option);
+                                });
+                            } else {
+                                horariosSelect.innerHTML = '';  // Limpiar el select si no hay horarios
+                                noHorariosMessage.style.display = 'block';  // Mostrar el mensaje de "No Hay Horarios Disponibles"
+                            }
                         })
                         .catch(error => {
                             console.error('Hubo un problema con la petición Fetch:', error);
@@ -126,6 +137,7 @@
                 });
             });
         });
+        
     </script>
 
     {% endblock %}

@@ -295,6 +295,11 @@ def tratamientosForm(request, estudianteID):
             fecha_seleccionada = form.cleaned_data['fecha_seleccionada']
             hora_inicio = form.cleaned_data['inicio']
 
+            # Verifica si el campo de la hora está vacío o no seleccionado
+            if not hora_inicio:
+                messages.error(request, 'Por favor, selecciona una hora válida.')
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
+
             # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
             cita_existente = Cita.objects.filter(
                 estudiante=estudiante,
@@ -314,44 +319,41 @@ def tratamientosForm(request, estudianteID):
                 horario.estudiante = estudiante
                 horario.save()
 
-                    # Configurar los detalles del correo
-                subject = "Bienvenido a IODONT" #USAR
-
-                # Mensaje en HTML con estilos inline #USAR
+                # Configurar los detalles del correo
+                subject = "Bienvenido a IODONT"
                 html_message = f"""
                 <div style="font-family: Arial, sans-serif; color: #333;">
-                        <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
-                        <p>
-                            IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
-                            con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
-                            método externo. Una buena oportunidad para estos jóvenes!
-                        </p>
-                        <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
-                            por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
+                    <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
+                    <p>
+                        IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                        con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                        método externo. ¡Una gran oportunidad para estos jóvenes!
+                    </p>
+                    <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
+                        por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
 
-                        <li>
-                            <ol>Tienes una cita con: {horario.estudiante}, {horario.estudiante.first_name}</ol>
-                            <ol>A las: {horario.inicio} </ol>
-                            <ol>El dia: {horario.fecha_seleccionada}</ol>
-                            <ol>Tratamiento: {horario.tipotratamiento}</ol>
-                        </li>
-                    </div>
-                    """
+                    <ul>
+                        <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
+                        <li>A las: {horario.inicio}</li>
+                        <li>El día: {horario.fecha_seleccionada}</li>
+                        <li>Tratamiento: {horario.tipotratamiento.nombreTratamiento}</li>
+                    </ul>
+                </div>
+                """
 
                 from_email = settings.EMAIL_HOST_USER
-                recipient_list = [request.user.email, {estudiante.email}] #USAR
+                recipient_list = [request.user.email, estudiante.email]
 
-                # Enviar el correo con el mensaje HTML #USAR
+                # Enviar el correo con el mensaje HTML
                 send_mail(
-                        subject,
-                        "",
-                        from_email,
-                        recipient_list,
-                        fail_silently=False,
-                        html_message=html_message  # Aquí se incluye el mensaje HTML
-                    )
+                    subject,
+                    "",
+                    from_email,
+                    recipient_list,
+                    fail_silently=False,
+                    html_message=html_message
+                )
 
-                
                 messages.success(request, '¡Cita agendada con éxito!')
                 return redirect('index')
         else:
