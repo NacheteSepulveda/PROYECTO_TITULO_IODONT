@@ -92,7 +92,7 @@
             var horariosSelect = document.getElementById('id_HorIni');
             var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); 
             var noHorariosMessage = document.getElementById('no-horarios-message');  // Elemento para mostrar el mensaje de "No Hay Horarios Disponibles"
-        
+            var estudianteInput = document.getElementById('id_estudiante');
             modalTratamiento.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget;  // Botón que abrió el modal
                 var tratamientoId = button.getAttribute('data-tratamiento-id');
@@ -111,7 +111,7 @@
         
                     if (tratamientoId && fechaSeleccionada) {
                         // Llamada AJAX para obtener los horarios disponibles
-                        fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}`)
+                        fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}&estudiante_id=${estudianteInput.value}`)
                         .then(response => response.json())
                         .then(data => {
                             horariosSelect.innerHTML = '';  // Limpiar los horarios previos

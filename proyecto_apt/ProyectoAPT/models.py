@@ -48,6 +48,14 @@ class Universidad(models.Model):
         return self.nombre
 
 
+class tipoTratamiento(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombreTratamiento= models.CharField(max_length=50)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return str(self.id)
+
 
 
 
@@ -65,6 +73,7 @@ class customuser(AbstractUser):
     num_tel = models.IntegerField(null=True , max_length=9)
     direccion = models.TextField(null=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
+    tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
 
     
     
@@ -86,13 +95,7 @@ class customuser(AbstractUser):
         return self.tratamientos.all()
     
         
-class tipoTratamiento(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nombreTratamiento= models.CharField(max_length=50)
-    descripcion = models.TextField()
 
-    def __str__(self):
-        return str(self.id)
         
 
     
