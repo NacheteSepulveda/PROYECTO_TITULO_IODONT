@@ -82,6 +82,9 @@ class customuser(AbstractUser):
     def __str__(self):
         return self.email
     
+    def obtenerTratamiento(self):
+        return self.tratamientos.all()
+    
         
 class tipoTratamiento(models.Model):
     id = models.BigAutoField(primary_key=True)

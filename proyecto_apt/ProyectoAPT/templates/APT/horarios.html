@@ -62,7 +62,7 @@
                             <p>Tratamientos: {{estudiante.tipotratamiento}}</p>
                             <ul>
                                 {% for tratamiento in estudiante.tratamientos.all %}
-                                <li>{{ tratamiento.nombre }}</li>
+                                <li>{{ tratamiento.nombreTratamiento }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
