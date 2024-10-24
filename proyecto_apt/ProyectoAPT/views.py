@@ -280,6 +280,7 @@ def obtener_horarios_disponibles(request,):
         print(f'fecha')
         print(f'estudiate')
         print(horarios_disponibles)
+
         # Convertimos los horarios en una lista para enviarlos en formato JSON
         horarios_list = list(horarios_disponibles)
 
@@ -294,8 +295,8 @@ def tratamientosForm(request, estudianteID):
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
-    #print(estudiante.obtenerTratamiento.nombreTratamiento())
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
+    
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
@@ -308,19 +309,17 @@ def tratamientosForm(request, estudianteID):
             # Verifica si el campo de la hora está vacío o no seleccionado
             if not hora_inicio:
                 messages.error(request, 'Por favor, selecciona una hora válida.')
-                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
-            # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
+            # Verifica si ya existe una cita para el mismo estudiante y la misma fecha y hora, sin importar el tratamiento
             cita_existente = Cita.objects.filter(
                 estudiante=estudiante,
-                paciente=request.user,
-                tipotratamiento=tipo_tratamiento,
                 fecha_seleccionada=fecha_seleccionada,
                 inicio=hora_inicio
             ).exists()
 
             if cita_existente:
-                messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
+                messages.error(request, 'Ya existe una cita agendada con este estudiante en la misma fecha y hora.')
             else:
                 horario = form.save(commit=False)
 
@@ -398,10 +397,21 @@ def calendar_est(request):
         form = horariosForm(request.POST, user=estudiante)  # Pasar el usuario al formulario
         if form.is_valid():
             nuevo_horario = form.save(commit=False)
-            nuevo_horario.estudiante = estudiante
-            nuevo_horario.save()
-            messages.success(request, '¡Horario publicado con éxito!')
-            return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
+
+            # Verificar si ya existe un horario para la misma fecha y hora, independientemente del tratamiento
+            horario_existente = horarios.objects.filter(
+                estudiante=estudiante,
+                fecha_seleccionada=nuevo_horario.fecha_seleccionada,
+                inicio=nuevo_horario.inicio
+            ).exists()
+
+            if horario_existente:
+                messages.error(request, 'Ya tienes un horario publicado para esta fecha y hora.')
+            else:
+                nuevo_horario.estudiante = estudiante
+                nuevo_horario.save()
+                messages.success(request, '¡Horario publicado con éxito!')
+                return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
         form = horariosForm(user=estudiante)  # Pasar el usuario al formulario
 
