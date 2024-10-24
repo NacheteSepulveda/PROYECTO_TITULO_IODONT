@@ -28,10 +28,11 @@
                         {% endfor %}
                     </select>
 
-                    <select id="treatmentSelect" name="tratamiento">
+                    <select id="treatmentSelect" name="tratamiento"
+                        style="display: inline-block !important; visibility: visible !important;">
                         <option value="">Todos los Tratamientos</option>
                         {% for tratamiento in tratamientos %}
-                        <option value="{{ tratamiento.id }}">{{ tratamiento.nombreTratamiento }}</option>
+                        <option value="{{ tratamiento.id }}">{{ tratamiento.nombre }}</option>
                         {% endfor %}
                     </select>
 

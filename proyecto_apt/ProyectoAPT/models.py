@@ -46,15 +46,8 @@ class Universidad(models.Model):
     
     def __str__(self):
         return self.nombre
-    
 
-class tipoTratamiento(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nombreTratamiento= models.CharField(max_length=50)
-    descripcion = models.TextField()
 
-    def __str__(self):
-        return str(self.id)
 
 
 
@@ -72,7 +65,6 @@ class customuser(AbstractUser):
     num_tel = models.IntegerField(null=True , max_length=9)
     direccion = models.TextField(null=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
-    tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
 
     
     
@@ -91,7 +83,13 @@ class customuser(AbstractUser):
         return self.email
     
         
+class tipoTratamiento(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombreTratamiento= models.CharField(max_length=50)
+    descripcion = models.TextField()
 
+    def __str__(self):
+        return str(self.id)
         
 
     
@@ -173,3 +171,12 @@ class Historial_Medico(models.Model):
 
 
 
+#NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+class Tratamiento(models.Model): #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    id = models.BigAutoField(primary_key=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    nombre = models.CharField(max_length=100, unique=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    descripcion = models.TextField(null=True, blank=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    
+    def __str__(self):
+        return self.nombre
+    
