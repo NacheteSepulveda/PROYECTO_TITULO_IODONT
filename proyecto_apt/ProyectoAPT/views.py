@@ -8,13 +8,11 @@ from .forms import *
 from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
-from .models import FichaClinica 
-from .models import customuser, Universidad, Tratamiento
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+from django.db.models import Q
 
 
 
@@ -121,14 +119,15 @@ def filtrar_estudiantes(request):
         estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
     
     universidades = Universidad.objects.all()
-    tratamientos = Tratamiento.objects.all()
+    tratamientos = tipoTratamiento.objects.all()
+    
 
     context = {
         'estudiantes': estudiantes,
         'universidades': universidades,
         'tratamientos': tratamientos,
-    }
 
+    }
     return render(request, 'APT/debug_template.html', context)
 
 @login_required
@@ -219,12 +218,13 @@ def loginUser(request):
 
 @login_required
 def registroHoras(request):
-    form = horariosForm(request.POST or None)
+    form = horariosForm(request.POST or None, user=request.user)  # Aquí se pasa el usuario actual
     horarios_disponibles = [] 
     query = request.GET.get('q')
     universidad_id = request.GET.get('universidad')
     tratamiento_id = request.GET.get('tratamiento')
     estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
+    
     if query:
         estudiantes = estudiantes.filter(
             Q(first_name__icontains=query) | Q(last_name__icontains=query)
@@ -234,34 +234,38 @@ def registroHoras(request):
         estudiantes = estudiantes.filter(universidad_id=universidad_id)
     
     if tratamiento_id:
-        estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
+        estudiantes = estudiantes.filter(horarios_estudiante__tipoTratamiento_id=tratamiento_id).distinct()
     
     universidades = Universidad.objects.all()
-    tratamientos = tipoTratamiento.objects.all() # Inicializa la lista para almacenar los horarios
+    tratamientos = tipoTratamiento.objects.all()
 
     if request.method == 'POST' and form.is_valid():
-        # Aquí puedes obtener el tratamiento y la fecha seleccionada
         horarios_disponibles = obtener_horarios_disponibles(request)
 
     context = {
         'form': form,
-        'horarios_disponibles': horarios_disponibles,  # Agregamos los horarios disponibles al contexto
+        'horarios_disponibles': horarios_disponibles,
         'universidades': universidades,
         'tratamientos': tratamientos,
+        'universidad_seleccionada': universidad_id,
+        'tratamiento_seleccionado': tratamiento_id,
         'estudiantes': estudiantes,
     }
+    
     return render(request, 'APT/horarios.html', context)
+
+
 
     
 
 # Vista para obtener los horarios disponibles para un tratamiento en una fecha específica
-def obtener_horarios_disponibles(request):
+def obtener_horarios_disponibles(request,):
     if request.method == 'GET':
         tratamiento_id = request.GET.get('tratamiento_id')
         fecha_seleccionada = request.GET.get('fecha_seleccionada')
         
         # Obtener solo los horarios del estudiante con id_tipo_user = 2
-        estudiante_id = 2  # ID del estudiante
+        estudiante_id = request.GET.get('estudiante_id')
 
         # Obtenemos los horarios disponibles para el tratamiento, la fecha seleccionada y el estudiante
         horarios_disponibles = horarios.objects.filter(
@@ -379,13 +383,13 @@ def servicios(request):
 
 
 
-@login_required
+@login_required 
 def calendar_est(request):
     estudiante = request.user  # El estudiante que está logueado
     horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
 
     if request.method == 'POST':
-        form = horariosForm(request.POST)
+        form = horariosForm(request.POST, user=estudiante)  # Pasar el usuario al formulario
         if form.is_valid():
             nuevo_horario = form.save(commit=False)
             nuevo_horario.estudiante = estudiante
@@ -393,12 +397,13 @@ def calendar_est(request):
             messages.success(request, '¡Horario publicado con éxito!')
             return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
-        form = horariosForm()
+        form = horariosForm(user=estudiante)  # Pasar el usuario al formulario
 
     return render(request, 'estudiante/calendario_est.html', {
         'horarios_disponibles': horarios_disponibles,
         'form': form,
     })
+
 
 
 
@@ -422,6 +427,7 @@ def infoestudiante(request):
         print(request.POST)
         if form.is_valid():
             form.save()
+            estudiante.tratamientos.set(form.cleaned_data['tratamientos'])
             return HttpResponseRedirect(reverse('infoestudiante'))
         else:
             print(form.errors)
