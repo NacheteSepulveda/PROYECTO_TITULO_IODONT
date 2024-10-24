@@ -41,7 +41,8 @@
                 {{ form.tratamiento }} 
                 <input type="hidden" name="tipotratamiento" id="nombreTratamiento" value="">
                 <input type="text" name="paciente" id="id_paciente" hidden value="{{ actualUser }}">
-                {{ form.estudiante }}
+                <input type="hidden" name="estudiante" id="id_estudiante" hidden value="{{estudiante.id}}">
+
             </div>
 
             <!-- Modal -->
