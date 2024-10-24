@@ -267,13 +267,19 @@ def obtener_horarios_disponibles(request,):
         # Obtener solo los horarios del estudiante con id_tipo_user = 2
         estudiante_id = request.GET.get('estudiante_id')
 
+        idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario = 'Estudiante').first()
+
         # Obtenemos los horarios disponibles para el tratamiento, la fecha seleccionada y el estudiante
         horarios_disponibles = horarios.objects.filter(
             tipoTratamiento_id=tratamiento_id,
             fecha_seleccionada=fecha_seleccionada,
-            estudiante__id_tipo_user_id=estudiante_id  # Filtrar solo por el estudiante
+            estudiante__id_tipo_user_id=idEstudianteTipo,  # Filtrar solo por el estudiante
+            estudiante_id=estudiante_id  # Filtrar solo por el estudiante
         ).values('inicio')  # Cambia 'HoraInicial' a 'inicio' según tu modelo
-
+        print(f'tipo tratamiento')
+        print(f'fecha')
+        print(f'estudiate')
+        print(horarios_disponibles)
         # Convertimos los horarios en una lista para enviarlos en formato JSON
         horarios_list = list(horarios_disponibles)
 
