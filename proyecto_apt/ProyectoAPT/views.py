@@ -459,13 +459,32 @@ def notifiaciones_est(request):
 @login_required
 def pacientes_est(request):
     estudiante = request.user
-    # Filtramos las citas donde el estudiante actual está involucrado
-    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True)
-    # Filtramos los pacientes utilizando los IDs de las citas agendadas
-    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
     
+    # Obtiene la lista de pacientes asociados con el estudiante actual
+    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True).distinct()
+    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
+
+    print(citas_agendadas)
+    print(pacientes)
+    # Diccionario para almacenar el último tratamiento para cada paciente
+    tratamientos_por_paciente = {}
+
+    for paciente in pacientes:
+        ultima_cita = (Cita.objects
+                       .filter(paciente=paciente, estudiante=estudiante)
+                       .order_by('-fecha_seleccionada', '-inicio')
+                       .first())  # Obtenemos la última cita de cada paciente
+        if ultima_cita:
+            tratamientos_por_paciente[paciente.id] = {
+                'tratamiento': ultima_cita.tipotratamiento.nombreTratamiento,
+                'fecha': ultima_cita.fecha_seleccionada,
+                'hora': ultima_cita.inicio,
+            }
+    print(tratamientos_por_paciente)
+    # Enviar los datos al contexto
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,
+        'tratamientos_por_paciente': tratamientos_por_paciente,
     })
 
 
