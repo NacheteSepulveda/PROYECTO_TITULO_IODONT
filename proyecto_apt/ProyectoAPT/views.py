@@ -14,6 +14,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.http import Http404
 
 
 
@@ -292,8 +293,7 @@ def tratamientosForm(request, estudianteID):
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
     
-    #print(estudiante.obtenerTratamiento.nombreTratamiento())
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
@@ -306,10 +306,10 @@ def tratamientosForm(request, estudianteID):
             # Verifica si el campo de la hora está vacío o no seleccionado
             if not hora_inicio:
                 messages.error(request, 'Por favor, selecciona una hora válida.')
-                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
             # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
-            cita_existente = Cita.objects.filter(
+            cita_misma = Cita.objects.filter(
                 estudiante=estudiante,
                 paciente=request.user,
                 tipotratamiento=tipo_tratamiento,
@@ -317,8 +317,17 @@ def tratamientosForm(request, estudianteID):
                 inicio=hora_inicio
             ).exists()
 
-            if cita_existente:
+            # Verifica si ya existe una cita para la misma fecha y hora con otro estudiante
+            cita_otro_estudiante = Cita.objects.filter(
+                paciente=request.user,
+                fecha_seleccionada=fecha_seleccionada,
+                inicio=hora_inicio
+            ).exclude(estudiante=estudiante).exists()
+
+            if cita_misma:
                 messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
+            elif cita_otro_estudiante:
+                messages.error(request, 'Ya tienes una cita agendada con otro estudiante en esta fecha y hora.')
             else:
                 horario = form.save(commit=False)
 
@@ -367,6 +376,7 @@ def tratamientosForm(request, estudianteID):
             print(form.errors)
 
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
+
 
 
 
@@ -496,6 +506,19 @@ def citas_pac(request):
     return render(request, 'APT/citas.html', {
         'citas': citas  # Pasar las citas al contexto
     })
+
+
+@login_required
+def anular_cita(request, cita_id):
+    # Obtiene la cita o muestra un 404 si no existe
+    cita = get_object_or_404(Cita, id=cita_id, paciente=request.user)
+    
+    # Borra la cita y muestra un mensaje de éxito
+    cita.delete()
+    messages.success(request, "La cita ha sido anulada exitosamente.")
+    
+    # Redirige a la página de citas
+    return redirect('citas')
 
 @login_required
 def crear_historial_medico(request, paciente_id):

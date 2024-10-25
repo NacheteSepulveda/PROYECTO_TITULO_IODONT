@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <main>
-    <div class="container">
+    <div class="container mt-5">
         <h2>Mis Citas</h2>
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Estudiante</th>
@@ -19,10 +19,16 @@
                     <td>{{ cita.tipotratamiento.nombreTratamiento }}</td>
                     <td>{{ cita.fecha_seleccionada }}</td>
                     <td>{{ cita.inicio }}</td>
+                    <td>
+                        <!-- Botón para anular la cita -->
+                        <a href="{% url 'anular_cita' cita.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas anular esta cita?');">
+                            Anular
+                        </a>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">No tienes citas agendadas.</td>
+                    <td colspan="5">No tienes citas agendadas.</td>
                 </tr>
                 {% endfor %}
             </tbody>
