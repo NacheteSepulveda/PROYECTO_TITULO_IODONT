@@ -123,7 +123,7 @@
                                 data.forEach(function(horario) {
                                     var option = document.createElement('option');
                                     option.value = horario.inicio;
-                                    option.text = horario.inicio;  // Mostramos el rango de horas
+                                    option.text = horario.inicio + ' - ' + horario.fin;  // Mostramos el rango de horas
                                     horariosSelect.appendChild(option);
                                 });
                             } else {
