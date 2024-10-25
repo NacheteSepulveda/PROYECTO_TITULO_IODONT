@@ -276,6 +276,7 @@ def obtener_horarios_disponibles(request):
         print(f'fecha')
         print(f'estudiate')
         print(horarios_disponibles)
+
         # Convertimos los horarios en una lista para enviarlos en formato JSON
         horarios_list = list(horarios_disponibles)
 
@@ -290,6 +291,7 @@ def tratamientosForm(request, estudianteID):
     # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
+    
     #print(estudiante.obtenerTratamiento.nombreTratamiento())
     context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
 
@@ -337,7 +339,6 @@ def tratamientosForm(request, estudianteID):
                     </p>
                     <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
                         por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
-
                     <ul>
                         <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
                         <li>A las: {horario.inicio}</li>
@@ -394,10 +395,21 @@ def calendar_est(request):
         form = horariosForm(request.POST)
         if form.is_valid():
             nuevo_horario = form.save(commit=False)
-            nuevo_horario.estudiante = estudiante
-            nuevo_horario.save()
-            messages.success(request, '¡Horario publicado con éxito!')
-            return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
+
+            # Verificar si ya existe un horario para la misma fecha y hora, independientemente del tratamiento
+            horario_existente = horarios.objects.filter(
+                estudiante=estudiante,
+                fecha_seleccionada=nuevo_horario.fecha_seleccionada,
+                inicio=nuevo_horario.inicio
+            ).exists()
+
+            if horario_existente:
+                messages.error(request, 'Ya tienes un horario publicado para esta fecha y hora.')
+            else:
+                nuevo_horario.estudiante = estudiante
+                nuevo_horario.save()
+                messages.success(request, '¡Horario publicado con éxito!')
+                return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
         form = horariosForm()
 
