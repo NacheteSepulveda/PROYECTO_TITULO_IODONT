@@ -86,7 +86,7 @@ class horariosForm(forms.ModelForm):
                   'fecha_seleccionada',
                   'estudiante']
 
-    def __init__(self, *args: Any, **kwargs):
+    def __init__(self, *args: Any, user=None, **kwargs):
         super(horariosForm, self).__init__(*args, **kwargs)
         #Add tipo de tratamiento
         self.fields['tipoTratamiento'] = forms.ModelChoiceField(
@@ -96,6 +96,10 @@ class horariosForm(forms.ModelForm):
         )
         self.fields['tipoTratamiento'].label = "Tipo de tratamiento"
         self.fields['tipoTratamiento'].label_from_instance = lambda obj: f"{obj.nombreTratamiento}"
+
+        if user:
+            self.fields['tipoTratamiento'].queryset = user.tratamientos.all()
+        
 
         self.fields['fecha_seleccionada'] = forms.DateField(
             label="Seleccione su fecha!",

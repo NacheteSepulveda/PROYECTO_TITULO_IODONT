@@ -392,11 +392,11 @@ def calendar_est(request):
     horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
 
     if request.method == 'POST':
-        form = horariosForm(request.POST)
+        form = horariosForm(request.POST, user=estudiante)
         if form.is_valid():
             nuevo_horario = form.save(commit=False)
 
-            # Verificar si ya existe un horario para la misma fecha y hora, independientemente del tratamiento
+            # Verificar si ya existe un horario para la misma fecha y hora
             horario_existente = horarios.objects.filter(
                 estudiante=estudiante,
                 fecha_seleccionada=nuevo_horario.fecha_seleccionada,
@@ -411,7 +411,7 @@ def calendar_est(request):
                 messages.success(request, '¡Horario publicado con éxito!')
                 return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
-        form = horariosForm()
+        form = horariosForm(user=estudiante)
 
     return render(request, 'estudiante/calendario_est.html', {
         'horarios_disponibles': horarios_disponibles,

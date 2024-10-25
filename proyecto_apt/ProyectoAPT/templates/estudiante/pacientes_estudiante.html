@@ -38,7 +38,7 @@
                     <p>
                         {% if paciente.id in tratamientos_por_paciente %}
                             {% with tratamiento_info=tratamientos_por_paciente|get_item:paciente.id %}
-                                Próximo tratamiento: {{ tratamiento_info.tratamiento }}<br>
+                                Tratamiento: {{ tratamiento_info.tratamiento }}<br>
                                 Fecha: {{ tratamiento_info.fecha }}<br>
                                 Hora: {{ tratamiento_info.hora }}
                             {% endwith %}
