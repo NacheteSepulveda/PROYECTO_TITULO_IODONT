@@ -296,7 +296,8 @@ def tratamientosForm(request, estudianteID):
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
     
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
+    #print(estudiante.obtenerTratamiento.nombreTratamiento())
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
@@ -309,17 +310,19 @@ def tratamientosForm(request, estudianteID):
             # Verifica si el campo de la hora está vacío o no seleccionado
             if not hora_inicio:
                 messages.error(request, 'Por favor, selecciona una hora válida.')
-                return render(request, 'APT/horariosEstudianteTratamiento.html', context)
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
 
-            # Verifica si ya existe una cita para el mismo estudiante y la misma fecha y hora, sin importar el tratamiento
+            # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
             cita_existente = Cita.objects.filter(
                 estudiante=estudiante,
+                paciente=request.user,
+                tipotratamiento=tipo_tratamiento,
                 fecha_seleccionada=fecha_seleccionada,
                 inicio=hora_inicio
             ).exists()
 
             if cita_existente:
-                messages.error(request, 'Ya existe una cita agendada con este estudiante en la misma fecha y hora.')
+                messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
             else:
                 horario = form.save(commit=False)
 
@@ -340,7 +343,6 @@ def tratamientosForm(request, estudianteID):
                     </p>
                     <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
                         por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
-
                     <ul>
                         <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
                         <li>A las: {horario.inicio}</li>
