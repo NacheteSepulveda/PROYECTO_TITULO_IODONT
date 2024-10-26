@@ -17,6 +17,8 @@
             </div>
         {% endif %}
 
+        <h2>Seleccione el Tratamiento Deseado</h2>
+
         <form action="" method="post">
             {% csrf_token %}
             <div class="grid-container" style="width: 830px;">
@@ -46,11 +48,13 @@
             </div>
 
             <!-- Modal -->
+
+            
             <div class="modal fade" id="modalTratamiento" tabindex="-1" aria-labelledby="modalTratamientoLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalTratamientoLabel">Seleccionar Fecha</h1>
+                            <h1 class="modal-title fs-5" id="modalTratamientoLabel">Seleccion de Horario</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
