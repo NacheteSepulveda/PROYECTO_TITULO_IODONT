@@ -107,6 +107,8 @@ def filtrar_estudiantes(request):
     universidad_id = request.GET.get('universidad')
     tratamiento_id = request.GET.get('tratamiento')
     
+    print(f"Tratamiento seleccionado: {tratamiento_id}")
+    
     if query:
         estudiantes = estudiantes.filter(
             Q(first_name__icontains=query) | Q(last_name__icontains=query)
@@ -128,7 +130,7 @@ def filtrar_estudiantes(request):
         'tratamientos': tratamientos,
 
     }
-    return render(request, 'APT/debug_template.html', context)
+    return render(request, 'APT/horarios.html', context)
 
 @login_required
 def crear_ficha_paciente(request, user_id):

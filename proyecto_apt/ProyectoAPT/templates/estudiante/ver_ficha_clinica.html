@@ -2,20 +2,32 @@
 {% load static %}
 
 {% block content %}
-
-<link type="text/css" rel="stylesheet">
-<h2>Ficha Clínica</h2>
-<p><strong>Motivo de Consulta:</strong> {{ ficha_clinica.motivo_consulta }}</p>
-<p><strong>Síntomas Actuales:</strong> {{ ficha_clinica.sintomas_actuales }}</p>
-<p><strong>Diagnóstico:</strong> {{ ficha_clinica.diagnostico }}</p>
-<p><strong>Tratamiento Actual:</strong> {{ ficha_clinica.tratamiento_actual }}</p>
-<p><strong>Contacto de Emergencia:</strong> {{ ficha_clinica.nombre_contacto_emergencia }}</p>
-<p><strong>Teléfono de Emergencia:</strong> {{ ficha_clinica.telefono_contacto_emergencia }}</p>
-
-
-
-
-
+<link type="text/css" rel="stylesheet" href="{% static 'css/ver_ficha.css' %}">
+<div class="container">
+    <h2>Ficha Clínica</h2>
+    <div class="ficha-item">
+        <div class="ficha-label">Motivo de Consulta:</div>
+        <div class="ficha-content">{{ ficha_clinica.motivo_consulta }}</div>
+    </div>
+    <div class="ficha-item">
+        <div class="ficha-label">Síntomas Actuales:</div>
+        <div class="ficha-content">{{ ficha_clinica.sintomas_actuales }}</div>
+    </div>
+    <div class="ficha-item">
+        <div class="ficha-label">Diagnóstico:</div>
+        <div class="ficha-content">{{ ficha_clinica.diagnostico }}</div>
+    </div>
+    <div class="ficha-item">
+        <div class="ficha-label">Tratamiento Actual:</div>
+        <div class="ficha-content">{{ ficha_clinica.tratamiento_actual }}</div>
+    </div>
+    <div class="ficha-item">
+        <div class="ficha-label">Contacto de Emergencia:</div>
+        <div class="ficha-content">{{ ficha_clinica.nombre_contacto_emergencia }}</div>
+    </div>
+    <div class="ficha-item">
+        <div class="ficha-label">Teléfono de Emergencia:</div>
+        <div class="ficha-content">{{ ficha_clinica.telefono_contacto_emergencia }}</div>
+    </div>
+</div>
 {% endblock %}
-</body>
-</html>

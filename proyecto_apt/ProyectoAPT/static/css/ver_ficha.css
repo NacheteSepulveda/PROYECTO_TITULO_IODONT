@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.ficha-item {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ficha-label {
+    background-color: #f1f3f5;
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ficha-content {
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+}

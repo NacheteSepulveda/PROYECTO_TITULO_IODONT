@@ -1,82 +1,100 @@
-/* Estilo general */
+/* Estilos generales */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
+    line-height: 1.6;
+    color: #333;
 }
 
-/* Contenedor principal */
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
-/* Título */
-h1 {
-    text-align: center;
-    color: #333;
+h2, h3 {
+    color: #2c3e50;
     margin-bottom: 20px;
 }
 
-/* Tabla de fichas */
-table {
+/* Estilos para los grupos de formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-table th, table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.form-group textarea {
+    height: 100px;
 }
 
-table th {
-    background-color: #4CAF50;
+/* Estilos para la información del paciente */
+.form-group p {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 0;
+}
+
+/* Estilos para el botón */
+.btn-primary {
+    background-color: #3498db;
     color: white;
-}
-
-/* Fila alternada */
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* Botón para ver más detalles */
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
+    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #45a049;
+.btn-primary:hover {
+    background-color: #2980b9;
 }
 
-/* Pie de página */
-footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #777;
+/* Estilos para los mensajes de error */
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 5px;
 }
 
-.form-control {
-    width: 50%; /* Cambia este valor para ajustar el ancho */
-    margin-bottom: 15px; /* Espaciado inferior entre campos */
-}
-
+/* Estilos para los mensajes de Django */
 .alert-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1050; /* Para asegurar que esté por encima de otros elementos */
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-dismissible {
+    padding-right: 35px;
+}
+
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 15px;
 }

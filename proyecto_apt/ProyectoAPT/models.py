@@ -54,7 +54,7 @@ class tipoTratamiento(models.Model):
     descripcion = models.TextField()
 
     def __str__(self):
-        return str(self.id)
+        return self.nombreTratamiento
 
 
 

@@ -14,9 +14,9 @@
             <h2>Filtrar Estudiantes</h2>
 
             <!-- Contenedor del filtro -->
-            <form id="filterForm" method="get">
+            <form id="filterForm" method="get" action="{% url 'filtrar_estudiantes' %}">
                 <div class="filtro-container">
-                    <input type="text" id="searchInput" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
+                    <input type="text" id="searchInput" name="q" placeholder="Buscar estudiante..." onkeyup="filterServices()" />
 
 
 

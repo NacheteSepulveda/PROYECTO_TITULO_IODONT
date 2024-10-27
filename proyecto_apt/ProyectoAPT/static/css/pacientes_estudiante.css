@@ -65,9 +65,18 @@ body {
   color: #666;
 }
 
+.patient-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px; /* Espacio entre botones */
+}
+
 .button {
-  display: inline-block;
-  padding: 8px 5px;
+  display: inline-flex; /* Cambiado de inline-block a inline-flex */
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px; /* Ajustado el padding para ser igual en todos los lados */
   border: none;
   border-radius: 4px;
   font-size: 14px;
@@ -77,44 +86,38 @@ body {
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   color: white;
-  flex: 1 0 auto;
+  height: 36px; /* Altura fija para todos los botones */
   min-width: 120px;
 }
 
-.button-ver-ficha {
-  margin-top: 10px !important;
-}
-
-.button-ver-ficha:hover {
-  background-color: #138496;
-}
-
-.button:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
+/* Estilos específicos para cada tipo de botón */
 .button-crear-ficha {
-  background-color: #007bff;
+  background-color: #007bff; /* Azul principal */
 }
 
 .button-crear-ficha:hover {
-  background-color: #0056b3;
+  background-color: #ffffff; /* Azul más oscuro al pasar el mouse */
 }
 
 .button-crear-historial {
-  background-color: #28a745;
+  background-color: #007bff; /* Mismo azul que el botón crear ficha */
 }
 
 .button-crear-historial:hover {
-  background-color: #218838;
+  background-color: #ffffff; /* Azul más oscuro al pasar el mouse */
 }
 
 .button-ver-ficha {
-  background-color: #17a2b8;
+  background-color: #007bff; /* Mismo azul que los otros botones */
 }
 
 .button-ver-ficha:hover {
-  background-color: #138496;
+  background-color: #ffffff; /* Azul más oscuro al pasar el mouse */
+}
+
+/* Mantén el efecto hover general si lo deseas */
+.button:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 nav {

@@ -1,0 +1,75 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px; /* Aumentado de 600px a 800px */
+    margin: 30px auto;
+    padding: 30px; /* Aumentado de 20px a 30px */
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los grupos de formulario */
+.form-group {
+    margin-bottom: 20px; /* Aumentado de 15px a 20px */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px; /* Aumentado de 5px a 8px */
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px; /* Aumentado de 8px a 10px */
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px; /* Aumentado de 14px a 16px */
+}
+
+textarea.form-control {
+    height: 120px; /* Aumentado de 100px a 120px */
+    resize: vertical;
+}
+
+/* Estilos para el botón */
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 20px; /* Aumentado de 10px 15px a 12px 20px */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px; /* Aumentado de 16px a 18px */
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos para los mensajes de error */
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 12px; /* Aumentado de 10px a 12px */
+    border-radius: 4px;
+    margin-top: 8px; /* Aumentado de 5px a 8px */
+}
+
+/* Ajustes específicos para diagnóstico y medicamentos */
+#id_diagnostico, #id_medicamentos {
+    height: 100px; /* Aumentado de 80px a 100px */
+}

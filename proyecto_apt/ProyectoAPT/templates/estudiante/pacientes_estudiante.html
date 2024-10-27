@@ -33,20 +33,20 @@
                 <h3>{{ paciente.first_name }} {{ paciente.last_name }}</h3>
                 <p>Tratamiento de {{ paciente.tratamiento }}</p>
 
-                <!-- Enlace para crear la ficha del paciente -->
-                <a href="{% url 'crear_ficha_paciente' paciente.id %}">
-                    <button class="button">Crear Ficha</button>
+                    <!-- Enlace para crear la ficha del paciente -->
+                <a href="{% url 'crear_ficha_paciente' paciente.id %}" class="button button-crear-ficha">
+                  Crear Ficha
                 </a>
 
-                <!-- Enlace para crear el historial médico del paciente -->
-                <a href="{% url 'crear_historial_medico' paciente.id %}">
-                  <button class="button">Crear Historial</button>
-                </a>
+              <!-- Enlace para crear el historial médico del paciente -->
+              <a href="{% url 'crear_historial_medico' paciente.id %}" class="button button-crear-historial">
+                  Crear Historial
+               </a>
 
-                <!-- Botón para ver la ficha clínica -->
-                <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="btn btn-info mb-3">
+              <!-- Botón para ver la ficha clínica -->
+              <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="button button-ver-ficha">
                   Ver Ficha Clínica
-                </a>
+               </a>
             </div>
         </div>
         {% endfor %}

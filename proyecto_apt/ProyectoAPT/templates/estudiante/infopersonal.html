@@ -45,11 +45,30 @@
     
     
   </div>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{form.as_p}}
-      <button type="submit">Guardar Cambios</button>
-    </form>
+   <!-- MODIFICACION PARA QUE SE VEA BIEN LOS TRATAMIENTOS EN INFOPERSONAL -->
+    <!-- MIRAR FORM.PY class ModificarPerfil -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group">
+            {% if field.name == 'tratamientos' %}
+                <div class="tratamientos-container">
+                    <label>{{ field.label }}</label>
+                    {% for checkbox in field %}
+                        <div class="tratamientos-checkbox">
+                            <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                            {{ checkbox.tag }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit">Guardar Cambios</button>
+</form>
   </div>
 
   {% endblock %}
