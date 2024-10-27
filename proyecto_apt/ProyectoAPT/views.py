@@ -8,10 +8,13 @@ from .forms import *
 from .models import *
 from django.http import JsonResponse
 from datetime import time, timedelta, datetime
+from .models import FichaClinica 
+from .models import customuser, Universidad, Tratamiento
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.http import Http404
 from django.db.models import Q
 
 
@@ -131,7 +134,6 @@ def filtrar_estudiantes(request):
 
     }
     return render(request, 'APT/horarios.html', context)
-
 @login_required
 def crear_ficha_paciente(request, user_id):
     try:
@@ -229,7 +231,7 @@ def registroHoras(request):
     
     if query:
         estudiantes = estudiantes.filter(
-            Q(first_name__icontains=query) | Q(last_name__icontains=query)
+            Q(first_name_icontains=query) | Q(last_name_icontains=query)
         )
     
     if universidad_id:
@@ -255,19 +257,16 @@ def registroHoras(request):
     }
     
     return render(request, 'APT/horarios.html', context)
-
-
-
     
 
 # Vista para obtener los horarios disponibles para un tratamiento en una fecha específica
-def obtener_horarios_disponibles(request,):
+def obtener_horarios_disponibles(request):
     if request.method == 'GET':
         tratamiento_id = request.GET.get('tratamiento_id')
         fecha_seleccionada = request.GET.get('fecha_seleccionada')
         
         # Obtener solo los horarios del estudiante con id_tipo_user = 2
-        estudiante_id = request.GET.get('estudiante_id')
+        estudiante_id = 2  # ID del estudiante
 
         idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario = 'Estudiante').first()
 
@@ -298,8 +297,7 @@ def tratamientosForm(request, estudianteID):
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
     
-    #print(estudiante.obtenerTratamiento.nombreTratamiento())
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante,}
+    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
@@ -312,10 +310,10 @@ def tratamientosForm(request, estudianteID):
             # Verifica si el campo de la hora está vacío o no seleccionado
             if not hora_inicio:
                 messages.error(request, 'Por favor, selecciona una hora válida.')
-                return render(request, 'APT/horariosEstudianteTratamiento.html', context)  # Redirige al mismo formulario
+                return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
             # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
-            cita_existente = Cita.objects.filter(
+            cita_misma = Cita.objects.filter(
                 estudiante=estudiante,
                 paciente=request.user,
                 tipotratamiento=tipo_tratamiento,
@@ -323,8 +321,17 @@ def tratamientosForm(request, estudianteID):
                 inicio=hora_inicio
             ).exists()
 
-            if cita_existente:
+            # Verifica si ya existe una cita para la misma fecha y hora con otro estudiante
+            cita_otro_estudiante = Cita.objects.filter(
+                paciente=request.user,
+                fecha_seleccionada=fecha_seleccionada,
+                inicio=hora_inicio
+            ).exclude(estudiante=estudiante).exists()
+
+            if cita_misma:
                 messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
+            elif cita_otro_estudiante:
+                messages.error(request, 'Ya tienes una cita agendada con otro estudiante en esta fecha y hora.')
             else:
                 horario = form.save(commit=False)
 
@@ -376,6 +383,7 @@ def tratamientosForm(request, estudianteID):
 
 
 
+
 def publicar_horario(request):
     if request.method == 'POST':
         form = (request.POST)
@@ -392,17 +400,17 @@ def servicios(request):
 
 
 
-@login_required 
+@login_required
 def calendar_est(request):
     estudiante = request.user  # El estudiante que está logueado
     horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
 
     if request.method == 'POST':
-        form = horariosForm(request.POST, user=estudiante)  # Pasar el usuario al formulario
+        form = horariosForm(request.POST, user=estudiante)
         if form.is_valid():
             nuevo_horario = form.save(commit=False)
 
-            # Verificar si ya existe un horario para la misma fecha y hora, independientemente del tratamiento
+            # Verificar si ya existe un horario para la misma fecha y hora
             horario_existente = horarios.objects.filter(
                 estudiante=estudiante,
                 fecha_seleccionada=nuevo_horario.fecha_seleccionada,
@@ -417,13 +425,12 @@ def calendar_est(request):
                 messages.success(request, '¡Horario publicado con éxito!')
                 return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
     else:
-        form = horariosForm(user=estudiante)  # Pasar el usuario al formulario
+        form = horariosForm(user=estudiante)
 
     return render(request, 'estudiante/calendario_est.html', {
         'horarios_disponibles': horarios_disponibles,
         'form': form,
     })
-
 
 
 
@@ -447,7 +454,6 @@ def infoestudiante(request):
         print(request.POST)
         if form.is_valid():
             form.save()
-            estudiante.tratamientos.set(form.cleaned_data['tratamientos'])
             return HttpResponseRedirect(reverse('infoestudiante'))
         else:
             print(form.errors)
@@ -467,13 +473,32 @@ def notifiaciones_est(request):
 @login_required
 def pacientes_est(request):
     estudiante = request.user
-    # Filtramos las citas donde el estudiante actual está involucrado
-    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True)
-    # Filtramos los pacientes utilizando los IDs de las citas agendadas
-    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
     
+    # Obtiene la lista de pacientes asociados con el estudiante actual
+    citas_agendadas = Cita.objects.filter(estudiante=estudiante).values_list('paciente', flat=True).distinct()
+    pacientes = customuser.objects.filter(id__in=citas_agendadas, id_tipo_user__nombre_tipo_usuario='Paciente')
+
+    print(citas_agendadas)
+    print(pacientes)
+    # Diccionario para almacenar el último tratamiento para cada paciente
+    tratamientos_por_paciente = {}
+
+    for paciente in pacientes:
+        ultima_cita = (Cita.objects
+                       .filter(paciente=paciente, estudiante=estudiante)
+                       .order_by('-fecha_seleccionada', '-inicio')
+                       .first())  # Obtenemos la última cita de cada paciente
+        if ultima_cita:
+            tratamientos_por_paciente[paciente.id] = {
+                'tratamiento': ultima_cita.tipotratamiento.nombreTratamiento,
+                'fecha': ultima_cita.fecha_seleccionada,
+                'hora': ultima_cita.inicio,
+            }
+    print(tratamientos_por_paciente)
+    # Enviar los datos al contexto
     return render(request, 'estudiante/pacientes_estudiante.html', {
         'pacientes': pacientes,
+        'tratamientos_por_paciente': tratamientos_por_paciente,
     })
 
 
@@ -485,6 +510,19 @@ def citas_pac(request):
     return render(request, 'APT/citas.html', {
         'citas': citas  # Pasar las citas al contexto
     })
+
+
+@login_required
+def anular_cita(request, cita_id):
+    # Obtiene la cita o muestra un 404 si no existe
+    cita = get_object_or_404(Cita, id=cita_id, paciente=request.user)
+    
+    # Borra la cita y muestra un mensaje de éxito
+    cita.delete()
+    messages.success(request, "La cita ha sido anulada exitosamente.")
+    
+    # Redirige a la página de citas
+    return redirect('citas')
 
 @login_required
 def crear_historial_medico(request, paciente_id):

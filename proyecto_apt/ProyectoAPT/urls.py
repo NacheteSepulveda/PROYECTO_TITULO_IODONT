@@ -31,6 +31,7 @@ urlpatterns = [
     path('Horarios/<int:estudianteID>', views.tratamientosForm, name='tratamientosEstudiante'),
     # There we will enable the horario LIST
     path('obtener-horarios-disponibles/', views.obtener_horarios_disponibles, name='obtener_horarios_disponibles'),
+    
 
     # Eliminar horario
     path('eliminar-horario/<int:id>/', views.eliminar_horario, name='eliminar_horario'),
@@ -49,7 +50,7 @@ urlpatterns = [
 
     #Citas Paciente
     path('citas/', views.citas_pac, name='citas'),
-    path('filtrar-estudiantes/', views.filtrar_estudiantes, name='filtrar_estudiantes'),
+    path('cita/anular/<int:cita_id>/', views.anular_cita, name='anular_cita'),
 
     # Añadir a subPage de Estudiante....
     path('estudiante/infopersonal/', views.infoestudiante, name="infoestudiante"),
@@ -57,11 +58,13 @@ urlpatterns = [
     path('estudiante/pacientes_estudiante/', views.pacientes_est, name="pacientes_est"),
     path('estudiante/calendario_est/',  views.calendar_est, name="calendario"), 
     path('crear_historial_medico/<int:paciente_id>/', views.crear_historial_medico, name='crear_historial_medico'),
+    path('filtrar-estudiantes/', views.filtrar_estudiantes, name='filtrar_estudiantes'),
+
 
     #crear ficha paciente
     path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
     path('lista_fichas_clinicas/', views.ver_ficha_clinica, name='lista_fichas_clinicas'),
-    path('horarios/', filtrar_estudiantes, name='horarios'),   
+    path('horarios/', filtrar_estudiantes, name='horarios'),  
     path('ver_ficha_clinica/<int:paciente_id>/', views.ver_ficha_clinica, name='ver_ficha_clinica')
 
 

@@ -46,7 +46,7 @@ class Universidad(models.Model):
     
     def __str__(self):
         return self.nombre
-    
+
 
 class tipoTratamiento(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -55,6 +55,7 @@ class tipoTratamiento(models.Model):
 
     def __str__(self):
         return self.nombreTratamiento
+
 
 
 
@@ -176,3 +177,12 @@ class Historial_Medico(models.Model):
 
 
 
+#NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+class Tratamiento(models.Model): #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    id = models.BigAutoField(primary_key=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    nombre = models.CharField(max_length=100, unique=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    descripcion = models.TextField(null=True, blank=True) #NO OCUPAR ESTA TABLA PORQUE YA ESTA CREADA, BORRAR DESDE EL MYSQL
+    
+    def __str__(self):
+        return self.nombre
+    

@@ -81,40 +81,44 @@ class UserLoginForm(AuthenticationForm):
 class horariosForm(forms.ModelForm):
     class Meta:
          model = horarios
-         fields = ['tipoTratamiento', 'inicio', 'fecha_seleccionada', 'estudiante']
+         fields =['tipoTratamiento',
+                  'inicio',
+                  'fecha_seleccionada',
+                  'estudiante']
 
-    def __init__(self, *args: Any, **kwargs):
-        user = kwargs.pop('user')  # Capturamos el usuario desde los kwargs
+    def __init__(self, *args: Any, user=None, **kwargs):
         super(horariosForm, self).__init__(*args, **kwargs)
-
-        # Filtramos los tratamientos habilitados para el estudiante (usuario)
+        #Add tipo de tratamiento
         self.fields['tipoTratamiento'] = forms.ModelChoiceField(
-            queryset=user.tratamientos.all(),  # Solo los tratamientos del usuario
+            queryset=tipoTratamiento.objects.all(),
             empty_label="Seleccione un Tratamiento",
-            widget=forms.Select(attrs={'class': 'form-control', 'id': 'nombreTratamiento'})
+            widget=forms.Select(attrs={'class':'form-control','id':'nombreTratamiento'})
         )
         self.fields['tipoTratamiento'].label = "Tipo de tratamiento"
         self.fields['tipoTratamiento'].label_from_instance = lambda obj: f"{obj.nombreTratamiento}"
 
-        # Fecha seleccionada
+        if user:
+            self.fields['tipoTratamiento'].queryset = user.tratamientos.all()
+        
+
         self.fields['fecha_seleccionada'] = forms.DateField(
             label="Seleccione su fecha!",
             required=True,
-            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date'}),
-        )
+            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
 
-        # Estudiante (oculto y prellenado)
+        )
+        self.fields['fecha_seleccionada'].widget.attrs.update({'class': 'form-control', 'type':'date'})        
         idTipoEstudiante = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
         self.fields['estudiante'] = forms.ModelChoiceField(
-            queryset=customuser.objects.filter(id_tipo_user=idTipoEstudiante),
+            queryset=customuser.objects.filter(id_tipo_user=idTipoEstudiante), #Modificable
             empty_label=None,
-            widget=forms.Select(attrs={'class': 'form-control', 'hidden': True})
+            widget=forms.Select(attrs={'class':'form-control', 'hidden':True})
         )
         self.fields['estudiante'].label = "Estudiante"
+        # Personalizar el label para mostrar el 'first_name'
         self.fields['estudiante'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
-        # Hora de inicio
-        self.fields['inicio'] = forms.ChoiceField(
+        self.fields['inicio'] = forms.ChoiceField(  #
             label="Hora de inicio:",
             choices=[(inicioB[i], str(inicioA[i])) for i in range(1, len(inicioA))],
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
@@ -183,8 +187,7 @@ class HistorialForm(forms.ModelForm):
 
 class ModificarPerfil(forms.ModelForm):
     tratamientos = forms.ModelMultipleChoiceField(
-        #MODIFICACION PARA QUE SE VEA BIEN LOS TRATAMIENTOS EN INFOPERSONAL queryset=tipoTratamiento.objects.all()
-        queryset=tipoTratamiento.objects.all().order_by('nombreTratamiento'), 
+        queryset=tipoTratamiento.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
@@ -193,19 +196,20 @@ class ModificarPerfil(forms.ModelForm):
         model = customuser
         fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac','universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
 
-    def __init__(self, *args: Any, **kwargs):
-        super(ModificarPerfil, self).__init__(*args, **kwargs)
+    def init(self, *args: Any, **kwargs):
+        super(ModificarPerfil, self).init(*args, **kwargs)
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
-        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre'})
-        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly':True})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly':True})
         self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly':True})
-        self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'disabled':True})
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Ingrese su universidad', 'readonly':True})
+        self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly':True})
+        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electronico', 'readonly':True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su numero de telefono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'descripcion' })
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
-        #MODIFICACION PARA QUE SE VEA BIEN LOS TRATAMIENTOS EN INFOPERSONAL
-        self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox',})
-        
 
+        # Campo de universidad como solo lectura (no editable)
+        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
+
+        self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox',})
