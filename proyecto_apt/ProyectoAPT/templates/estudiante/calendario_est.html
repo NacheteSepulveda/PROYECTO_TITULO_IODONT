@@ -53,6 +53,8 @@
             {% endif %}
 
             <h3>Publicar un Nuevo Horario</h3>
+
+            <p><strong>Estudiante:</strong> {{ user.first_name }} {{ user.last_name }}</p>
             <form method="POST" class="form-publicar-horario">
                 {% csrf_token %}
                 {{ form.as_p }}  <!-- Esto mostrará el formulario con los nombres del tratamiento -->
