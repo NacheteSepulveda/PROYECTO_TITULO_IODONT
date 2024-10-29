@@ -236,7 +236,13 @@ class ModificarPerfil(forms.ModelForm):
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly': True})
         self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly': True})
         self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly': True})
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
+        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'readonly': True})
+        self.fields['universidad']= forms.CharField()
+        self.fields['universidad'] = forms.CharField( #
+            label="Universidad:",
+            widget=forms.Textarea(attrs={'class': 'form-control' , 'readonly':True }),
+            required=False  # This field is optional
+        )
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electrónico', 'readonly': True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})

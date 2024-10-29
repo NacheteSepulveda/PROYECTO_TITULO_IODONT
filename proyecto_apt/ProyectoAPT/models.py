@@ -122,7 +122,8 @@ class customuser(AbstractUser):
             ).values_list('tipoTratamiento_id', flat=True).distinct()
         )
     
-        
+    def obtenerUniversidad (self):
+        return Universidad.objects.get(id=self.id_universidad)['nombre']
 
         
 
