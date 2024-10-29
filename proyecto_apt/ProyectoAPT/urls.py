@@ -42,6 +42,7 @@ urlpatterns = [
     path('login/', views.loginUser, name='login'),
     path('registro/', views.register, name='registro'),
     path('logout/', views.custom_logout, name='logout'),
+    path('obtener-direccion-universidad/', views.obtener_direccion_universidad, name='obtener_direccion_universidad'),
 
     #Servicios
     path('servicios/', views.servicios, name='servicios'),

@@ -167,8 +167,7 @@ class CitaForm(forms.ModelForm):
             'inicio',
             'fecha_seleccionada',
             'estudiante',
-            'paciente',
-            'direccion']
+            'paciente']
 
     def __init__(self, *args: Any, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs)
@@ -203,7 +202,6 @@ class CitaForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
-        self.fields['direccion'].label = "direccion"
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
         self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})
 
@@ -220,6 +218,7 @@ class HistorialForm(forms.ModelForm):
         self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
 
 
+
 class ModificarPerfil(forms.ModelForm):
     tratamientos = forms.ModelMultipleChoiceField(
         queryset=tipoTratamiento.objects.all(),
@@ -227,11 +226,17 @@ class ModificarPerfil(forms.ModelForm):
         required=False
     )
 
+    direccion_universidad = forms.CharField(
+        label="Dirección de la Universidad",
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': True})
+    )
+
     class Meta:
         model = customuser
-        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac','universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
+        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'direccion_universidad', 'email', 'descripcion', 'num_tel', 'tratamientos']
 
-    def __init__(self, *args: Any, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly': True})
@@ -242,7 +247,10 @@ class ModificarPerfil(forms.ModelForm):
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electrónico', 'readonly': True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
-        self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
+
+        # Cargar dirección de la universidad si está definida
+        if self.instance.universidad:
+            self.fields['direccion_universidad'].initial = self.instance.universidad.direccion
 
         # Aseguramos que los checkboxes de tratamientos tampoco se puedan modificar
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})

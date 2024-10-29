@@ -109,6 +109,15 @@ def register(request):
     return render(request, "autorizacion/registro.html", {"form": form})
 
 
+def obtener_direccion_universidad(request):
+    universidad_id = request.GET.get('universidad_id')
+    if universidad_id:
+        universidad = Universidad.objects.filter(id=universidad_id).first()
+        if universidad:
+            return JsonResponse({'direccion': universidad.direccion})
+    return JsonResponse({'direccion': ''})  # Devuelve vacío si no se encuentra la universidad
+
+
 def filtrar_estudiantes(request):
     estudiantes = customuser.objects.filter(id_tipo_user__nombre_tipo_usuario='Estudiante')
     
@@ -143,6 +152,7 @@ def filtrar_estudiantes(request):
 
     }
     return render(request, 'APT/horarios.html', context)
+
 @login_required
 def crear_ficha_paciente(request, user_id):
     try:
@@ -480,6 +490,8 @@ def infoestudiante(request):
             messages.error(request, 'Error al actualizar el perfil')
     return render(request, 'estudiante/infopersonal.html', context)
 
+
+
 @login_required
 def notifiaciones_est(request):
     # Filtramos las citas en las que el estudiante logueado está involucrado
@@ -526,7 +538,7 @@ def pacientes_est(request):
 @login_required
 def citas_pac(request):
     paciente_id = request.user  # Obtener el usuario logueado
-    citas = Cita.objects.filter(paciente=paciente_id)  # Filtrar las citas para el paciente logueado
+    citas = Cita.objects.filter(paciente=paciente_id).select_related('estudiante__universidad')  # Filtrar las citas para el paciente logueado
 
     return render(request, 'APT/citas.html', {
         'citas': citas  # Pasar las citas al contexto

@@ -8,18 +8,24 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Función para mostrar u ocultar el campo de universidad según el tipo de usuario
-        function toggleUniversidadField() {
+        // Mostrar u ocultar los campos de universidad, dirección y certificado según el tipo de usuario
+        function toggleFields() {
             var tipoUsuario = $('#id_id_tipo_user').val();
             if (tipoUsuario == '2') {  // '2' es el ID del tipo 'Estudiante', modificar si es otro
-                $('#universidad-group').show();  
+                $('#universidad-group').show();
+                $('#direccion-universidad-group').show();
+                $('#certificado-group').show();
             } else {
-                $('#universidad-group').hide();  
+                $('#universidad-group').hide();
+                $('#direccion-universidad-group').hide();
+                $('#certificado-group').hide();
                 $('#id_universidad').val('');  // Limpiar el campo de universidad si no es estudiante
+                $('#direccion-universidad').text('');  // Limpiar la dirección de la universidad
+                $('#id_Certificado').val('');  // Limpiar el archivo si no es estudiante
             }
         }
 
-        // Función para asociar universidad según el correo electrónico
+        // Función para asociar la universidad según el correo electrónico
         function asociarUniversidad() {
             var email = $('#id_email').val();
             var dominio = email.split('@')[1];
@@ -32,14 +38,28 @@
             } else {
                 $('#id_universidad').val('');  // Limpiar si no es un correo válido
             }
+            actualizarDireccionUniversidad();  // Actualizar dirección automáticamente
         }
 
-        // Mostrar/ocultar universidad según el tipo de usuario
-        toggleUniversidadField();
+        // Actualizar la dirección de la universidad seleccionada
+        function actualizarDireccionUniversidad() {
+            var universidadID = $('#id_universidad').val();
+            if (universidadID) {
+                $.ajax({
+                    url: '{% url "obtener_direccion_universidad" %}',
+                    data: {'universidad_id': universidadID},
+                    success: function (data) {
+                        $('#direccion-universidad').text(data.direccion);
+                    }
+                });
+            } else {
+                $('#direccion-universidad').text('');
+            }
+        }
 
-        // Cada vez que se cambia el tipo de usuario
+        // Ejecutar toggleFields cuando el tipo de usuario cambia
         $('#id_id_tipo_user').change(function () {
-            toggleUniversidadField();
+            toggleFields();
         });
 
         // Formatear el RUT al perder el enfoque
@@ -49,10 +69,14 @@
             $(this).val(rut_formateado);
         });
 
-        // Detectar cambios en el correo electrónico
+        // Detectar cambios en el correo electrónico y asociar universidad
         $('#id_email').on('input', function () {
-            asociarUniversidad();  // Actualiza el campo de universidad automáticamente
+            asociarUniversidad();
         });
+
+        // Ejecutar las funciones cuando la página cargue por primera vez
+        toggleFields();
+        actualizarDireccionUniversidad();
     });
 </script>
 
@@ -70,7 +94,7 @@
 
 <div class="loginRegister d-flex justify-content-center">
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
-        <form action="{% url 'registro' %}" method="post"enctype="multipart/form-data">
+        <form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
             <h1>Registrarse</h1>
             {% csrf_token %}
             
@@ -101,6 +125,12 @@
                 {% endif %}
             </div>
 
+            <!-- Dirección de la universidad (solo lectura) -->
+            <div class="grupo" id="direccion-universidad-group" style="display: none;">
+                <label>Dirección de la Universidad:</label>
+                <p id="direccion-universidad"></p>
+            </div>
+
             <!-- Nombre -->
             <div class="grupo">
                 <label for="id_first_name">Ingrese nombre:</label>
@@ -128,9 +158,9 @@
                 {% endif %}
             </div>
 
-            <!-- Dirección -->
+            <!-- Dirección de residencia -->
             <div class="grupo">
-                <label for="id_direccion">Ingrese Dirección:</label>
+                <label for="id_direccion">Ingrese Dirección donde Reside:</label>
                 {{ form.direccion }}
                 {% if form.direccion.errors %}
                 <div class="error">{{ form.direccion.errors|join:", " }}</div>
@@ -173,13 +203,8 @@
                 {% endif %}
             </div>
 
-            {% if form.non_field_errors %}
-            <div class="error">{{ form.non_field_errors|join:", " }}</div>
-            {% endif %}
-
-             <!-- Campo de documento PDF (solo para estudiantes) -->
-    
-             <div class="grupo" id="certificado-group" style="display: none;">
+            <!-- Certificado (solo para estudiantes) -->
+            <div class="grupo" id="certificado-group" style="display: none;">
                 <label for="id_Certificado">Certificado PDF:</label>
                 {{ form.Certificado }}
                 {% if form.Certificado.errors %}
@@ -189,30 +214,6 @@
             
             <button type="submit" class="registerbtn">Enviar</button>
         </form>
-        <script>
-            $(document).ready(function () {
-                function toggleFields() {
-                    var tipoUsuario = $('#id_id_tipo_user').val();
-                    if (tipoUsuario == '2') {  // ID de "Estudiante"
-                        $('#universidad-group').show();
-                        $('#certificado-group').show();
-                    } else {
-                        $('#universidad-group').hide();
-                        $('#certificado-group').hide();
-                        $('#id_universidad').val('');
-                        $('#id_Certificado').val('');  // Limpiar archivo si no es estudiante
-                    }
-                }
-        
-                // Ejecutar toggleFields cuando el tipo de usuario cambia
-                $('#id_id_tipo_user').change(function () {
-                    toggleFields();
-                });
-        
-                // Ejecutar toggleFields cuando la página cargue por primera vez
-                toggleFields();
-            });
-        </script>
     </main>
 </div>
 

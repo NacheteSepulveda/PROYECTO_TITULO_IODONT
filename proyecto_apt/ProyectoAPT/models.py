@@ -73,7 +73,7 @@ class customuser(AbstractUser):
     imageBlob = models.ImageField(default="imagenes_usuario/profiledefault.jpg", upload_to='imagenes_usuario/', blank=True, null=True)
     fecha_nac = models.DateField(null=True)
     num_tel = models.IntegerField(null=True , max_length=9)
-    direccion = models.TextField(null=True)
+    direccion = models.TextField(null=True, blank=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
     tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
     Certificado = models.FileField(
