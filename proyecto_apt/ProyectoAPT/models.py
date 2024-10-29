@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
-
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 # Create your models here.
+from datetime import datetime
 
 #TipoUsuario
 class TipoUsuario(models.Model):
@@ -74,7 +76,18 @@ class customuser(AbstractUser):
     direccion = models.TextField(null=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
     tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
-
+    Certificado = models.FileField(
+        upload_to='documentos_estudiantes/',
+        null=True,
+        blank=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['pdf'],
+                message='Solo se permiten archivos PDF'
+            )
+        ],
+        help_text='Sube un certificado en formato PDF'
+    )
     
     
 
@@ -82,6 +95,16 @@ class customuser(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+    def clean(self):
+        super().clean()
+        # Solo validar el certificado durante la creación del usuario, no durante la actualización
+        if not self.pk:  # Si es un nuevo usuario (no tiene primary key)
+            if self.id_tipo_user and self.id_tipo_user.nombre_tipo_usuario == 'Estudiante':
+                if not self.Certificado:
+                    raise ValidationError({
+                        'Certificado': 'El certificado es obligatorio para estudiantes'
+                    })
 
     def save(self, *args, **kwargs):
         if not self.username:  # Generar un username basado en el email
@@ -92,7 +115,12 @@ class customuser(AbstractUser):
         return self.email
     
     def obtenerTratamiento(self):
-        return self.tratamientos.all()
+         return tipoTratamiento.objects.filter(
+        id__in=horarios.objects.filter(
+            estudiante=self,
+            fecha_seleccionada__gte=datetime.now().date()  # Solo fechas futuras
+        ).values_list('tipoTratamiento_id', flat=True).distinct()
+    )
     
         
 

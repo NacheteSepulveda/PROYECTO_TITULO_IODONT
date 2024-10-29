@@ -56,7 +56,7 @@ def register_user(request):
 
 def register(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)  # Agregamos request.FILES
         if form.is_valid():
             email = form.cleaned_data.get('email')
             rut = form.cleaned_data.get('rut')
@@ -81,22 +81,28 @@ def register(request):
                 
                 user = form.save(commit=False)
                 user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
+                
+                 # Si es estudiante, verificar que se haya subido el certificado
+                tipo_usuario = TipoUsuario.objects.get(id=form.cleaned_data['id_tipo_user'].id)
+                if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
+                    if 'Certificado' not in request.FILES:
+                        messages.error(request, 'Debe subir un certificado PDF para registrarse como estudiante.')
+                        return render(request, "autorizacion/registro.html", {"form": form})
+                    # Asignar el certificado al usuario
+                    user.Certificado = request.FILES['Certificado']
+                
                 user.save()
-
                 login(request, user)
                 messages.success(request, '¡Registro Exitoso!')
 
-                tipo_usuario = TipoUsuario.objects.get(id=user.id_tipo_user_id)
-
-                # Redirigimos según el tipo de usuario
+                # Redirigir según el tipo de usuario
                 if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
-                    return redirect('infoestudiante')  # Redirige a la vista de infoestudiante
+                    return redirect('infoestudiante')
                 elif tipo_usuario.nombre_tipo_usuario == 'Paciente':
-                    return redirect('index')  # Redirige a la página principal o cualquier otra página
+                    return redirect('index')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-
     else:
         form = CustomUserCreationForm()
 
@@ -121,7 +127,10 @@ def filtrar_estudiantes(request):
         estudiantes = estudiantes.filter(universidad_id=universidad_id)
     
     if tratamiento_id:
-        estudiantes = estudiantes.filter(tratamientos__id=tratamiento_id)
+        estudiantes = estudiantes.filter(
+            horarios_estudiante__tipoTratamiento_id=tratamiento_id,
+            horarios_estudiante__fecha_seleccionada__gte=datetime.now().date()
+        ).distinct()
     
     universidades = Universidad.objects.all()
     tratamientos = tipoTratamiento.objects.all()
@@ -266,7 +275,7 @@ def obtener_horarios_disponibles(request):
         fecha_seleccionada = request.GET.get('fecha_seleccionada')
         
         # Obtener solo los horarios del estudiante con id_tipo_user = 2
-        estudiante_id = 2  # ID del estudiante
+        estudiante_id = request.GET.get('estudiante_id')  # ID del estudiante
 
         idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario = 'Estudiante').first()
 
@@ -453,12 +462,24 @@ def infoestudiante(request):
         form = ModificarPerfil(request.POST,request.FILES, instance=estudiante)
         print(request.POST)
         if form.is_valid():
-            form.save()
+            usuario = form.save(commit=False)
+            # Conservar el certificado existente
+            if hasattr(estudiante, 'Certificado') and estudiante.Certificado:
+                usuario.Certificado = estudiante.Certificado
+            # Si se subió un nuevo certificado, actualizarlo
+            if 'Certificado' in request.FILES:
+                usuario.Certificado = request.FILES['Certificado']
+            usuario.save()
+            
+            # Guardar las relaciones many-to-many (tratamientos)
+            form.save_m2m()
+            
+            messages.success(request, 'Perfil actualizado exitosamente')
             return HttpResponseRedirect(reverse('infoestudiante'))
         else:
             print(form.errors)
-    return render(request, 'estudiante/infopersonal.html', context )
-
+            messages.error(request, 'Error al actualizar el perfil')
+    return render(request, 'estudiante/infopersonal.html', context)
 
 @login_required
 def notifiaciones_est(request):

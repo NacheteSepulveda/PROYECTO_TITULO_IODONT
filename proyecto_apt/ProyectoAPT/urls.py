@@ -67,7 +67,7 @@ urlpatterns = [
     path('horarios/', filtrar_estudiantes, name='horarios'),  
     path('ver_ficha_clinica/<int:paciente_id>/', views.ver_ficha_clinica, name='ver_ficha_clinica')
 
-
+     
     
 
 ]

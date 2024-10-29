@@ -70,7 +70,7 @@
 
 <div class="loginRegister d-flex justify-content-center">
     <main id="formLoginRegister" class="form-signin w-100 formLoginRegister">
-        <form action="{% url 'registro' %}" method="post">
+        <form action="{% url 'registro' %}" method="post"enctype="multipart/form-data">
             <h1>Registrarse</h1>
             {% csrf_token %}
             
@@ -176,9 +176,43 @@
             {% if form.non_field_errors %}
             <div class="error">{{ form.non_field_errors|join:", " }}</div>
             {% endif %}
+
+             <!-- Campo de documento PDF (solo para estudiantes) -->
+    
+             <div class="grupo" id="certificado-group" style="display: none;">
+                <label for="id_Certificado">Certificado PDF:</label>
+                {{ form.Certificado }}
+                {% if form.Certificado.errors %}
+                <div class="error">{{ form.Certificado.errors|join:", " }}</div>
+                {% endif %}
+            </div>
             
             <button type="submit" class="registerbtn">Enviar</button>
         </form>
+        <script>
+            $(document).ready(function () {
+                function toggleFields() {
+                    var tipoUsuario = $('#id_id_tipo_user').val();
+                    if (tipoUsuario == '2') {  // ID de "Estudiante"
+                        $('#universidad-group').show();
+                        $('#certificado-group').show();
+                    } else {
+                        $('#universidad-group').hide();
+                        $('#certificado-group').hide();
+                        $('#id_universidad').val('');
+                        $('#id_Certificado').val('');  // Limpiar archivo si no es estudiante
+                    }
+                }
+        
+                // Ejecutar toggleFields cuando el tipo de usuario cambia
+                $('#id_id_tipo_user').change(function () {
+                    toggleFields();
+                });
+        
+                // Ejecutar toggleFields cuando la página cargue por primera vez
+                toggleFields();
+            });
+        </script>
     </main>
 </div>
 

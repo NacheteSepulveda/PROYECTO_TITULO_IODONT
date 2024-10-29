@@ -58,14 +58,14 @@
                             <h3 class="card-title">{{ estudiante.first_name }} {{ estudiante.last_name }}</h3>
                             <p class="card-text">{{ estudiante.descripcion|linebreaksbr }}</p>
                             <p>Universidad: {{ estudiante.universidad.nombre }}</p>
-                            <p>Tratamientos: {{estudiante.tipotratamiento}}</p>
+                            <p>Tratamientos Disponibles:</p>
                             <ul>
-                                {% for tratamiento in estudiante.tratamientos.all %}
+                                {% for tratamiento in estudiante.obtenerTratamiento %}
                                 <li>{{ tratamiento.nombreTratamiento }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
-<div class="card-footer">
+                        <div class="card-footer">
                             <a href="{% url 'tratamientosEstudiante' estudiante.id %}" class="btn btn-primary">Agendar
                                 Cita</a>
                         </div>
