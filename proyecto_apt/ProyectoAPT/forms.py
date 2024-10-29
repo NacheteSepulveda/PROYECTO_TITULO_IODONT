@@ -224,29 +224,30 @@ class ModificarPerfil(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+    universidad = forms.CharField(
+        label="Universidad:",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+        required=False
+    )
 
     class Meta:
         model = customuser
-        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac','universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
+        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
 
     def __init__(self, *args: Any, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
+        # Si existe una instancia (el usuario), asigna el nombre de la universidad
+        if self.instance and self.instance.universidad:
+            self.fields['universidad'].initial = self.instance.universidad.nombre
+
+        # Configuración de otros campos
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly': True})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly': True})
         self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly': True})
         self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly': True})
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'readonly': True})
-        self.fields['universidad']= forms.CharField()
-        self.fields['universidad'] = forms.CharField( #
-            label="Universidad:",
-            widget=forms.Textarea(attrs={'class': 'form-control' , 'readonly':True }),
-            required=False  # This field is optional
-        )
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electrónico', 'readonly': True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
-
-        # Aseguramos que los checkboxes de tratamientos tampoco se puedan modificar
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})
