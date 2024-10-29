@@ -1,61 +1,76 @@
-.alert-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1050; /* Para asegurar que esté por encima de otros elementos */
+/* Contenedor principal centrado */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
 }
 
+/* Título centrado */
+h2 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #007BFF;
+}
+
+/* Subtítulo debajo del título principal */
+.subtitle {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 2rem;
+}
+
+/* Contenedor de la cuadrícula */
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Tamaño mínimo para que se adapten */
+    gap: 1.5rem;
+    justify-content: right;
+    max-width: 900px; /* Limitar el ancho para que se vea más centrado */
 }
 
+/* Botones de tratamiento con estilo cuadrado */
 .anchor-item {
-    padding: 1rem;
-    font-size: 1.1rem;
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 1rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    width: 10rem;
-    height: 10rem;
+    justify-content: center;
     background-color: #007BFF;
+    color: white;
     text-align: center;
     text-decoration: none;
-    color: white;
-    white-space: normal; /* Allow text to wrap */
-    border: 1px solid transparent;
-    border-top-color: transparent;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
-    border-radius: 10rem;
-    padding: .375rem .75rem;
-    line-height: 1.5;
-    border-radius: .25rem;
-    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    border-radius: 10px;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .grid-container {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto;
-    }
+/* Hover effect */
+.anchor-item:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Icono dentro del botón */
+.anchor-item img {
+    width: 40px; /* Tamaño del icono */
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+/* Ajustes responsivos */
 @media (max-width: 768px) {
     .grid-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
 }
 
 @media (max-width: 480px) {
-    .grid-item {
-        font-size: 1.2rem;
-        padding: 0.5rem;
-
+    .anchor-item {
+        font-size: 0.9rem;
     }
 }

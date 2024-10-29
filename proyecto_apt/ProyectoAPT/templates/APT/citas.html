@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 <main>
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
     <div class="container mt-5">
         <h2>Mis Citas</h2>
         <table class="table table-striped">

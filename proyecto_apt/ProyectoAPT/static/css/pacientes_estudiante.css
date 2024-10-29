@@ -36,6 +36,12 @@ body {
   padding: 20px 0;
 }
 
+
+.sidebar a:hover {
+  text-decoration: underline;
+  color: white !important;
+}
+
 .pacientesCss {
   flex-grow: 1;
   padding: 20px;

@@ -38,6 +38,11 @@ body {
   padding: 20px 0;
 }
 
+.sidebar a:hover {
+  text-decoration: underline;
+  color: white !important;
+}
+
 .infoPe {
   flex-grow: 1;
   background-color: #ffffff;

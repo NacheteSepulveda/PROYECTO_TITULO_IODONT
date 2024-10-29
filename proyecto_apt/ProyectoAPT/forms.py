@@ -229,20 +229,18 @@ class ModificarPerfil(forms.ModelForm):
         model = customuser
         fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac','universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
 
-    def init(self, *args: Any, **kwargs):
-        super(ModificarPerfil, self).init(*args, **kwargs)
+    def __init__(self, *args: Any, **kwargs):
+        super(ModificarPerfil, self).__init__(*args, **kwargs)
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
-        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly':True})
-        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly':True})
-        self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly':True})
-        self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly':True})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly': True})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly': True})
+        self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly': True})
+        self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly': True})
         self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
-        self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electronico', 'readonly':True})
-        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su numero de telefono'})
-        self.fields['descripcion'].widget.attrs.update({'placeholder': 'descripcion' })
+        self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electrónico', 'readonly': True})
+        self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
+        self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
 
-        # Campo de universidad como solo lectura (no editable)
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
-
-        self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox',})
+        # Aseguramos que los checkboxes de tratamientos tampoco se puedan modificar
+        self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})
