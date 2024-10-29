@@ -1,30 +1,33 @@
-    {% extends "base.html" %}
-    {% block content %}
-    {% load crispy_forms_tags %}
-    {% load static %}
+{% extends "base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-    <link type="text/css" rel="stylesheet" href='{% static "css/agenda_cita.css" %}'>
+<link type="text/css" rel="stylesheet" href='{% static "css/agenda_cita.css" %}'>
 
-    <main>
-        <!-- Bloque para mostrar mensajes de error o éxito -->
-        {% if messages %}
-            <div>
-                {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+<main class="container">
+    <!-- Bloque para mostrar mensajes de error o éxito -->
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        <h2>Seleccione el Tratamiento Deseado</h2>
+    <main class="container">
+        <!-- Título y subtítulo -->
+        <h2>¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
+        <p class="subtitle">Elige el servicio que necesitas agendar.</p>
 
         <form action="" method="post">
             {% csrf_token %}
-            <div class="grid-container" style="width: 830px;">
+            <div class="grid-container">
                 {% for tratamiento in estudiante.obtenerTratamiento %}
-                    <div class="grid-item" style="height: 200px; width:168px;">
-                        <!-- Opción de tratamiento  class="btn btn-primary"-->
+                    <div class="grid-item">
+                        <!-- Botón de tratamiento -->
                         <a
                             name="tratamiento"
                             id="id_tratamiento_{{ tratamiento.id }}"
@@ -43,13 +46,10 @@
                 {{ form.tratamiento }} 
                 <input type="hidden" name="tipotratamiento" id="nombreTratamiento" value="">
                 <input type="text" name="paciente" id="id_paciente" hidden value="{{ actualUser }}">
-                <input type="hidden" name="estudiante" id="id_estudiante" hidden value="{{estudiante.id}}">
-
+                <input type="hidden" name="estudiante" id="id_estudiante" hidden value="{{ estudiante.id }}">
             </div>
 
             <!-- Modal -->
-
-            
             <div class="modal fade" id="modalTratamiento" tabindex="-1" aria-labelledby="modalTratamientoLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -60,7 +60,7 @@
                         <div class="modal-body">
                             <!-- Nombre del tratamiento -->
                             <h3 id="tratamientoNombre"></h3>
-            
+
                             <!-- Fecha seleccionada -->
                             <div class="form-group">
                                 <label for="id_fecha_seleccionada">{{ form.fecha_seleccionada.label }}</label>
@@ -89,60 +89,52 @@
         </form>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var modalTratamiento = document.getElementById('modalTratamiento');
-            var tratamientoInput = document.getElementById('nombreTratamiento');  // Campo oculto que se enviará
-            var horariosSelect = document.getElementById('id_HorIni');
-            var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada'); 
-            var noHorariosMessage = document.getElementById('no-horarios-message');  // Elemento para mostrar el mensaje de "No Hay Horarios Disponibles"
-            var estudianteInput = document.getElementById('id_estudiante');
-            modalTratamiento.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;  // Botón que abrió el modal
-                var tratamientoId = button.getAttribute('data-tratamiento-id');
-                var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
-        
-                // Actualizar el campo oculto con el ID del tratamiento
-                tratamientoInput.value = tratamientoId;
-        
-                // Actualizar el nombre del tratamiento en el modal
-                var tratamientoNombreElement = document.getElementById('tratamientoNombre');
-                tratamientoNombreElement.textContent = tratamientoNombre;
-        
-                // Cuando se selecciona una fecha, obtenemos los horarios disponibles
-                fechaSeleccionadaInput.addEventListener('change', function () {
-                    var fechaSeleccionada = this.value;
-        
-                    if (tratamientoId && fechaSeleccionada) {
-                        // Llamada AJAX para obtener los horarios disponibles
-                        fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}&estudiante_id=${estudianteInput.value}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            horariosSelect.innerHTML = '';  // Limpiar los horarios previos
-        
-                            if (data.length > 0) {
-                                noHorariosMessage.style.display = 'none';  // Ocultar el mensaje si hay horarios disponibles
-        
-                                // Agregar los horarios disponibles
-                                data.forEach(function(horario) {
-                                    var option = document.createElement('option');
-                                    option.value = horario.inicio;
-                                    option.text = horario.inicio;  // Mostramos el rango de horas
-                                    horariosSelect.appendChild(option);
-                                });
-                            } else {
-                                horariosSelect.innerHTML = '';  // Limpiar el select si no hay horarios
-                                noHorariosMessage.style.display = 'block';  // Mostrar el mensaje de "No Hay Horarios Disponibles"
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Hubo un problema con la petición Fetch:', error);
-                        });
-                    }
-                });
-            });
-        });
-        
-    </script>
+<script>
+// JavaScript para gestionar el modal y la obtención de horarios
+document.addEventListener('DOMContentLoaded', function() {
+    var modalTratamiento = document.getElementById('modalTratamiento');
+    var tratamientoInput = document.getElementById('nombreTratamiento');
+    var horariosSelect = document.getElementById('id_HorIni');
+    var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada');
+    var noHorariosMessage = document.getElementById('no-horarios-message');
+    var estudianteInput = document.getElementById('id_estudiante');
 
-    {% endblock %}
+    modalTratamiento.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var tratamientoId = button.getAttribute('data-tratamiento-id');
+        var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
+
+        tratamientoInput.value = tratamientoId;
+        document.getElementById('tratamientoNombre').textContent = tratamientoNombre;
+
+        fechaSeleccionadaInput.addEventListener('change', function () {
+            var fechaSeleccionada = this.value;
+
+            if (tratamientoId && fechaSeleccionada) {
+                fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}&estudiante_id=${estudianteInput.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    horariosSelect.innerHTML = '';
+                    if (data.length > 0) {
+                        noHorariosMessage.style.display = 'none';
+                        data.forEach(function(horario) {
+                            var option = document.createElement('option');
+                            option.value = horario.inicio;
+                            option.text = horario.inicio;
+                            horariosSelect.appendChild(option);
+                        });
+                    } else {
+                        horariosSelect.innerHTML = '';
+                        noHorariosMessage.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Hubo un problema con la petición Fetch:', error);
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
