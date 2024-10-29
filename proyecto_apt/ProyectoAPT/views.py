@@ -307,7 +307,6 @@ def tratamientosForm(request, estudianteID):
     actualUser = request.user.id
     
     context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
-
     if request.method == 'POST':
         form = CitaForm(request.POST)
         if form.is_valid():
@@ -509,6 +508,7 @@ def pacientes_est(request):
                        .filter(paciente=paciente, estudiante=estudiante)
                        .order_by('-fecha_seleccionada', '-inicio')
                        .first())  # Obtenemos la última cita de cada paciente
+        print(ultima_cita)
         if ultima_cita:
             tratamientos_por_paciente[paciente.id] = {
                 'tratamiento': ultima_cita.tipotratamiento.nombreTratamiento,
@@ -587,3 +587,43 @@ def ver_ficha_clinica(request, paciente_id):
         'paciente': paciente,
         'ficha_clinica': ficha_clinica,
     })
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
+def exportar_ficha_paciente(request, user_id=None):
+    # Obtener los datos del paciente en el queryset actualFicha
+    actualFicha = FichaClinica.objects.filter(paciente=user_id).values()
+    
+    # Crear la respuesta HTTP para el PDF
+    contentDisposition = f'attachment; filename=fichaClinica_{str(user_id)}.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = contentDisposition
+    
+    # Crear el canvas de ReportLab para el PDF
+    pdf = canvas.Canvas(response, pagesize=A4)
+    pdf.setTitle(f"Ficha Clínica - Paciente {user_id}")
+
+    # Configurar el tamaño y las posiciones iniciales
+    ancho, alto = A4
+    y = alto - 40  # Posición inicial de Y para empezar a escribir desde arriba
+
+    # Títulos de la ficha
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, y, f"Ficha Clínica - Paciente {user_id}")
+    y -= 30  # Bajar un poco para las siguientes líneas
+
+    # Configurar texto para cada campo en actualFicha
+    pdf.setFont("Helvetica", 12)
+    for ficha in actualFicha:
+        for campo, valor in ficha.items():
+            pdf.drawString(50, y, f"{campo.capitalize()}: {valor}")
+            y -= 20  # Mover hacia abajo para la siguiente línea
+
+        y -= 10  # Espacio adicional entre registros de ficha si hay más de uno
+
+    # Finalizar el PDF
+    pdf.showPage()
+    pdf.save()
+    
+    return response

@@ -29,5 +29,16 @@
         <div class="ficha-label">Teléfono de Emergencia:</div>
         <div class="ficha-content">{{ ficha_clinica.telefono_contacto_emergencia }}</div>
     </div>
+    <div class="ficha-item">    
+            <a
+                name="Btn-exportar"
+                id="exportar"
+                class="btn btn-primary"
+                type="button"
+                value="Button"
+                href="{% url 'fichaExportar' ficha_clinica.paciente.id %}"
+            >Exportar</a>
+            
+    </div>
 </div>
 {% endblock %}

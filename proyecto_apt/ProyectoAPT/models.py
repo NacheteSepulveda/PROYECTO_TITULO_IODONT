@@ -115,12 +115,12 @@ class customuser(AbstractUser):
         return self.email
     
     def obtenerTratamiento(self):
-         return tipoTratamiento.objects.filter(
-        id__in=horarios.objects.filter(
-            estudiante=self,
-            fecha_seleccionada__gte=datetime.now().date()  # Solo fechas futuras
-        ).values_list('tipoTratamiento_id', flat=True).distinct()
-    )
+        return tipoTratamiento.objects.filter(
+            id__in=horarios.objects.filter(
+                estudiante=self,
+                fecha_seleccionada__gte=datetime.now().date()  # Solo fechas futuras
+            ).values_list('tipoTratamiento_id', flat=True).distinct()
+        )
     
         
 
