@@ -64,10 +64,12 @@ urlpatterns = [
     #crear ficha paciente
     path('crear-ficha/<int:user_id>/', views.crear_ficha_paciente, name='crear_ficha_paciente'),
     path('lista_fichas_clinicas/', views.ver_ficha_clinica, name='lista_fichas_clinicas'),
+    path('fichaExportar/<int:user_id>', views.exportar_ficha_paciente, name='fichaExportar'),
+    
     path('horarios/', filtrar_estudiantes, name='horarios'),  
     path('ver_ficha_clinica/<int:paciente_id>/', views.ver_ficha_clinica, name='ver_ficha_clinica')
 
-
+     
     
 
 ]

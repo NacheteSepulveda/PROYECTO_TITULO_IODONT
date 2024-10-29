@@ -70,7 +70,19 @@ textarea {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+.registerbtn, .btn-primary {
+    width: auto;  /* o un tamaño específico como 200px */
+    padding:  20px;
+    margin: 10px 0;
+    font-size: 16px;
+}
 
+/* Si el botón es de tipo submit */
+input[type="submit"] {
+    width: auto;  /* o un tamaño específico */
+    padding: 10px 20px;
+    margin: 10px 0;
+}
 .registerbtn:hover {
     background-color: #0056b3;
 }
@@ -117,4 +129,20 @@ textarea {
     textarea {
         font-size: 14px;
     }
+}
+/* CSS PARA EL DOCUMENTO PDF*/
+
+/* Para el campo de archivo */
+input[type="file"] {
+    width: auto;
+    max-width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+/* Para el contenedor del campo de archivo */
+.grupo input[type="file"] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
 }

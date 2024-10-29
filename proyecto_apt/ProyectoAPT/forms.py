@@ -5,6 +5,7 @@ from django import forms #importa formularios
 from typing import Any #Te entrega todo (preguntarle a chatgpt)
 from django.utils import timezone
 from datetime import datetime, timedelta, time
+from django.core.validators import FileExtensionValidator
 
 # Set default values to use:
 inicioB = ["",time(9,0), time(11,0), time(13,0), time(15,0), time(17,00), time(19,00)]
@@ -23,10 +24,16 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad', 'Certificado']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+         # Configuración del campo Certificado
+        self.fields['Certificado'] = forms.FileField(
+            required=False,
+            validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
+            widget=forms.FileInput(attrs={'accept': 'application/pdf'})
+        )
         self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Nombre'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Apellido'})
@@ -35,7 +42,6 @@ class CustomUserCreationForm(UserCreationForm):
             label="Seleccione su fecha!",
             required=True,
             widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
-
         )
         self.fields['fecha_nac'].widget.attrs.update({'class': 'form-control', 'type':'date'})   
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese Número - 9 digitos','min':'4'})
@@ -44,6 +50,33 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
         self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
+        
+       
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_usuario = cleaned_data.get('id_tipo_user')
+        certificado = cleaned_data.get('Certificado')
+        
+        if tipo_usuario and tipo_usuario.id == 2:  # ID para estudiante
+            if not certificado:
+                raise forms.ValidationError(
+                    "El certificado PDF es obligatorio para estudiantes."
+                )
+        return cleaned_data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_usuario = cleaned_data.get('id_tipo_user')
+        documento = cleaned_data.get('Certificado')
+        
+        if tipo_usuario and tipo_usuario.id == 2:  # ID para estudiante
+            if not documento:
+                raise forms.ValidationError(
+                    "El documento PDF es obligatorio para estudiantes."
+                )
+        return cleaned_data
+
 
 
 class FichaClinicaForm(forms.ModelForm):
