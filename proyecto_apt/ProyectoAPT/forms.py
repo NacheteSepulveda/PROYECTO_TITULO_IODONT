@@ -167,7 +167,8 @@ class CitaForm(forms.ModelForm):
             'inicio',
             'fecha_seleccionada',
             'estudiante',
-            'paciente']
+            'paciente',
+            'direccion']
 
     def __init__(self, *args: Any, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs)
@@ -202,6 +203,7 @@ class CitaForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
+        self.fields['direccion'].label = "direccion"
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
         self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})
 

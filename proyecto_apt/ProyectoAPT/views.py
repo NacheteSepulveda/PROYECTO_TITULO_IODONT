@@ -594,23 +594,28 @@ from reportlab.pdfgen import canvas
 def exportar_ficha_paciente(request, user_id=None):
     # Obtener los datos del paciente en el queryset actualFicha
     actualFicha = FichaClinica.objects.filter(paciente=user_id).values()
-    
+
+    #Obtener el nombre y apellido del paciente
+    paciente = customuser.objects.get(id=user_id)
+    nombre_completo = f"{paciente.first_name} {paciente.last_name}"
+
     # Crear la respuesta HTTP para el PDF
-    contentDisposition = f'attachment; filename=fichaClinica_{str(user_id)}.pdf'
+    contentDisposition = f'attachment; filename=fichaClinica{nombre_completo}.pdf'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = contentDisposition
-    
+
     # Crear el canvas de ReportLab para el PDF
     pdf = canvas.Canvas(response, pagesize=A4)
-    pdf.setTitle(f"Ficha Clínica - Paciente {user_id}")
+    pdf.setTitle(f"Ficha Clínica - Paciente {nombre_completo}")
 
     # Configurar el tamaño y las posiciones iniciales
     ancho, alto = A4
     y = alto - 40  # Posición inicial de Y para empezar a escribir desde arriba
+    ancho - 40
 
     # Títulos de la ficha
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, f"Ficha Clínica - Paciente {user_id}")
+    pdf.drawString(50, y, f"Ficha Clínica - Paciente: {nombre_completo}")
     y -= 30  # Bajar un poco para las siguientes líneas
 
     # Configurar texto para cada campo en actualFicha
@@ -625,5 +630,5 @@ def exportar_ficha_paciente(request, user_id=None):
     # Finalizar el PDF
     pdf.showPage()
     pdf.save()
-    
+
     return response
