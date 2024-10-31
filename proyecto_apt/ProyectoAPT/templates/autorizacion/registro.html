@@ -156,10 +156,19 @@
 
             <!-- Dirección de residencia -->
             <div class="grupo">
-                <label for="id_direccion">Ingrese Dirección de Universidad:</label>
+                <label for="id_direccion">Ingrese su Dirección:</label>
                 {{ form.direccion }}
                 {% if form.direccion.errors %}
                 <div class="error">{{ form.direccion.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Confirmación de contraseña -->
+            <div class="grupo">
+                <label for="id_comuna">Ingrese Comuna:</label>
+                {{ form.comuna }}
+                {% if form.comuna.errors %}
+                <div class="error">{{ form.comuna.errors|join:", " }}</div>
                 {% endif %}
             </div>
 

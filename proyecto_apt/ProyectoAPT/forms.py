@@ -24,7 +24,7 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad', 'Certificado']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad', 'Certificado', 'comuna']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
@@ -50,6 +50,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
         self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
+        self.fields['comuna'].widget.attrs.update({'placeholder': 'Universidad'})
         
        
 
@@ -225,15 +226,20 @@ class ModificarPerfil(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+
     class Meta:
         model = customuser
-        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
+        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'comuna', 'tratamientos']
 
     def __init__(self, *args, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
-        # Si existe una instancia (el usuario), asigna el nombre de la universidad
-        if self.instance and self.instance.universidad:
-            self.fields['universidad'].initial = self.instance.universidad.nombre
+        
+        # Si existe una instancia (el usuario), asigna el nombre de la universidad y comuna
+        if self.instance:
+            if self.instance.universidad:
+                self.fields['universidad'].initial = self.instance.universidad.nombre
+            if self.instance.comuna:
+                self.fields['comuna'].initial = self.instance.comuna.nombreComuna
 
         # Configuración de otros campos
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
@@ -245,4 +251,9 @@ class ModificarPerfil(forms.ModelForm):
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
+
+        # Configurar campos de solo lectura para universidad y comuna
+        self.fields['universidad'].widget.attrs.update({'readonly': True})
+        self.fields['comuna'].widget.attrs.update({'readonly': True})
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})
+        

@@ -59,6 +59,12 @@ class tipoTratamiento(models.Model):
     def __str__(self):
         return self.nombreTratamiento
 
+class Comuna(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombreComuna= models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombreComuna
 
 
 
@@ -75,6 +81,7 @@ class customuser(AbstractUser):
     num_tel = models.IntegerField(null=True, max_length=9)
     direccion = models.TextField(null=True, blank=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
+    comuna = models.ForeignKey(Comuna, on_delete=models.SET_NULL, null=True, blank=True)
     tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
     Certificado = models.FileField(
         upload_to='documentos_estudiantes/',

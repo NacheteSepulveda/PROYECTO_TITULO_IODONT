@@ -541,30 +541,47 @@ def eliminar_horario(request, id):
 
 @login_required
 def infoestudiante(request):
-    estudiante=request.user
+    estudiante = request.user
+    
+    # Crear el formulario con la instancia del usuario actual
     form = ModificarPerfil(instance=estudiante)
-    context = {'form': form,'user':estudiante , 'user': request.user}
+    
+    # Inicializar los valores de universidad y comuna en el formulario para mostrarlos como solo lectura
+    if estudiante.universidad:
+        form.fields['universidad'].initial = estudiante.universidad.nombre
+    if estudiante.comuna:
+        form.fields['comuna'].initial = estudiante.comuna.nombreComuna
+
+    context = {'form': form, 'user': estudiante}
+
     if request.method == 'POST':
-        form = ModificarPerfil(request.POST,request.FILES, instance=estudiante)
-        print(request.POST)
+        form = ModificarPerfil(request.POST, request.FILES, instance=estudiante)
+        
         if form.is_valid():
             usuario = form.save(commit=False)
-            # Conservar el certificado existente
+            
+            # Conservar el certificado existente si no se sube uno nuevo
             if hasattr(estudiante, 'Certificado') and estudiante.Certificado:
                 usuario.Certificado = estudiante.Certificado
-            # Si se subió un nuevo certificado, actualizarlo
             if 'Certificado' in request.FILES:
                 usuario.Certificado = request.FILES['Certificado']
+            
             usuario.save()
-            
-            # Guardar las relaciones many-to-many (tratamientos)
-            form.save_m2m()
-            
+            form.save_m2m()  # Guardar relaciones many-to-many (tratamientos)
+
             messages.success(request, 'Perfil actualizado exitosamente')
             return HttpResponseRedirect(reverse('infoestudiante'))
+        
         else:
-            print(form.errors)
             messages.error(request, 'Error al actualizar el perfil')
+            print(form.errors)  # Mostrar errores en la consola para depuración
+
+    # Actualizar los campos no editables en el formulario después de la actualización
+    if estudiante.universidad:
+        form.fields['universidad'].initial = estudiante.universidad.nombre
+    if estudiante.comuna:
+        form.fields['comuna'].initial = estudiante.comuna.nombreComuna
+
     return render(request, 'estudiante/infopersonal.html', context)
 
 

@@ -22,6 +22,7 @@
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Direccion</th>
+                    <th>Comuna</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,7 @@
                     <td>{{ cita.fecha_seleccionada }}</td>
                     <td>{{ cita.inicio }}</td>
                     <td>{{ cita.estudiante.direccion }}</td>
+                    <td>{{ cita.estudiante.comuna }}</td>
                     <td>
                         <!-- Botón para anular la cita -->
                         <a href="{% url 'anular_cita' cita.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas anular esta cita?');">
