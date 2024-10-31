@@ -66,10 +66,13 @@
                 IODONT conecta a los estudiantes más disciplinados y confiables para que el paciente esté siempre cómodo y
                 satisfecho.
             </p>
+
             {% if user.id_tipo_user.nombre_tipo_usuario == "Paciente" %}
                 <a href="{% url 'horarios' %}" class="cta-button">Reserva Tu Hora</a>
-                {% else %}
+                {% elif user.id_tipo_user.nombre_tipo_usuario == "Estudiante" %}
                     <a href="{% url 'infoestudiante' %}" class="cta-button">Volver a Tu Perfil</a>
+                {% else %}
+                    <a href="{% url 'horarios' %}" class="cta-button">Reserva Tu Hora</a>
             
             {% endif %}
             

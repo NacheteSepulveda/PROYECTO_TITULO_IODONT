@@ -225,32 +225,24 @@ class ModificarPerfil(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-
-    direccion_universidad = forms.CharField(
-        label="Dirección de la Universidad",
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': True})
-    )
-
     class Meta:
         model = customuser
-        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'direccion_universidad', 'email', 'descripcion', 'num_tel', 'tratamientos']
+        fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
 
     def __init__(self, *args, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
+        # Si existe una instancia (el usuario), asigna el nombre de la universidad
+        if self.instance and self.instance.universidad:
+            self.fields['universidad'].initial = self.instance.universidad.nombre
+
+        # Configuración de otros campos
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese su nombre', 'readonly': True})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese Apellido', 'readonly': True})
         self.fields['rut'].widget.attrs.update({'placeholder': 'Ingrese Rut', 'readonly': True})
         self.fields['fecha_nac'].widget.attrs.update({'placeholder': 'Ingrese su fecha de nacimiento', 'readonly': True})
-        self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad', 'disabled': True})
         self.fields['email'].widget.attrs.update({'placeholder': 'Ingrese su correo electrónico', 'readonly': True})
         self.fields['num_tel'].widget.attrs.update({'placeholder': 'Ingrese su número de teléfono'})
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
-
-        # Cargar dirección de la universidad si está definida
-        if self.instance.universidad:
-            self.fields['direccion_universidad'].initial = self.instance.universidad.direccion
-
-        # Aseguramos que los checkboxes de tratamientos tampoco se puedan modificar
+        self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})

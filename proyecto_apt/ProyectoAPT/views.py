@@ -79,11 +79,6 @@ def register(request):
                 # Asignar la universidad automáticamente en función del dominio
                 if "uch.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
-                elif "ua.cl" in dominio:
-                    universidad = get_object_or_404(Universidad, nombre="Universidad Autónoma")
-                elif "uc.cl" in dominio:
-                    universidad = get_object_or_404(Universidad, nombre="Universidad Católica")
-                
                 user = form.save(commit=False)
                 user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
                 user.estado_aprobacion = 'pendiente'  # Asignar el estado inicial como "pendiente"

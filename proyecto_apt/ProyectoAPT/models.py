@@ -135,6 +135,8 @@ class customuser(AbstractUser):
         return self.estado_aprobacion == 'aprobado'
     
         
+    def obtenerUniversidad (self):
+        return Universidad.objects.get(id=self.id_universidad)['nombre']
 
         
 

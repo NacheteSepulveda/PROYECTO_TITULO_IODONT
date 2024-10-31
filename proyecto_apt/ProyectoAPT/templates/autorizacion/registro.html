@@ -125,11 +125,7 @@
                 {% endif %}
             </div>
 
-            <!-- Dirección de la universidad (solo lectura) -->
-            <div class="grupo" id="direccion-universidad-group" style="display: none;">
-                <label>Dirección de la Universidad:</label>
-                <p id="direccion-universidad"></p>
-            </div>
+        
 
             <!-- Nombre -->
             <div class="grupo">
@@ -160,7 +156,7 @@
 
             <!-- Dirección de residencia -->
             <div class="grupo">
-                <label for="id_direccion">Ingrese Dirección donde Reside:</label>
+                <label for="id_direccion">Ingrese Dirección de Universidad:</label>
                 {{ form.direccion }}
                 {% if form.direccion.errors %}
                 <div class="error">{{ form.direccion.errors|join:", " }}</div>
