@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from functools import wraps
 
 def user_not_authenticated(function=None, redirect_url='/'):
     """
@@ -18,3 +19,13 @@ def user_not_authenticated(function=None, redirect_url='/'):
         return decorator(function)
 
     return decorator
+
+def estudiante_aprobado_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.estado_aprobacion == 'aprobado':
+            return view_func(request, *args, **kwargs)
+        return redirect('inicio')  # Redirige si no está aprobado
+    return _wrapped_view
+
+

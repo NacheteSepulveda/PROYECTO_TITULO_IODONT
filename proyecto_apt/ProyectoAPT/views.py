@@ -16,6 +16,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import Http404
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.http import HttpResponseForbidden
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 
 
@@ -56,7 +61,7 @@ def register_user(request):
 
 def register(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST, request.FILES)  # Agregamos request.FILES
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             rut = form.cleaned_data.get('rut')
@@ -81,25 +86,21 @@ def register(request):
                 
                 user = form.save(commit=False)
                 user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
+                user.estado_aprobacion = 'pendiente'  # Asignar el estado inicial como "pendiente"
                 
-                 # Si es estudiante, verificar que se haya subido el certificado
+                # Si es estudiante, verificar que se haya subido el certificado
                 tipo_usuario = TipoUsuario.objects.get(id=form.cleaned_data['id_tipo_user'].id)
                 if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
                     if 'Certificado' not in request.FILES:
                         messages.error(request, 'Debe subir un certificado PDF para registrarse como estudiante.')
                         return render(request, "autorizacion/registro.html", {"form": form})
-                    # Asignar el certificado al usuario
                     user.Certificado = request.FILES['Certificado']
                 
-                user.save()
-                login(request, user)
-                messages.success(request, '¡Registro Exitoso!')
+                user.save()  # Guardar el usuario sin iniciar sesión
 
-                # Redirigir según el tipo de usuario
-                if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
-                    return redirect('infoestudiante')
-                elif tipo_usuario.nombre_tipo_usuario == 'Paciente':
-                    return redirect('index')
+                # Informar al usuario que la cuenta está pendiente de aprobación
+                messages.success(request, 'Tu cuenta ha sido creada y está pendiente de aprobación. Recibirás una notificación cuando sea revisada.')
+                return redirect('index')  # Redirigir al usuario a la página principal
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -107,6 +108,56 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "autorizacion/registro.html", {"form": form})
+
+
+# Vista para el administrador: lista de estudiantes pendientes
+def revisar_estudiantes(request):
+    estudiantes_pendientes = customuser.objects.filter(estado_aprobacion='pendiente', id_tipo_user__nombre_tipo_usuario='Estudiante')
+    return render(request, 'autorizacion/revisar_estudiantes.html', {'estudiantes_pendientes': estudiantes_pendientes})
+
+
+def vista_para_estudiantes_aprobados(request):
+    if request.user.estado_aprobacion != 'aprobado':
+        return HttpResponseForbidden("Su cuenta aún no ha sido aprobada.")
+    # Lógica para estudiantes aprobados
+
+
+
+@login_required
+def actualizar_estado_estudiante(request, estudiante_id, estado):
+    estudiante = get_object_or_404(customuser, id=estudiante_id)
+    
+    if estado == 'aprobado':
+        estudiante.estado_aprobacion = 'aprobado'
+        mensaje = 'Tu cuenta ha sido aprobada. Utiliza tu correo registrado para iniciar sesión y configura tu contraseña.'
+
+        # Enviar correo de aprobación
+        send_mail(
+            'Tu cuenta ha sido aprobada',
+            mensaje,
+            settings.EMAIL_HOST_USER,
+            [estudiante.email],
+            fail_silently=False,
+        )
+        messages.success(request, f"El estudiante {estudiante.email} ha sido aprobado y se ha enviado un correo.")
+    elif estado == 'rechazado':
+        estudiante.estado_aprobacion = 'rechazado'
+        mensaje = 'Tu solicitud ha sido rechazada debido a inconsistencias en los datos.'
+
+        # Enviar correo de rechazo
+        send_mail(
+            'Tu solicitud ha sido rechazada',
+            mensaje,
+            settings.EMAIL_HOST_USER,
+            [estudiante.email],
+            fail_silently=False,
+        )
+        messages.warning(request, f"El estudiante {estudiante.email} ha sido rechazado y se ha enviado un correo.")
+    
+    estudiante.save()
+    return redirect('revisar_estudiantes')
+
+
 
 
 def obtener_direccion_universidad(request):
@@ -212,17 +263,22 @@ def loginUser(request):
                 password=form.cleaned_data["password"],
             )
             if user is not None:
-                login(request, user)
-                messages.success(request, f"Bienvenido {user.email} Has iniciado sesión")
+                # Verificar el estado de aprobación
+                if user.estado_aprobacion == 'aprobado':
+                    login(request, user)
+                    messages.success(request, f"Bienvenido {user.email}. Has iniciado sesión")
 
-                # Redirige según el tipo de usuario
-                if user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Estudiante":
-                    return redirect('infoestudiante')  # Redirige a la vista de estudiante
-                elif user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Paciente":
-                    return redirect('index')  # Redirige a la vista de paciente
+                    # Redirigir según el tipo de usuario
+                    if user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Estudiante":
+                        return redirect('infoestudiante')  # Vista de estudiante
+                    elif user.id_tipo_user and user.id_tipo_user.nombre_tipo_usuario == "Paciente":
+                        return redirect('index')  # Vista de paciente
+                    else:
+                        return redirect('/')  # Vista por defecto
+                elif user.estado_aprobacion == 'pendiente':
+                    messages.error(request, "Tu cuenta está pendiente de aprobación. Esto se realizará dentro de 24 horas.")
                 else:
-                    return redirect('/')  # Redirige a una vista por defecto si no se encuentra el tipo de usuario
-
+                    messages.error(request, "Tu solicitud fue rechazada. Contacta con soporte para más detalles.")
             else:
                 messages.error(request, "Credenciales inválidas.")
                 return redirect('login')
@@ -236,6 +292,32 @@ def loginUser(request):
         template_name="autorizacion/login.html",
         context={"form": form}
     )
+
+
+
+def custom_login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                # Si el usuario es estudiante y no está aprobado, impedir el inicio de sesión y mostrar mensaje
+                if user.id_tipo_user.nombre_tipo_usuario == 'Estudiante' and user.estado_aprobacion != 'aprobado':
+                    if user.estado_aprobacion == 'pendiente':
+                        messages.error(request, 'Tu cuenta está pendiente de aprobación. No puedes iniciar sesión hasta que sea aprobada.')
+                    elif user.estado_aprobacion == 'rechazado':
+                        messages.error(request, 'Tu solicitud ha sido rechazada. No puedes acceder a la plataforma.')
+                    return redirect('login')  # Redirigir de vuelta al inicio de sesión
+                login(request, user)  # Permitir el inicio de sesión si es aprobado o es un tipo de usuario diferente
+                return redirect('index')  # Redirigir al inicio
+            else:
+                messages.error(request, 'Usuario o contraseña incorrectos')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'registration/login.html', {'form': form})
 
 
 
@@ -599,9 +681,9 @@ def ver_ficha_clinica(request, paciente_id):
         'paciente': paciente,
         'ficha_clinica': ficha_clinica,
     })
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+
+
+
 
 def exportar_ficha_paciente(request, user_id=None):
     # Obtener los datos del paciente en el queryset actualFicha

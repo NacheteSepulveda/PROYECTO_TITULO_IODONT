@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 # Create your models here.
 from datetime import datetime
+from django.core.mail import send_mail
 
 #TipoUsuario
 class TipoUsuario(models.Model):
@@ -63,7 +64,6 @@ class tipoTratamiento(models.Model):
 
 
         
-#MODELO DE USUARIO;
 class customuser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True, null=True)
@@ -72,7 +72,7 @@ class customuser(AbstractUser):
     descripcion = models.TextField(null=True)
     imageBlob = models.ImageField(default="imagenes_usuario/profiledefault.jpg", upload_to='imagenes_usuario/', blank=True, null=True)
     fecha_nac = models.DateField(null=True)
-    num_tel = models.IntegerField(null=True , max_length=9)
+    num_tel = models.IntegerField(null=True, max_length=9)
     direccion = models.TextField(null=True, blank=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
     tratamientos = models.ManyToManyField(tipoTratamiento, blank=True)
@@ -88,8 +88,14 @@ class customuser(AbstractUser):
         ],
         help_text='Sube un certificado en formato PDF'
     )
-    
-    
+
+    # Nuevo campo para manejar el estado de aprobación
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado')
+    ]
+    estado_aprobacion = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
 
     USERNAME_FIELD = 'email'  # Usar email para el inicio de sesión
     REQUIRED_FIELDS = []
@@ -98,8 +104,8 @@ class customuser(AbstractUser):
 
     def clean(self):
         super().clean()
-        # Solo validar el certificado durante la creación del usuario, no durante la actualización
-        if not self.pk:  # Si es un nuevo usuario (no tiene primary key)
+        # Validación del certificado durante la creación del usuario
+        if not self.pk:  # Si es un nuevo usuario
             if self.id_tipo_user and self.id_tipo_user.nombre_tipo_usuario == 'Estudiante':
                 if not self.Certificado:
                     raise ValidationError({
@@ -107,7 +113,8 @@ class customuser(AbstractUser):
                     })
 
     def save(self, *args, **kwargs):
-        if not self.username:  # Generar un username basado en el email
+        # Generar un username basado en el email
+        if not self.username:
             self.username = self.email.split('@')[0]
         super().save(*args, **kwargs)
 
@@ -115,12 +122,17 @@ class customuser(AbstractUser):
         return self.email
     
     def obtenerTratamiento(self):
+        # Devuelve tratamientos activos del estudiante
         return tipoTratamiento.objects.filter(
             id__in=horarios.objects.filter(
                 estudiante=self,
-                fecha_seleccionada__gte=datetime.now().date()  # Solo fechas futuras
+                fecha_seleccionada__gte=datetime.now().date()
             ).values_list('tipoTratamiento_id', flat=True).distinct()
         )
+    
+    def is_approved(self):
+        # Comprueba si el usuario está aprobado
+        return self.estado_aprobacion == 'aprobado'
     
         
 
