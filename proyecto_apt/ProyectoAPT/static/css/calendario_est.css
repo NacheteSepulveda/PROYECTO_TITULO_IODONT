@@ -4,12 +4,12 @@ body {
 }
 
 .container {
-    display: flex; /* Usa flexbox para la disposición horizontal */
+    display: flex;
     padding: 20px;
     flex-grow: 1;
     display: block;
-    position: relative; /* Cambiar de absolute a relative */
-    margin-right: 260px; /* Asegurar que no se superponga con la sidebar */
+    position: relative;
+    margin-right: 260px;
 }
 
 .sidebar {
@@ -23,25 +23,24 @@ body {
     height: 100%;
     overflow-y: auto;
     z-index: 1000;
-  }
-  
-  .sidebar h2 {
+}
+
+.sidebar h2 {
     font-size: 26px;
     margin-top: 20px;
-  }
-  
-  .sidebar a {
+}
+
+.sidebar a {
     color: white;
     text-decoration: none;
     display: block;
     padding: 20px 0;
-  }
-  
+}
 
 .content {
-    flex-grow: 1; /* Permite que la sección de contenido ocupe el espacio restante */
-    padding: 20px; /* Color de fondo para la sección de contenido */
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 a {
@@ -53,15 +52,96 @@ a {
     text-decoration: underline;
 }
 
-#horario{
-    background-color:white ;
-    color: #063C98 ;
+#horario {
+    background-color: white;
+    color: #063C98;
 }
 
 #horario h3 {
     font-family: 'Times New Roman', Times, serif;
 }
+
 nav {
-    margin-left: 1000px; /* Mismo ancho que el sidebar */
-  }
-  
+    margin-left: 1000px;
+}
+
+/* Estilos para los días del calendario */
+.fc .fc-daygrid-day-top {
+    display: block;
+    text-align: right;
+    color: black !important;
+}
+
+.fc .fc-daygrid-day-top a {
+    color: black !important;
+}
+
+/* Estilos para el día actual */
+.fc-day-today {
+    background-color: rgba(0, 102, 255, 0.705) !important;
+    color: black !important;
+}
+
+/* Estilos para los días del fin de semana */
+.fc-day-sat, .fc-day-sun {
+    background-color: #000000;
+}
+
+/* Estilos para los encabezados de los días */
+.fc-col-header-cell {
+    background-color: #ffffff;
+    padding: 10px !important;
+    color: #000000;
+}
+
+/* Añadir este nuevo estilo para asegurar que el texto del encabezado sea negro */
+.fc-col-header-cell-cushion {
+    color: #000000 !important;
+}
+
+.fc .fc-col-header-cell a {
+    color: #000000 !important;
+}
+
+/* Estilos para las celdas de los días */
+.fc-daygrid-day {
+    min-height: 100px !important;
+    background-color: #f3f3f3ea;
+    color: black !important;
+}
+
+/* Estilos para los eventos */
+.fc-event {
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 2px 5px;
+    color: black !important;
+}
+
+/* Estilos específicos para el contenido de los eventos */
+.fc-event-title,
+.fc-event-time,
+.fc-daygrid-event-dot {
+    color: black !important;
+}
+
+/* Estilos para la barra de herramientas */
+.fc-toolbar {
+    margin-bottom: 1.5em;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5em;
+    color: #063C98;
+}
+
+/* Estilos para los botones del calendario */
+.fc-button-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
