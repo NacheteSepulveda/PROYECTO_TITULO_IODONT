@@ -114,16 +114,41 @@ class UserLoginForm(AuthenticationForm):
 class horariosForm(forms.ModelForm):
     class Meta:
         model = horarios
-        fields = ['tipoTratamiento', 'inicio']
+        fields = ['tipoTratamiento', 'inicio', 'fin']
         widgets = {
-            'tipoTratamiento': forms.Select(attrs={'class': 'form-control'}),
-            'inicio': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'tipoTratamiento': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'inicio': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'min': '06:00',
+                'max': '20:00'
+            }),
+            'fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'min': '06:00',
+                'max': '20:00'
+            }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tipoTratamiento'].required = True
-        self.fields['inicio'].required = True
+        self.fields['tipoTratamiento'].label = "Tipo de Tratamiento"
+        self.fields['inicio'].label = "Hora de Inicio"
+        self.fields['fin'].label = "Hora de Fin"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        inicio = cleaned_data.get('inicio')
+        fin = cleaned_data.get('fin')
+
+        if inicio and fin:
+            if fin <= inicio:
+                self.add_error('fin', 'La hora de fin debe ser posterior a la hora de inicio')
+
+        return cleaned_data
 
 
 class CitaForm(forms.ModelForm):

@@ -45,7 +45,8 @@
                         <thead>
                             <tr>
                                 <th>Fecha</th>
-                                <th>Hora</th>
+                                <th>Hora Inicio</th>
+                                <th>Hora Fin</th>
                                 <th>Tratamiento</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -56,10 +57,11 @@
                             <tr>
                                 <td>{{ horario.fecha_seleccionada|date:"d/m/Y" }}</td>
                                 <td>{{ horario.inicio|time:"H:i" }}</td>
+                                <td>{{ horario.fin|time:"H:i" }}</td>
                                 <td>{{ horario.tipoTratamiento.nombreTratamiento }}</td>
                                 <td>
                                     {% if horario.paciente %}
-                                        <span class="badge bg-success">Reservado</span>
+                                        <span class="badge bg-warning">Reservado</span>
                                     {% else %}
                                         <span class="badge bg-info">Disponible</span>
                                     {% endif %}
@@ -90,16 +92,22 @@
             <form method="POST" class="form-publicar-horario">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="form-group">
                             {{ form.tipoTratamiento.label_tag }}
                             {{ form.tipoTratamiento }}
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div class="form-group">
                             {{ form.inicio.label_tag }}
                             {{ form.inicio }}
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            {{ form.fin.label_tag }}
+                            {{ form.fin }}
                         </div>
                     </div>
                 </div>
@@ -119,7 +127,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-            var selectedDates = [];
+            var selectedDates = new Set();
+            var isMouseDown = false;
+            var startDate = null;
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -130,40 +140,18 @@
                     center: 'title',
                     right: 'dayGridMonth'
                 },
-                select: function(info) {
-                    // Limpiar selección anterior
-                    selectedDates = [];
-                    var selectedCells = calendarEl.querySelectorAll('.fc-day');
-                    selectedCells.forEach(function(cell) {
-                        cell.style.backgroundColor = '';
-                    });
-
-                    // Procesar nuevas fechas seleccionadas
-                    var start = new Date(info.start);
-                    var end = new Date(info.end);
-                    var currentDate = new Date(start);
-
-                    while (currentDate < end) {
-                        var formattedDate = currentDate.getFullYear() + '-' + 
-                                          String(currentDate.getMonth() + 1).padStart(2, '0') + '-' + 
-                                          String(currentDate.getDate()).padStart(2, '0');
-                        
-                        selectedDates.push(formattedDate);
-                        
-                        // Marcar visualmente la fecha
-                        var dateEl = calendar.el.querySelector(`[data-date="${formattedDate}"]`);
-                        if (dateEl) {
-                            dateEl.style.backgroundColor = '#93c47d';
-                        }
-
-                        currentDate.setDate(currentDate.getDate() + 1);
+                dateClick: function(info) {
+                    // Manejo de clic individual
+                    var clickedDate = info.dateStr;
+                    if (selectedDates.has(clickedDate)) {
+                        selectedDates.delete(clickedDate);
+                        info.dayEl.style.backgroundColor = '';
+                    } else {
+                        selectedDates.add(clickedDate);
+                        info.dayEl.style.backgroundColor = '#93c47d';
                     }
-
-                    // Actualizar campo oculto
-                    document.getElementById('fecha_seleccionada').value = selectedDates.join(',');
-                    console.log('Fechas seleccionadas:', selectedDates);
+                    updateHiddenField();
                 },
-
                 validRange: function(nowDate) {
                     return {
                         start: nowDate
@@ -172,10 +160,70 @@
                 firstDay: 1,
                 weekNumbers: false,
                 fixedWeekCount: false,
-                showNonCurrentDates: false
+                showNonCurrentDates: false,
+                unselectAuto: false
             });
 
             calendar.render();
+
+            // Eventos para selección por arrastre
+            calendar.el.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('fc-day')) {
+                    isMouseDown = true;
+                    startDate = e.target.getAttribute('data-date');
+                    e.preventDefault();
+                }
+            });
+
+            calendar.el.addEventListener('mouseover', function(e) {
+                if (isMouseDown && e.target.classList.contains('fc-day')) {
+                    var currentDate = e.target.getAttribute('data-date');
+                    highlightDateRange(startDate, currentDate);
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isMouseDown) {
+                    isMouseDown = false;
+                    updateHiddenField();
+                }
+            });
+
+            function highlightDateRange(start, end) {
+                var startD = new Date(start);
+                var endD = new Date(end);
+                
+                // Asegurar que startD sea la fecha menor
+                if (startD > endD) {
+                    [startD, endD] = [endD, startD];
+                }
+
+                // Limpiar selecciones previas del arrastre
+                calendar.el.querySelectorAll('.fc-day').forEach(cell => {
+                    var date = cell.getAttribute('data-date');
+                    if (!selectedDates.has(date)) {
+                        cell.style.backgroundColor = '';
+                    }
+                });
+
+                // Marcar el nuevo rango
+                var currentDate = new Date(startD);
+                while (currentDate <= endD) {
+                    var dateStr = currentDate.toISOString().split('T')[0];
+                    var dateEl = calendar.el.querySelector(`[data-date="${dateStr}"]`);
+                    if (dateEl) {
+                        selectedDates.add(dateStr);
+                        dateEl.style.backgroundColor = '#93c47d';
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            }
+
+            function updateHiddenField() {
+                var sortedDates = Array.from(selectedDates).sort();
+                document.getElementById('fecha_seleccionada').value = sortedDates.join(',');
+                console.log('Fechas seleccionadas:', sortedDates);
+            }
 
             // Botón para limpiar selección
             var clearButton = document.createElement('button');
@@ -183,12 +231,11 @@
             clearButton.className = 'btn btn-secondary mt-2';
             clearButton.onclick = function(e) {
                 e.preventDefault();
-                selectedDates = [];
-                document.getElementById('fecha_seleccionada').value = '';
-                var selectedCells = calendarEl.querySelectorAll('.fc-day');
-                selectedCells.forEach(function(cell) {
+                selectedDates.clear();
+                calendar.el.querySelectorAll('.fc-day').forEach(cell => {
                     cell.style.backgroundColor = '';
                 });
+                updateHiddenField();
             };
             calendarEl.parentNode.insertBefore(clearButton, calendarEl.nextSibling);
 
