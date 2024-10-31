@@ -218,23 +218,18 @@ class HistorialForm(forms.ModelForm):
         self.fields['diagnostico'].widget.attrs.update({'placeholder': 'Tratamiento Actual'})
 
 
+
 class ModificarPerfil(forms.ModelForm):
     tratamientos = forms.ModelMultipleChoiceField(
         queryset=tipoTratamiento.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-    universidad = forms.CharField(
-        label="Universidad:",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
-        required=False
-    )
-
     class Meta:
         model = customuser
         fields = ['imageBlob', 'first_name', 'last_name', 'rut', 'fecha_nac', 'universidad', 'email', 'descripcion', 'num_tel', 'direccion', 'tratamientos']
 
-    def __init__(self, *args: Any, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
         # Si existe una instancia (el usuario), asigna el nombre de la universidad
         if self.instance and self.instance.universidad:

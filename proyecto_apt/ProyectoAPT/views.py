@@ -74,11 +74,6 @@ def register(request):
                 # Asignar la universidad automáticamente en función del dominio
                 if "uch.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
-                elif "ua.cl" in dominio:
-                    universidad = get_object_or_404(Universidad, nombre="Universidad Autónoma")
-                elif "uc.cl" in dominio:
-                    universidad = get_object_or_404(Universidad, nombre="Universidad Católica")
-                
                 user = form.save(commit=False)
                 user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
                 
@@ -107,6 +102,15 @@ def register(request):
         form = CustomUserCreationForm()
 
     return render(request, "autorizacion/registro.html", {"form": form})
+
+
+def obtener_direccion_universidad(request):
+    universidad_id = request.GET.get('universidad_id')
+    if universidad_id:
+        universidad = Universidad.objects.filter(id=universidad_id).first()
+        if universidad:
+            return JsonResponse({'direccion': universidad.direccion})
+    return JsonResponse({'direccion': ''})  # Devuelve vacío si no se encuentra la universidad
 
 
 def filtrar_estudiantes(request):
@@ -143,6 +147,7 @@ def filtrar_estudiantes(request):
 
     }
     return render(request, 'APT/horarios.html', context)
+
 @login_required
 def crear_ficha_paciente(request, user_id):
     try:
@@ -480,6 +485,8 @@ def infoestudiante(request):
             messages.error(request, 'Error al actualizar el perfil')
     return render(request, 'estudiante/infopersonal.html', context)
 
+
+
 @login_required
 def notifiaciones_est(request):
     # Filtramos las citas en las que el estudiante logueado está involucrado
@@ -526,7 +533,7 @@ def pacientes_est(request):
 @login_required
 def citas_pac(request):
     paciente_id = request.user  # Obtener el usuario logueado
-    citas = Cita.objects.filter(paciente=paciente_id)  # Filtrar las citas para el paciente logueado
+    citas = Cita.objects.filter(paciente=paciente_id).select_related('estudiante__universidad')  # Filtrar las citas para el paciente logueado
 
     return render(request, 'APT/citas.html', {
         'citas': citas  # Pasar las citas al contexto
@@ -594,23 +601,28 @@ from reportlab.pdfgen import canvas
 def exportar_ficha_paciente(request, user_id=None):
     # Obtener los datos del paciente en el queryset actualFicha
     actualFicha = FichaClinica.objects.filter(paciente=user_id).values()
-    
+
+    #Obtener el nombre y apellido del paciente
+    paciente = customuser.objects.get(id=user_id)
+    nombre_completo = f"{paciente.first_name} {paciente.last_name}"
+
     # Crear la respuesta HTTP para el PDF
-    contentDisposition = f'attachment; filename=fichaClinica_{str(user_id)}.pdf'
+    contentDisposition = f'attachment; filename=fichaClinica{nombre_completo}.pdf'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = contentDisposition
-    
+
     # Crear el canvas de ReportLab para el PDF
     pdf = canvas.Canvas(response, pagesize=A4)
-    pdf.setTitle(f"Ficha Clínica - Paciente {user_id}")
+    pdf.setTitle(f"Ficha Clínica - Paciente {nombre_completo}")
 
     # Configurar el tamaño y las posiciones iniciales
     ancho, alto = A4
     y = alto - 40  # Posición inicial de Y para empezar a escribir desde arriba
+    ancho - 40
 
     # Títulos de la ficha
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, f"Ficha Clínica - Paciente {user_id}")
+    pdf.drawString(50, y, f"Ficha Clínica - Paciente: {nombre_completo}")
     y -= 30  # Bajar un poco para las siguientes líneas
 
     # Configurar texto para cada campo en actualFicha
@@ -625,5 +637,5 @@ def exportar_ficha_paciente(request, user_id=None):
     # Finalizar el PDF
     pdf.showPage()
     pdf.save()
-    
+
     return response
