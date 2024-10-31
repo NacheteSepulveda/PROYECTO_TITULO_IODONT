@@ -410,34 +410,66 @@ def servicios(request):
 
 @login_required
 def calendar_est(request):
-    estudiante = request.user  # El estudiante que está logueado
-    horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
+    estudiante = request.user
+    horarios_disponibles = horarios.objects.filter(estudiante=estudiante).order_by('fecha_seleccionada', 'inicio')
 
     if request.method == 'POST':
-        form = horariosForm(request.POST, user=estudiante)
+        form = horariosForm(request.POST)
+        fechas_str = request.POST.get('fecha_seleccionada', '')
+        
+        if not fechas_str:
+            messages.error(request, 'Por favor, selecciona al menos una fecha')
+            return render(request, 'estudiante/calendario_est.html', {
+                'form': form,
+                'horarios_disponibles': horarios_disponibles
+            })
+
         if form.is_valid():
-            nuevo_horario = form.save(commit=False)
+            try:
+                fechas_lista = fechas_str.split(',')
+                horarios_creados = 0
 
-            # Verificar si ya existe un horario para la misma fecha y hora
-            horario_existente = horarios.objects.filter(
-                estudiante=estudiante,
-                fecha_seleccionada=nuevo_horario.fecha_seleccionada,
-                inicio=nuevo_horario.inicio
-            ).exists()
+                for fecha_str in fechas_lista:
+                    try:
+                        fecha = datetime.strptime(fecha_str.strip(), '%Y-%m-%d').date()
+                        
+                        # Verificar si ya existe un horario para esta fecha y hora
+                        horario_existente = horarios.objects.filter(
+                            estudiante=estudiante,
+                            fecha_seleccionada=fecha,
+                            inicio=form.cleaned_data['inicio']
+                        ).exists()
+                        
+                        if not horario_existente:
+                            nuevo_horario = horarios.objects.create(
+                                estudiante=estudiante,
+                                tipoTratamiento=form.cleaned_data['tipoTratamiento'],
+                                inicio=form.cleaned_data['inicio'],
+                                fecha_seleccionada=fecha
+                            )
+                            horarios_creados += 1
+                    except ValueError as e:
+                        print(f"Error con la fecha {fecha_str}: {e}")
+                        continue
 
-            if horario_existente:
-                messages.error(request, 'Ya tienes un horario publicado para esta fecha y hora.')
-            else:
-                nuevo_horario.estudiante = estudiante
-                nuevo_horario.save()
-                messages.success(request, '¡Horario publicado con éxito!')
-                return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
+                if horarios_creados > 0:
+                    messages.success(request, f'¡Se han creado {horarios_creados} horarios exitosamente!')
+                    return redirect('calendario')
+                else:
+                    messages.warning(request, 'No se crearon nuevos horarios. Es posible que ya existan horarios para las fechas y horas seleccionadas.')
+            
+            except Exception as e:
+                print(f"Error al guardar: {e}")
+                messages.error(request, f'Error al guardar los horarios: {str(e)}')
+        else:
+            print("Errores del formulario:", form.errors)
+            messages.error(request, 'Por favor, verifica los datos del formulario')
     else:
-        form = horariosForm(user=estudiante)
+        form = horariosForm()
 
     return render(request, 'estudiante/calendario_est.html', {
-        'horarios_disponibles': horarios_disponibles,
         'form': form,
+        'horarios_disponibles': horarios_disponibles
     })
 
 

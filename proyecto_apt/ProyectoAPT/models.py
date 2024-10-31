@@ -150,17 +150,17 @@ class FichaClinica(models.Model):
 
 class horarios(models.Model):
     id = models.BigAutoField(primary_key=True)
-    tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete = models.SET_NULL, null=True, default=None)
+    tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete=models.SET_NULL, null=True, default=None)
     inicio = models.TimeField()
     fecha_seleccionada = models.DateField()
     estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_estudiante")
     paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_paciente_views")
     ficha_clinica = models.ForeignKey(FichaClinica, on_delete=models.SET_NULL, null=True, blank=True)
-    def _str_(self):
-         return str(self.id)
-    
+
     def __str__(self):
-        return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+        if self.paciente:
+            return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+        return f"Horario disponible el {self.fecha_seleccionada} a las {self.inicio}"
 
 
     def __str__(self):

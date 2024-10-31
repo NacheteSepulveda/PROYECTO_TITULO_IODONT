@@ -162,3 +162,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'ProyectoAPT.customuser'
 
+# Configuración de formato de fecha
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
