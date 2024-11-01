@@ -35,14 +35,24 @@
         <div class="col-6 section">
             <h3 class="section-title">¿De qué se trata IODONT?</h3>
             <p class="section-text">
-                IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
-                con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
-                método externo. Una buena oportunidad para estos jóvenes!
+                IODONT es una plataforma orientada a los estudiantes de odontología de la Universidad de Chile con la finalidad de llegar a pacientes 
+                con necesidad de tratamientos odontológicos. 
+                Su principal objetivo es que tanto los estudiantes como los pacientes puedan beneficiarse de sus necesidades durante el tratamiento.  
+                <br>
+                
+                <br>Los tratamientos realizados en esta universidad son de alta calidad y a un costo más accesible que otras clínicas particulares y 
+                además cuenta con facilidades de pago en su mayoría de tratamientos. Todos los costos de los tratamientos son revisados con los estudiantes bajo las normas de la universidad. 
+                
+                <br>
+                
+                
+                
             </p>
+            
         </div>
         <div class="col-6 image-grid">
-            <img src="{% static 'img/DENTAL_1.jpg' %}" alt="Imagen 1" class="imagen_estilo">
-            <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Imagen 2" class="imagen_estilo">
+            <img src="{% static 'img/gente_feliz.jpg' %}" alt="Imagen 1" class="imagen_estilo">
+            <img src="{% static 'img/dental_hombre.jpg' %}" alt="Imagen 2" class="imagen_estilo">
         </div>
     </div>
 
@@ -52,7 +62,7 @@
             <div class="carousel-container">
                 <div class="carousel">
                     <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Atención de estudiantes">
-                    <img src="{% static 'img/DENTAL_3.jpg' %}" alt="Atención de estudiantes">
+                    <img src="{% static 'img/abuelita.png' %}" alt="Atención de estudiantes">
                 </div>
                 <div class="carousel-controls">
                     <button onclick="prevSlide()" class="control-btn">‹</button>
@@ -63,8 +73,12 @@
         <div class="col-6 section">
             <h3 class="section-title">Las atenciones con los estudiantes</h3>
             <p class="section-text">
-                IODONT conecta a los estudiantes más disciplinados y confiables para que el paciente esté siempre cómodo y
-                satisfecho.
+                IODONT conecta a los estudiantes más disciplinados y confiables para la atención de pacientes.
+                La atencion es realizada por estudiantes y supervisada por doctores profesionales en el área dando un servicio de alta calidad.
+                <br>
+                <br>Todos los tratamientos realizados por los estudiantes son supervisados y evaluados por los doctores antes de ser realizados tomando todos los protocolos de seguridad y calidad.
+                <br>Tambien se realizan radiografías antes de comenzar el tratamiento con un costo mas economico.
+                
             </p>
 
             {% if user.id_tipo_user.nombre_tipo_usuario == "Paciente" %}
@@ -82,16 +96,18 @@
     <!-- Tercera fila: Equipo adecuado -->
     <div class="row content-section text-center">
         <h2 class="section-title">Equipo Adecuado.</h2>
-        <p class="section-text">Los estudiantes poseen el equipo adecuado para todos sus tratamientos.</p>
+        <p class="section-text">Los estudiantes poseen el equipo adecuado para todos sus tratamientos, tales como radiografia, materiales, modelos y más!.</p>
+        
+                
     </div>
 </main>
 
 <!-- Galería de imágenes -->
 <div class="gallery">
-    <img src="{% static 'img/DENTAL_1.jpg' %}" alt="Imagen 1" class="imagen_estilo">
-    <img src="{% static 'img/DENTAL_2.jpg' %}" alt="Imagen 2" class="imagen_estilo">
-    <img src="{% static 'img/DENTAL_3.jpg' %}" alt="Imagen 3" class="imagen_estilo">
-    <img src="{% static 'img/odontanimado.jpg' %}" alt="Imagen 4" class="imagen_estilo">
+    <img src="{% static 'img/radiografia.png' %}" alt="Imagen 1" class="imagen_estilo">
+    <img src="{% static 'img/modelo_yeso.jpg' %}" alt="Imagen 2" class="imagen_estilo">
+    <img src="{% static 'img/herramientas.jpeg' %}" alt="Imagen 3" class="imagen_estilo">
+    <img src="{% static 'img/protesis.jpg' %}" alt="Imagen 4" class="imagen_estilo">
 </div>
 
 <script>
@@ -139,9 +155,12 @@
     </div>
 
     <iframe 
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3328.676562593807!2d-70.66578058806036!3d-33.45773217327557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c504a7381855%3A0xc25f16d34e3e8421!2sBeaucheff%20850%2C%208370451%20Santiago%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses!2scl!4v1729982782877!5m2!1ses!2scl" 
-    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.012663705892!2d-70.65392242344316!3d-33.42291419610396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c5c0cad15219%3A0x6e51f06ba79ddd4!2sAv.%20La%20Paz%20750%2C%20Independencia%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses!2scl!4v1730491168541!5m2!1ses!2scl"
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
     
     <p id="contacto">© 2024 IODONT, Ltda. Todos los derechos reservados</p>
 </footer>

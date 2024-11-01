@@ -1,76 +1,91 @@
-/* Contenedor principal centrado */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.servicios-container {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.titulo-principal {
+    text-align: center;
+    color: #0077ff;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.subtitulo {
+    text-align: center;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.servicio-card {
+    background: white;
+    border-radius: 15px;
     padding: 2rem;
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Título centrado */
-h2 {
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
-    text-align: center;
-    color: #007BFF;
+.servicio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Subtítulo debajo del título principal */
-.subtitle {
-    font-size: 1rem;
-    color: #777;
-    margin-bottom: 2rem;
-}
-
-/* Contenedor de la cuadrícula */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Tamaño mínimo para que se adapten */
-    gap: 1.5rem;
-    justify-content: right;
-    max-width: 900px; /* Limitar el ancho para que se vea más centrado */
-}
-
-/* Botones de tratamiento con estilo cuadrado */
-.anchor-item {
-    width: 100%;
-    padding: 1.5rem;
-    font-size: 1rem;
+.icono {
+    background: #0077ff;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #007BFF;
+    margin: 0 auto 1rem;
+}
+
+.icono i {
+    font-size: 2rem;
     color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 10px;
-    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-/* Hover effect */
-.anchor-item:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+.servicio-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
 }
 
-/* Icono dentro del botón */
-.anchor-item img {
-    width: 40px; /* Tamaño del icono */
-    height: auto;
-    margin-bottom: 0.5rem;
+.servicio-card p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
 }
 
-/* Ajustes responsivos */
+.btn-servicio {
+    background: #0077ff;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-servicio:hover {
+    background: #0055cc;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    .servicios-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
-}
-
-@media (max-width: 480px) {
-    .anchor-item {
-        font-size: 0.9rem;
+    
+    .titulo-principal {
+        font-size: 2rem;
     }
 }

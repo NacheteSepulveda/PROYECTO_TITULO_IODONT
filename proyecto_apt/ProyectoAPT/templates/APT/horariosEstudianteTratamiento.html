@@ -4,9 +4,10 @@
 {% load static %}
 
 <link type="text/css" rel="stylesheet" href='{% static "css/agenda_cita.css" %}'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <main class="container">
-    <!-- Bloque para mostrar mensajes de error o éxito -->
+    <!-- Bloque para mostrar mensajes -->
     {% if messages %}
         <div>
             {% for message in messages %}
@@ -17,32 +18,35 @@
         </div>
     {% endif %}
 
-    <main class="container">
-        <!-- Título y subtítulo -->
-        <h2>¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
-        <p class="subtitle">Elige el servicio que necesitas agendar.</p>
-
+    <div class="servicios-container">
+        <h2 class="titulo-principal">¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
+        <p class="subtitulo">Elige el servicio que necesitas agendar</p>
+        
         <form action="" method="post">
             {% csrf_token %}
-            <div class="grid-container">
+            <div class="servicios-grid">
                 {% for tratamiento in estudiante.obtenerTratamiento %}
-                    <div class="grid-item">
-                        <!-- Botón de tratamiento -->
+                    <div class="servicio-card">
+                        <div class="icono">
+                            <i class="fas fa-tooth"></i>
+                        </div>
+                        <h3>{{ tratamiento.nombreTratamiento }}</h3>
+                        <p>Servicio dental profesional</p>
                         <a
+                            class="btn-servicio"
                             name="tratamiento"
                             id="id_tratamiento_{{ tratamiento.id }}"
-                            class="anchor-item"
                             role="button"
                             data-bs-toggle="modal" 
                             data-bs-target="#modalTratamiento"
                             data-tratamiento-id="{{ tratamiento.id }}"
                             data-tratamiento-nombre="{{ tratamiento.nombreTratamiento }}"
-                        >{{ tratamiento.nombreTratamiento }}</a>
+                        >Seleccionar</a>
                     </div>
                 {% endfor %}
             </div>
+
             <div class="row" id="hiddenValues">
-                <!-- Aquí se aplicarán los datos seleccionados -->
                 {{ form.tratamiento }} 
                 <input type="hidden" name="tipotratamiento" id="nombreTratamiento" value="">
                 <input type="text" name="paciente" id="id_paciente" hidden value="{{ actualUser }}">
@@ -54,29 +58,25 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalTratamientoLabel">Seleccion de Horario</h1>
+                            <h1 class="modal-title fs-5" id="modalTratamientoLabel">Selección de Horario</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Nombre del tratamiento -->
                             <h3 id="tratamientoNombre"></h3>
 
-                            <!-- Fecha seleccionada -->
                             <div class="form-group">
                                 <label for="id_fecha_seleccionada">{{ form.fecha_seleccionada.label }}</label>
                                 {{ form.fecha_seleccionada }}
                             </div>
                             
-                            <!-- Horarios disponibles -->
                             <div class="form-group">
                                 <label for="id_HorIni">Horarios Disponibles</label>
                                 <select id="id_HorIni" name="inicio" class="form-select">
                                     <option value="">Seleccione una hora</option>
-                                    <!-- Aquí se agregarán las opciones de horarios mediante JavaScript -->
                                 </select>
                                 <div id="no-horarios-message" style="display:none; color: red;">
                                     No Hay Horarios Disponibles
-                                </div> <!-- Mensaje de no disponibilidad -->
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -87,10 +87,11 @@
                 </div>
             </div>
         </form>
-    </main>
+    </div>
+</main>
 
 <script>
-// JavaScript para gestionar el modal y la obtención de horarios
+// El mismo JavaScript que tenías antes
 document.addEventListener('DOMContentLoaded', function() {
     var modalTratamiento = document.getElementById('modalTratamiento');
     var tratamientoInput = document.getElementById('nombreTratamiento');
@@ -136,5 +137,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 {% endblock %}

@@ -28,27 +28,39 @@
         </div>
 
         <div class="main-content">
-            <h2>Notificaciones de Citas</h2>
+            <h2 class="content-title"><i class="fas fa-bell me-2"></i>Notificaciones de Citas</h2>
 
             {% if citas %}
-                <ul class="list-group">
+                <div class="notifications-container">
                     {% for cita in citas %}
-                        <li class="list-group-item d-flex align-items-center">
-                            <img alt="Notification icon" height="50" src="https://cdn.icon-icons.com/icons2/3863/PNG/512/message_icon_241079.png" width="50">
-                            <div class="ms-3">
-                                <p><strong>Tipo de tratamiento:</strong> {{ cita.tipotratamiento.nombreTratamiento }}</p>
-                                <p><strong>Hora de inicio del tratamiento:</strong> {{ cita.inicio }}</p>
-                                <p><strong>Fecha del tratamiento:</strong> {{ cita.fecha_seleccionada }}</p>
-                                <p><strong>Nombre de paciente:</strong> {{ cita.paciente.first_name }} {{ cita.paciente.last_name }}</p>
-                                <p><strong>Correo de paciente:</strong> {{ cita.paciente.email }}</p>
+                        <div class="notification-card">
+                            <div class="notification-icon">
+                                <i class="fas fa-calendar-check"></i>
                             </div>
-                        </li>
+                            <div class="notification-content">
+                                <div class="treatment-info">
+                                    <span class="treatment-type">{{ cita.tipotratamiento.nombreTratamiento }}</span>
+                                    <span class="treatment-time">{{ cita.inicio }}</span>
+                                </div>
+                                <div class="treatment-date">
+                                    <i class="far fa-calendar-alt me-2"></i>{{ cita.fecha_seleccionada }}
+                                </div>
+                                <div class="patient-info">
+                                    <div class="patient-name">
+                                        <i class="fas fa-user me-2"></i>{{ cita.paciente.first_name }} {{ cita.paciente.last_name }}
+                                    </div>
+                                    <div class="patient-email">
+                                        <i class="fas fa-envelope me-2"></i>{{ cita.paciente.email }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             {% else %}
-                <div class="alert alert-info" role="alert">
-                    <img alt="Notification icon" height="50" src="https://cdn.icon-icons.com/icons2/3863/PNG/512/message_icon_241079.png" width="50">
-                    No se han encontrado notificaciones.
+                <div class="empty-state">
+                    <i class="fas fa-inbox fa-3x"></i>
+                    <p>No se han encontrado notificaciones.</p>
                 </div>
             {% endif %}
         </div>
