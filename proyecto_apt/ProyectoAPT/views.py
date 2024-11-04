@@ -21,6 +21,9 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+import os
+from django.conf import settings
+from reportlab.lib.utils import ImageReader
 
 
 
@@ -739,43 +742,117 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 def exportar_ficha_paciente(request, user_id=None):
-    # Obtener los datos del paciente en el queryset actualFicha
+    # Obtener los datos
     actualFicha = FichaClinica.objects.filter(paciente=user_id).values()
-
-    #Obtener el nombre y apellido del paciente
     paciente = customuser.objects.get(id=user_id)
     nombre_completo = f"{paciente.first_name} {paciente.last_name}"
 
-    # Crear la respuesta HTTP para el PDF
-    contentDisposition = f'attachment; filename=fichaClinica{nombre_completo}.pdf'
+    # Configurar el PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = contentDisposition
-
-    # Crear el canvas de ReportLab para el PDF
+    response['Content-Disposition'] = f'attachment; filename=fichaClinica_{nombre_completo}.pdf'
+    
+    # Crear el PDF
     pdf = canvas.Canvas(response, pagesize=A4)
-    pdf.setTitle(f"Ficha Clínica - Paciente {nombre_completo}")
-
-    # Configurar el tamaño y las posiciones iniciales
     ancho, alto = A4
-    y = alto - 40  # Posición inicial de Y para empezar a escribir desde arriba
-    ancho - 40
-
-    # Títulos de la ficha
-    pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, f"Ficha Clínica - Paciente: {nombre_completo}")
-    y -= 30  # Bajar un poco para las siguientes líneas
-
-    # Configurar texto para cada campo en actualFicha
-    pdf.setFont("Helvetica", 12)
+    
+    # Modificar esta parte para usar BASE_DIR
+    logo_path = os.path.join(settings.BASE_DIR, 'ProyectoAPT', 'static', 'img', 'LogoOdont.png')
+    
+    try:
+        logo = ImageReader(logo_path)
+        pdf.drawImage(logo, 50, alto - 100, width=100, height=100, preserveAspectRatio=True)
+        # Si la imagen se carga correctamente, ajustar la posición del título
+        pdf.setFont("Helvetica-Bold", 20)
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(160, alto - 70, f"Ficha Clínica Odontológica - Paciente: {nombre_completo}")
+    except Exception as e:
+        print(f"Error al cargar la imagen: {e}")
+        print(f"Ruta intentada: {logo_path}")
+        # Si hay error, poner el título en la posición original
+        pdf.setFont("Helvetica-Bold", 20)
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(50, alto - 70, "Ficha Clínica Odontológica")
+    
+    # Línea separadora
+    pdf.line(50, alto - 120, ancho - 50, alto - 120)
+    
+    # Información del paciente
+    y = alto - 160  # Ajustar la posición inicial del contenido para dar espacio al logo
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "Datos del Paciente")
+    
+    # Datos personales
+    y -= 30
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(50, y, f"Nombre completo: {nombre_completo}")
+    y -= 20
+    pdf.drawString(50, y, f"RUT: {paciente.rut}")
+    y -= 20
+    pdf.drawString(50, y, f"Fecha de nacimiento: {paciente.fecha_nac}")
+    y -= 20
+    pdf.drawString(50, y, f"Teléfono: {paciente.num_tel}")
+    y -= 20
+    pdf.drawString(50, y, f"Email: {paciente.email}")
+    
+    # Línea separadora
+    y -= 20
+    pdf.line(50, y, ancho - 50, y)
+    
+    # Información clínica
+    y -= 30
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "Información Clínica")
+    
     for ficha in actualFicha:
-        for campo, valor in ficha.items():
-            pdf.drawString(50, y, f"{campo.capitalize()}: {valor}")
-            y -= 20  # Mover hacia abajo para la siguiente línea
+        y -= 30
+        # Contacto de emergencia
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, "Contacto de Emergencia")
+        y -= 20
+        pdf.setFont("Helvetica", 11)
+        pdf.drawString(70, y, f"Nombre: {ficha.get('nombre_contacto_emergencia', 'No especificado')}")
+        y -= 20
+        pdf.drawString(70, y, f"Teléfono: {ficha.get('telefono_contacto_emergencia', 'No especificado')}")
+        
+        # Motivo de consulta
+        y -= 30
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, "Motivo de Consulta")
+        y -= 20
+        pdf.setFont("Helvetica", 11)
+        pdf.drawString(70, y, f"{ficha.get('motivo_consulta', 'No especificado')}")
+        
+        # Síntomas
+        y -= 30
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, "Síntomas Actuales")
+        y -= 20
+        pdf.setFont("Helvetica", 11)
+        pdf.drawString(70, y, f"{ficha.get('sintomas_actuales', 'No especificado')}")
+        
+        # Diagnóstico
+        y -= 30
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, "Diagnóstico")
+        y -= 20
+        pdf.setFont("Helvetica", 11)
+        pdf.drawString(70, y, f"{ficha.get('diagnostico', 'No especificado')}")
+        
+        # Tratamiento
+        y -= 30
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, "Tratamiento Actual")
+        y -= 20
+        pdf.setFont("Helvetica", 11)
+        pdf.drawString(70, y, f"{ficha.get('tratamiento_actual', 'No especificado')}")
 
-        y -= 10  # Espacio adicional entre registros de ficha si hay más de uno
+    # Pie de página
+    pdf.line(50, 50, ancho - 50, 50)
+    pdf.setFont("Helvetica", 8)
+    pdf.drawString(50, 35, f"Documento generado el {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    pdf.drawString(ancho - 200, 35, "IODONT - Sistema de Gestión Odontológica")
 
     # Finalizar el PDF
     pdf.showPage()
     pdf.save()
-
     return response
