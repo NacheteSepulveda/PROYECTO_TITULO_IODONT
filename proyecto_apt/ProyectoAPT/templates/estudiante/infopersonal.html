@@ -60,6 +60,8 @@
                         </div>
                     {% endfor %}
                 </div>
+            {% elif field.name == 'imageBlob' %}
+              <input type="file" name="imageBlob" accept="image/*" placeholder="Subir imagen" id="id_imageBlob">
             {% else %}
                 {{ field.label_tag }}
                 {{ field }}

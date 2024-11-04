@@ -30,11 +30,11 @@
             var email = $('#id_email').val();
             var dominio = email.split('@')[1];
             if (dominio == 'uch.cl') {
-                $('#id_universidad').val('2');  // ID de "Universidad de Chile"
+                $('#id_universidad').val('1');  // ID de "Universidad de Chile"
             } else if (dominio == 'ua.cl') {
-                $('#id_universidad').val('3');  // ID de "Universidad Autónoma"
+                $('#id_universidad').val('2');  // ID de "Universidad Autónoma"
             } else if (dominio == 'uc.cl') {
-                $('#id_universidad').val('1');  // ID de "Universidad Católica"
+                $('#id_universidad').val('3');  // ID de "Universidad Católica"
             } else {
                 $('#id_universidad').val('');  // Limpiar si no es un correo válido
             }
