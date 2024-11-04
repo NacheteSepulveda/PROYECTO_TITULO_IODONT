@@ -133,11 +133,18 @@ class horariosForm(forms.ModelForm):
             }),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):  # Acepta el argumento user
         super().__init__(*args, **kwargs)
         self.fields['tipoTratamiento'].label = "Tipo de Tratamiento"
         self.fields['inicio'].label = "Hora de Inicio"
         self.fields['fin'].label = "Hora de Fin"
+
+    # Filtrar tratamientos basados en los del perfil del estudiante
+        if user and user.tratamientos.exists():
+            self.fields['tipoTratamiento'].queryset = user.tratamientos.all()
+        else:
+            # Opción si el usuario no tiene tratamientos asociados
+            self.fields['tipoTratamiento'].queryset = tipoTratamiento.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -159,8 +166,7 @@ class CitaForm(forms.ModelForm):
             'inicio',
             'fecha_seleccionada',
             'estudiante',
-            'paciente',
-            'direccion']
+            'paciente']
 
     def __init__(self, *args: Any, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs)
@@ -195,7 +201,7 @@ class CitaForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
-        self.fields['direccion'].label = "direccion"
+
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
         self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})
 
