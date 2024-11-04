@@ -196,11 +196,14 @@ class CitaForm(forms.ModelForm):
         # Personalizar el label para mostrar el 'first_name'
         self.fields['estudiante'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
-        self.fields['inicio'] = forms.ChoiceField(  #
+          # Modificar el campo inicio para aceptar time objects
+        self.fields['inicio'] = forms.TimeField(
             label="Hora de inicio:",
-            choices=[(inicioB[i], str(inicioA[i])) for i in range(1, len(inicioA))],
-            widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
-            required=False
+            widget=forms.Select(
+                attrs={'class': 'form-control', 'id': 'id_HorIni'},
+                choices=[(str(time), str(time)) for time in inicioB[1:]]  # Convertir a string
+            ),
+            required=True
         )
         
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
