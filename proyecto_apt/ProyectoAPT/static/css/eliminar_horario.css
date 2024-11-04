@@ -3,26 +3,48 @@ body {
     margin: 0;
 }
 
+nav {
+    margin-left: 1000px;
+}
+
 .container {
-    display: flex; /* Usa flexbox para la disposición horizontal */
+    display: flex;
+    padding: 20px;
+    flex-grow: 1;
+    display: block;
+    position: relative;
+    margin-right: 260px;
 }
 
 .sidebar {
-    width: 250px; /* Ancho fijo para la barra lateral */
     background-color: #007bff;
     color: white;
     padding: 20px;
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
-.sidebar h2, .sidebar p {
-    margin: 26px 0;
-}
 .sidebar h2 {
     font-size: 26px;
+    margin-top: 20px;
 }
-.sidebar p {
-    font-size: 14px;
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 20px 0;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 a {
@@ -33,6 +55,8 @@ a {
 .sidebar a:hover {
     text-decoration: underline;
 }
+
+
 
 /* Styling for the form */
 form {
