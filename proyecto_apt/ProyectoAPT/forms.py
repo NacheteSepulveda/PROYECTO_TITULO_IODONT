@@ -114,50 +114,49 @@ class UserLoginForm(AuthenticationForm):
     
 class horariosForm(forms.ModelForm):
     class Meta:
-         model = horarios
-         fields =['tipoTratamiento',
-                  'inicio',
-                  'fecha_seleccionada',
-                  'estudiante']
+        model = horarios
+        fields = ['tipoTratamiento', 'inicio', 'fin']
+        widgets = {
+            'tipoTratamiento': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'inicio': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'min': '06:00',
+                'max': '20:00'
+            }),
+            'fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'min': '06:00',
+                'max': '20:00'
+            }),
+        }
 
-    def __init__(self, *args: Any, user=None, **kwargs):
-        super(horariosForm, self).__init__(*args, **kwargs)
-        #Add tipo de tratamiento
-        self.fields['tipoTratamiento'] = forms.ModelChoiceField(
-            queryset=tipoTratamiento.objects.all(),
-            empty_label="Seleccione un Tratamiento",
-            widget=forms.Select(attrs={'class':'form-control','id':'nombreTratamiento'})
-        )
-        self.fields['tipoTratamiento'].label = "Tipo de tratamiento"
-        self.fields['tipoTratamiento'].label_from_instance = lambda obj: f"{obj.nombreTratamiento}"
+    def __init__(self, *args, user=None, **kwargs):  # Acepta el argumento user
+        super().__init__(*args, **kwargs)
+        self.fields['tipoTratamiento'].label = "Tipo de Tratamiento"
+        self.fields['inicio'].label = "Hora de Inicio"
+        self.fields['fin'].label = "Hora de Fin"
 
-        if user:
+    # Filtrar tratamientos basados en los del perfil del estudiante
+        if user and user.tratamientos.exists():
             self.fields['tipoTratamiento'].queryset = user.tratamientos.all()
-        
+        else:
+            # Opción si el usuario no tiene tratamientos asociados
+            self.fields['tipoTratamiento'].queryset = tipoTratamiento.objects.none()
 
-        self.fields['fecha_seleccionada'] = forms.DateField(
-            label="Seleccione su fecha!",
-            required=True,
-            widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_fecha_seleccionada', 'type': 'date', }),
+    def clean(self):
+        cleaned_data = super().clean()
+        inicio = cleaned_data.get('inicio')
+        fin = cleaned_data.get('fin')
 
-        )
-        self.fields['fecha_seleccionada'].widget.attrs.update({'class': 'form-control', 'type':'date'})        
-        idTipoEstudiante = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
-        self.fields['estudiante'] = forms.ModelChoiceField(
-            queryset=customuser.objects.filter(id_tipo_user=idTipoEstudiante), #Modificable
-            empty_label=None,
-            widget=forms.Select(attrs={'class':'form-control', 'hidden':True})
-        )
-        self.fields['estudiante'].label = "Estudiante"
-        # Personalizar el label para mostrar el 'first_name'
-        self.fields['estudiante'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
+        if inicio and fin:
+            if fin <= inicio:
+                self.add_error('fin', 'La hora de fin debe ser posterior a la hora de inicio')
 
-        self.fields['inicio'] = forms.ChoiceField(  #
-            label="Hora de inicio:",
-            choices=[(inicioB[i], str(inicioA[i])) for i in range(1, len(inicioA))],
-            widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
-            required=False
-        )
+        return cleaned_data
 
 
 class CitaForm(forms.ModelForm):
@@ -203,6 +202,7 @@ class CitaForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_HorIni'}),
             required=False
         )
+        self.fields['direccion'].label = "direccion"
         self.fields['estudiante'].widget.attrs.update({'placeholder': 'Estudiante', 'hidden':True})
         self.fields['paciente'].widget.attrs.update({'placeholder': 'Paciente', 'hidden':True})
 

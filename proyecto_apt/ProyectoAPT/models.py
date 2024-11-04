@@ -5,7 +5,8 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 # Create your models here.
 from datetime import datetime
-from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import time
 
 #TipoUsuario
 class TipoUsuario(models.Model):
@@ -171,17 +172,44 @@ class FichaClinica(models.Model):
 
 class horarios(models.Model):
     id = models.BigAutoField(primary_key=True)
-    tipoTratamiento = models.ForeignKey(tipoTratamiento, on_delete = models.SET_NULL, null=True, default=None)
+    estudiante = models.ForeignKey(
+        customuser, 
+        on_delete=models.CASCADE, 
+        related_name='horarios_estudiante',
+        null=True,  # Permitimos null temporalmente
+        blank=True
+    )
+    tipoTratamiento = models.ForeignKey(
+        tipoTratamiento, 
+        on_delete=models.CASCADE,
+        null=True,  # Permitimos null temporalmente
+        blank=True
+    )
     inicio = models.TimeField()
+    fin = models.TimeField(null=True, blank=True)
     fecha_seleccionada = models.DateField()
-    estudiante = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_estudiante")
-    paciente = models.ForeignKey(customuser, on_delete=models.SET_NULL, null=True, default=None, related_name="horarios_paciente_views")
-    ficha_clinica = models.ForeignKey(FichaClinica, on_delete=models.SET_NULL, null=True, blank=True)
-    def _str_(self):
-         return str(self.id)
-    
+    paciente = models.ForeignKey(
+        customuser, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='horarios_paciente'
+    )
+    ficha_clinica = models.ForeignKey(
+        'FichaClinica', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = 'Horario'
+        verbose_name_plural = 'Horarios'
+
     def __str__(self):
-        return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+        if self.paciente:
+            return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+        return f"Horario disponible el {self.fecha_seleccionada} a las {self.inicio}"
 
 
     def __str__(self):

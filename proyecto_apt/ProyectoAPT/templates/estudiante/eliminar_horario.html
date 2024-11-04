@@ -11,17 +11,21 @@
     <link href='{% static "css/eliminar_horario.css" %}' rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container-fluid d-flex"> <!-- Contenedor flexible -->
+    <div class="container">
         <div class="sidebar">
-            <h2>Perfil</h2>
-            <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
-            <h2>Mis Pacientes</h2>
-            <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
-            <h2>Notificaciones</h2>
-            <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
-            <h2>Mi Calendario</h2>
-            <a href="{% url 'calendario' %}">Organizar horarios</a>
+          <h2>Perfil</h2>
+          <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
+      
+          <h2>Mis Pacientes</h2>
+          <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
+      
+          <h2>Notificaciones</h2>
+          <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
+      
+          <h2>Mi Calendario</h2>
+          <a href="{% url 'calendario' %}">Organizar horarios</a>
         </div>
+      </div>
 
         <div class="content flex-grow-1 p-4"> <!-- Contenido principal -->
             <div class="box"> <!-- Contenedor para el box -->

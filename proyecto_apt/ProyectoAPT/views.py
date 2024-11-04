@@ -497,35 +497,74 @@ def servicios(request):
 
 @login_required
 def calendar_est(request):
-    estudiante = request.user  # El estudiante que está logueado
-    horarios_disponibles = horarios.objects.filter(estudiante=estudiante)
+    # Obtener los horarios disponibles del estudiante actual
+    horarios_disponibles = horarios.objects.filter(
+        estudiante=request.user,
+        fecha_seleccionada__gte=timezone.now().date()
+    ).order_by('fecha_seleccionada', 'inicio')
 
+    # Verificar si el método es POST para procesar la creación de horarios
     if request.method == 'POST':
-        form = horariosForm(request.POST, user=estudiante)
+        form = horariosForm(request.POST, user=request.user)  # Pasar el usuario al formulario
         if form.is_valid():
-            nuevo_horario = form.save(commit=False)
-
-            # Verificar si ya existe un horario para la misma fecha y hora
-            horario_existente = horarios.objects.filter(
-                estudiante=estudiante,
-                fecha_seleccionada=nuevo_horario.fecha_seleccionada,
-                inicio=nuevo_horario.inicio
-            ).exists()
-
-            if horario_existente:
-                messages.error(request, 'Ya tienes un horario publicado para esta fecha y hora.')
-            else:
-                nuevo_horario.estudiante = estudiante
-                nuevo_horario.save()
-                messages.success(request, '¡Horario publicado con éxito!')
-                return redirect('calendario')  # Redirige para actualizar la página y mostrar el nuevo horario
+            try:
+                # Obtener las fechas seleccionadas del formulario
+                fechas_str = request.POST.get('fecha_seleccionada', '').split(',')
+                
+                if not fechas_str[0]:  # Si no hay fechas seleccionadas
+                    messages.error(request, 'Por favor, selecciona al menos una fecha.')
+                else:
+                    horarios_creados = 0
+                    tipo_tratamiento = form.cleaned_data['tipoTratamiento']
+                    hora_inicio = form.cleaned_data['inicio']
+                    hora_fin = form.cleaned_data['fin']
+                    
+                    # Crear un horario para cada fecha seleccionada
+                    for fecha_str in fechas_str:
+                        fecha = datetime.strptime(fecha_str.strip(), '%Y-%m-%d').date()
+                        
+                        # Comprobar si ya existe un horario con el mismo tratamiento, fecha y hora para evitar duplicados
+                        if not horarios.objects.filter(
+                            estudiante=request.user,
+                            tipoTratamiento=tipo_tratamiento,
+                            fecha_seleccionada=fecha,
+                            inicio=hora_inicio
+                        ).exists():
+                            # Crear y guardar el horario
+                            horarios.objects.create(
+                                estudiante=request.user,
+                                tipoTratamiento=tipo_tratamiento,
+                                inicio=hora_inicio,
+                                fin=hora_fin,
+                                fecha_seleccionada=fecha
+                            )
+                            horarios_creados += 1
+                    
+                    # Mostrar mensaje de éxito si se crearon horarios
+                    if horarios_creados > 0:
+                        messages.success(request, f'¡Se han creado {horarios_creados} horarios exitosamente!')
+                    else:
+                        messages.info(request, 'No se crearon horarios nuevos, ya existen horarios en las fechas seleccionadas.')
+                    
+                    # Redirigir al calendario
+                    return redirect('calendario')  # Aseguramos que el nombre de la URL sea correcto
+                
+            except Exception as e:
+                print(f"Error al guardar: {e}")
+                messages.error(request, f'Error al guardar los horarios: {str(e)}')
+        else:
+            # Imprimir y mostrar errores de formulario
+            print("Errores del formulario:", form.errors)
+            messages.error(request, 'Por favor, verifica los datos del formulario.')
     else:
-        form = horariosForm(user=estudiante)
+        form = horariosForm(user=request.user)  # Pasar el usuario al formulario
 
-    return render(request, 'estudiante/calendario_est.html', {
-        'horarios_disponibles': horarios_disponibles,
+    context = {
         'form': form,
-    })
+        'horarios_disponibles': horarios_disponibles,
+    }
+
+    return render(request, 'estudiante/calendario_est.html', context)
 
 
 
@@ -695,7 +734,9 @@ def ver_ficha_clinica(request, paciente_id):
     })
 
 
-
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 def exportar_ficha_paciente(request, user_id=None):
     # Obtener los datos del paciente en el queryset actualFicha

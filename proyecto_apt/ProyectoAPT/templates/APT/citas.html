@@ -28,12 +28,12 @@
             <tbody>
                 {% for cita in citas %}
                 <tr>
+                    
                     <td>{{ cita.estudiante.first_name }} {{ cita.estudiante.last_name }}</td>
                     <td>{{ cita.tipotratamiento.nombreTratamiento }}</td>
                     <td>{{ cita.fecha_seleccionada }}</td>
                     <td>{{ cita.inicio }}</td>
-                    <td>{{ cita.estudiante.direccion }}</td>
-                    <td>{{ cita.estudiante.comuna }}</td>
+                    <td>{{ cita.estudiante.direccion }}</td> <!-- Mostrar la dirección del estudiante -->
                     <td>
                         <!-- Botón para anular la cita -->
                         <a href="{% url 'anular_cita' cita.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas anular esta cita?');">
