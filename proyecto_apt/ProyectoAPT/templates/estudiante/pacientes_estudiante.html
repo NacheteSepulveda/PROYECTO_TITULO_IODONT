@@ -1,46 +1,48 @@
-<!DOCTYPE html>
 {% extends "base.html" %}
 {% load custom_filters %}
 {% block content %}
 {% load static %}
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mis Pacientes</title>
   <link rel="stylesheet" href='{% static "css/pacientes_estudiante.css" %}'>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<!-- Bloque para mostrar mensajes de Django -->
-{% if messages %}
-<div class="alert-container">
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
-
-
 <body>
-  <div class="content">
-    <div class="sidebar">
-      <h2>Perfil</h2>
-      <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
+  <!-- Bloque para mostrar mensajes de Django -->
+  {% if messages %}
+  <div class="alert-container">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-      <h2>Mis Pacientes</h2>
-      <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
+  <div class="container mt-5">
+    <div class="content">
+      <div class="sidebar">
+        <h2>Perfil</h2>
+        <a href="{% url 'infoestudiante' %}">Modificar Perfil</a>
 
-      <h2>Notificaciones</h2>
-      <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
+        <h2>Mis Pacientes</h2>
+        <a href="{% url 'pacientes_est' %}">Ver Pacientes</a>
 
-      <h2>Mi Calendario</h2>
-      <a href="{% url 'calendario' %}">Organizar horarios</a>
-    </div>
-    <div class="pacientesCss">
-      <div>
+        <h2>Notificaciones</h2>
+        <a href="{% url 'notificaciones' %}">Ver Notificaciones</a>
+
+        <h2>Mi Calendario</h2>
+        <a href="{% url 'calendario' %}">Organizar horarios</a>
+      </div>
+
+      <div class="pacientesCss">
         <h1>Mis Pacientes</h1>
         
         {% if pacientes %}
@@ -48,43 +50,37 @@
             <div class="patient-card">
               <div class="patient-info">
                 <h3>{{ paciente.first_name }} {{ paciente.last_name }}</h3>
-                <p>Tratamiento de {{ paciente.tratamiento }}</p>
+                <p>
+                  {% if paciente.id in tratamientos_por_paciente %}
+                    {% with tratamiento_info=tratamientos_por_paciente|get_item:paciente.id %}
+                      Tratamiento: {{ tratamiento_info.tratamiento }}<br>
+                      Fecha: {{ tratamiento_info.fecha }}<br>
+                      Hora: {{ tratamiento_info.hora }}
+                    {% endwith %}
+                  {% else %}
+                    No hay registros de tratamiento recientes.
+                  {% endif %}
+                </p>
 
                 <!-- Enlace para crear la ficha del paciente -->
-                <a href="{% url 'crear_ficha_paciente' paciente.id %}" class="button button-crear-ficha">
-                  Crear Ficha
-                </a>
+                <a href="{% url 'crear_ficha_paciente' paciente.id %}" class="button button-crear-ficha">Crear Ficha</a>
 
                 <!-- Enlace para crear el historial médico del paciente -->
-                <a href="{% url 'crear_historial_medico' paciente.id %}" class="button button-crear-historial">
-                  Crear Historial
-                </a>
+                <a href="{% url 'crear_historial_medico' paciente.id %}" class="button button-crear-historial">Crear Historial</a>
 
                 <!-- Botón para ver la ficha clínica -->
-                <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="button button-ver-ficha">
-                  Ver Ficha Clínica
-                </a>
+                <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="button button-ver-ficha">Ver Ficha Clínica</a>
               </div>
             </div>
           {% endfor %}
         {% else %}
-          <!-- Mensaje de "No hay pacientes" -->
-          <div class="alert alert-info" role="alert">
-            No tienes pacientes asignados en este momento.
+          <div class="no-pacientes">
+            <p>No hay pacientes registrados.</p>
           </div>
         {% endif %}
-        
       </div>
     </div>
   </div>
 </body>
 </html>
 {% endblock %}
-
-
-
-
-  
-</body>
-
-</html>
