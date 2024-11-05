@@ -9,6 +9,10 @@ body {
 .container {
   display: flex;
   width: 100%;
+  max-width: 1400px;
+  margin: 0;
+  padding: 0;
+  position: relative;
 }
 
 .sidebar {
@@ -53,11 +57,18 @@ body {
 }
 
 .patient-card {
-  background-color: #f8f9fa;
+  background-color: white;
+  border: 1px solid #e0e0e0;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.patient-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .patient-info h3 {
@@ -79,21 +90,26 @@ body {
 }
 
 .button {
-  display: inline-flex; /* Cambiado de inline-block a inline-flex */
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 8px 12px; /* Ajustado el padding para ser igual en todos los lados */
-  border: none;
+  gap: 8px;
+  padding: 8px 16px;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
-  text-align: center;
   text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
   color: white;
-  height: 36px; /* Altura fija para todos los botones */
-  min-width: 120px;
+  background-color: #007bff;
+}
+
+.button i {
+  font-size: 16px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
 /* Estilos específicos para cada tipo de botón */

@@ -38,72 +38,24 @@
         </div>
     
         <div class="content flex-grow-1 p-4" id="horario">
-            <h3>Horarios Disponibles</h3>
-            {% if horarios_disponibles %}
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Hora Inicio</th>
-                                <th>Hora Fin</th>
-                                <th>Tratamiento</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for horario in horarios_disponibles %}
-                            <tr>
-                                <td>{{ horario.fecha_seleccionada|date:"d/m/Y" }}</td>
-                                <td>{{ horario.inicio|time:"H:i" }}</td>
-                                <td>{{ horario.fin|time:"H:i" }}</td>
-                                <td>{{ horario.tipoTratamiento.nombreTratamiento }}</td>
-                                <td>
-                                    {% if horario.paciente %}
-                                        <span class="badge bg-warning">Reservado</span>
-                                    {% else %}
-                                        <span class="badge bg-info">Disponible</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if horario.estudiante == request.user and not horario.paciente %}
-                                        <a href="{% url 'eliminar_horario' horario.id %}" 
-                                           class="btn btn-danger btn-sm">
-                                            Eliminar
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    No hay horarios publicados.
-                </div>
-            {% endif %}
-    
-            <h3 class="mt-4">Publicar Nuevos Horarios</h3>
-            <p><strong>Estudiante:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-            
-            <form method="POST" class="form-publicar-horario">
+            <!-- Asegúrate de que el formulario englobe todo lo necesario -->
+            <form method="POST" class="form-publicar-horario" id="horarioForm">
                 {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-4 mb-3">
+                <!-- Campos de selección arriba -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
                         <div class="form-group">
                             {{ form.tipoTratamiento.label_tag }}
                             {{ form.tipoTratamiento }}
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             {{ form.inicio.label_tag }}
                             {{ form.inicio }}
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             {{ form.fin.label_tag }}
                             {{ form.fin }}
@@ -111,14 +63,71 @@
                     </div>
                 </div>
 
-                <!-- Campo oculto para las fechas -->
+                <!-- Campo oculto para las fechas seleccionadas -->
                 <input type="hidden" name="fecha_seleccionada" id="fecha_seleccionada">
-                
-                <div id='calendar' class="mb-3"></div>
 
-                <button type="submit" class="btn btn-primary">
-                    Publicar Horarios
-                </button>
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Mi Calendario</h3>
+                        <div id='calendar' class="mb-4"></div>
+                        <div class="d-flex gap-2 mb-4 justify-content-start">
+                            <button type="button" class="btn btn-secondary" id="clearButton">
+                                Limpiar Selección
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Publicar Horarios
+                            </button>
+                        </div>
+
+                        <h3>Horarios Disponibles</h3>
+                        {% if horarios_disponibles %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Hora Inicio</th>
+                                            <th>Hora Fin</th>
+                                            <th>Tratamiento</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for horario in horarios_disponibles %}
+                                        <tr>
+                                            <td>{{ horario.fecha_seleccionada|date:"d/m/Y" }}</td>
+                                            <td>{{ horario.inicio|time:"H:i" }}</td>
+                                            <td>{{ horario.fin|time:"H:i" }}</td>
+                                            <td>{{ horario.tipoTratamiento.nombreTratamiento }}</td>
+                                            <td>
+                                                {% if horario.paciente %}
+                                                    <span class="badge bg-warning">Reservado</span>
+                                                {% else %}
+                                                    <span class="badge bg-info">Disponible</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if horario.estudiante == request.user and not horario.paciente %}
+                                                    <a href="{% url 'eliminar_horario' horario.id %}" 
+                                                       class="btn btn-danger btn-sm"
+                                                       onclick="return confirm('¿Estás seguro de que deseas eliminar este horario?');">
+                                                        Eliminar
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                No hay horarios disponibles.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -127,9 +136,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var selectedDates = new Set();
-            var isMouseDown = false;
-            var startDate = null;
-
+            
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 selectable: true,
@@ -140,7 +147,6 @@
                     right: 'dayGridMonth'
                 },
                 dateClick: function(info) {
-                    // Manejo de clic individual
                     var clickedDate = info.dateStr;
                     if (selectedDates.has(clickedDate)) {
                         selectedDates.delete(clickedDate);
@@ -165,70 +171,14 @@
 
             calendar.render();
 
-            // Eventos para selección por arrastre
-            calendar.el.addEventListener('mousedown', function(e) {
-                if (e.target.classList.contains('fc-day')) {
-                    isMouseDown = true;
-                    startDate = e.target.getAttribute('data-date');
-                    e.preventDefault();
-                }
-            });
-
-            calendar.el.addEventListener('mouseover', function(e) {
-                if (isMouseDown && e.target.classList.contains('fc-day')) {
-                    var currentDate = e.target.getAttribute('data-date');
-                    highlightDateRange(startDate, currentDate);
-                }
-            });
-
-            document.addEventListener('mouseup', function() {
-                if (isMouseDown) {
-                    isMouseDown = false;
-                    updateHiddenField();
-                }
-            });
-
-            function highlightDateRange(start, end) {
-                var startD = new Date(start);
-                var endD = new Date(end);
-                
-                // Asegurar que startD sea la fecha menor
-                if (startD > endD) {
-                    [startD, endD] = [endD, startD];
-                }
-
-                // Limpiar selecciones previas del arrastre
-                calendar.el.querySelectorAll('.fc-day').forEach(cell => {
-                    var date = cell.getAttribute('data-date');
-                    if (!selectedDates.has(date)) {
-                        cell.style.backgroundColor = '';
-                    }
-                });
-
-                // Marcar el nuevo rango
-                var currentDate = new Date(startD);
-                while (currentDate <= endD) {
-                    var dateStr = currentDate.toISOString().split('T')[0];
-                    var dateEl = calendar.el.querySelector(`[data-date="${dateStr}"]`);
-                    if (dateEl) {
-                        selectedDates.add(dateStr);
-                        dateEl.style.backgroundColor = '#93c47d';
-                    }
-                    currentDate.setDate(currentDate.getDate() + 1);
-                }
-            }
-
             function updateHiddenField() {
                 var sortedDates = Array.from(selectedDates).sort();
                 document.getElementById('fecha_seleccionada').value = sortedDates.join(',');
                 console.log('Fechas seleccionadas:', sortedDates);
             }
 
-            // Botón para limpiar selección
-            var clearButton = document.createElement('button');
-            clearButton.textContent = 'Limpiar Selección';
-            clearButton.className = 'btn btn-secondary mt-2';
-            clearButton.onclick = function(e) {
+            // Botón de limpiar
+            document.getElementById('clearButton').onclick = function(e) {
                 e.preventDefault();
                 selectedDates.clear();
                 calendar.el.querySelectorAll('.fc-day').forEach(cell => {
@@ -236,10 +186,9 @@
                 });
                 updateHiddenField();
             };
-            calendarEl.parentNode.insertBefore(clearButton, calendarEl.nextSibling);
 
             // Validación del formulario
-            document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('horarioForm').addEventListener('submit', function(e) {
                 if (!document.getElementById('fecha_seleccionada').value) {
                     e.preventDefault();
                     alert('Por favor, selecciona al menos una fecha en el calendario');
