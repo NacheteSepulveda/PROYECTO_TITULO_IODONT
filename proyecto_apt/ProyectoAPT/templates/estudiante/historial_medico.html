@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-{% load static %} <!-- Cargamos los archivos ESTATICOS para la pagina-->
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -12,33 +12,33 @@
 <body>
     <div class="container mt-5">
         <h2>Historial Médico</h2>
-        <div class="form-group">
-            <label><strong>Nombre Completo:</strong></label>
-            <p>{{ paciente.first_name }} {{ paciente.last_name }}</p>
+        <div class="info-paciente">
+            <div class="form-group">
+                <label>Nombre Completo:</label>
+                <p>{{ paciente.first_name }} {{ paciente.last_name }}</p>
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico:</label>
+                <p>{{ paciente.email }}</p>
+            </div>
+            <div class="form-group">
+                <label>Fecha de Nacimiento:</label>
+                <p>{{ fecha_nacimiento }}</p>
+            </div>
+            <div class="form-group">
+                <label>Dirección:</label>
+                <p>{{ paciente.direccion }}</p>
+            </div>
+            <div class="form-group">
+                <label>Número Telefónico:</label>
+                <p>{{ paciente.num_tel }}</p>
+            </div>
+            
+            <div class="fecha-cita">
+                <label>Fecha de la Cita:</label>
+                <p>{{ fecha_cita }}</p>
+            </div>
         </div>
-        <div class="form-group">
-            <label><strong>Correo Electrónico:</strong></label>
-            <p>{{ paciente.email }}</p>
-        </div>
-        <div class="form-group">
-            <label><strong>Fecha de Nacimiento:</strong></label>
-            <p>{{ paciente.fecha_nac }}</p>
-        </div>
-        <div class="form-group">
-            <label><strong>Dirección:</strong></label>
-            <p>{{ paciente.direccion }}</p>
-        </div>
-        <div class="form-group">
-            <label><strong>Número Telefónico:</strong></label>
-            <p>{{ paciente.num_tel }}</p>
-        </div>
-
-        <!-- Mostrando la fecha de la cita programada -->
-        <div class="form-group">
-            <label><strong>Fecha:</strong></label>
-            <p>{{ cita.fecha_seleccionada }}</p>
-        </div>
-
 
         <form method="POST" action="{% url 'crear_historial_medico' paciente.id %}">
             {% csrf_token %}
@@ -60,7 +60,7 @@
                 {% endif %}
             </div>
     
-            <button type="submit" class="btn btn-primary">Guardar Ficha</button>
+            <button type="submit" class="btn btn-primary">Guardar Historial</button>
         </form>
     </div>
 </body>

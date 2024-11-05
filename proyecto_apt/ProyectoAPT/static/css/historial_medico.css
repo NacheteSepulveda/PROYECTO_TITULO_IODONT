@@ -1,23 +1,32 @@
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
     color: #333;
     line-height: 1.6;
 }
 
 .container {
-    max-width: 800px; /* Aumentado de 600px a 800px */
+    max-width: 900px;
     margin: 30px auto;
-    padding: 30px; /* Aumentado de 20px a 30px */
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    border: 1px solid #ddd;
 }
 
-h2, h3 {
+/* Encabezado del historial */
+h2 {
     color: #2c3e50;
-    margin-bottom: 20px;
+    text-align: center;
+    padding: 15px;
+    margin: -30px -30px 30px -30px;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    border-radius: 10px 10px 0 0;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 /* Estilos para los grupos de formulario */

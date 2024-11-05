@@ -6,25 +6,27 @@
 <link type="text/css" rel="stylesheet" href='{% static "css/guardar_ficha.css" %}'>
 <div class="container mt-5">
     <h2>Ficha Clínica del Paciente</h2>
-    <div class="form-group">
-        <label><strong>Nombre Completo:</strong></label>
-        <p>{{ paciente.first_name }} {{ paciente.last_name }}</p>
-    </div>
-    <div class="form-group">
-        <label><strong>Correo Electrónico:</strong></label>
-        <p>{{ paciente.email }}</p>
-    </div>
-    <div class="form-group">
-        <label><strong>Fecha de Nacimiento:</strong></label>
-        <p>{{ paciente.fecha_nac }}</p>
-    </div>
-    <div class="form-group">
-        <label><strong>Dirección:</strong></label>
-        <p>{{ paciente.direccion }}</p>
-    </div>
-    <div class="form-group">
-        <label><strong>Número Telefónico:</strong></label>
-        <p>{{ paciente.num_tel }}</p>
+    <div class="info-paciente">
+        <div class="form-group">
+            <label><strong>Nombre Completo:</strong></label>
+            <p>{{ paciente.first_name }} {{ paciente.last_name }}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Correo Electrónico:</strong></label>
+            <p>{{ paciente.email }}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Fecha de Nacimiento:</strong></label>
+            <p>{{ fecha_nacimiento }}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Dirección:</strong></label>
+            <p>{{ paciente.direccion }}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Número Telefónico:</strong></label>
+            <p>{{ paciente.num_tel }}</p>
+        </div>
     </div>
 
     <form method="POST" action="{% url 'crear_ficha_paciente' paciente.id %}">

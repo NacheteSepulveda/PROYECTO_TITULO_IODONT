@@ -230,10 +230,12 @@ def crear_ficha_paciente(request, user_id):
     else:
         form = FichaClinicaForm()
 
-    return render(request, 'estudiante/crear_ficha_clinica.html', {
+    context = {
         'paciente': paciente,
         'form': form,
-    })
+        'fecha_nacimiento': spanish_date(paciente.fecha_nac),
+    }
+    return render(request, 'estudiante/crear_ficha_clinica.html', context)
 
 
 
@@ -716,11 +718,15 @@ def crear_historial_medico(request, paciente_id):
     else:
         form = HistorialForm()
 
-    return render(request, 'estudiante/historial_medico.html', {
-        'form': form,
-        'cita': cita,
+    context = {
         'paciente': paciente,
-    })
+        'cita': cita,
+        'form': form,
+        'fecha_nacimiento': spanish_date(paciente.fecha_nac),
+        'fecha_cita': spanish_date(cita.fecha_seleccionada),
+    }
+
+    return render(request, 'estudiante/historial_medico.html', context)
 
 @login_required
 def ver_ficha_clinica(request, paciente_id):
@@ -856,3 +862,39 @@ def exportar_ficha_paciente(request, user_id=None):
     pdf.showPage()
     pdf.save()
     return response
+
+
+def spanish_date(date):
+    months = {
+        'January': 'Enero',
+        'February': 'Febrero',
+        'March': 'Marzo',
+        'April': 'Abril',
+        'May': 'Mayo',
+        'June': 'Junio',
+        'July': 'Julio',
+        'August': 'Agosto',
+        'September': 'Septiembre',
+        'October': 'Octubre',
+        'November': 'Noviembre',
+        'December': 'Diciembre'
+    }
+    
+    days = {
+        'Monday': 'Lunes',
+        'Tuesday': 'Martes',
+        'Wednesday': 'Miércoles',
+        'Thursday': 'Jueves',
+        'Friday': 'Viernes',
+        'Saturday': 'Sábado',
+        'Sunday': 'Domingo'
+    }
+    
+    english_date = date.strftime('%A %d de %B de %Y')
+    
+    for eng, esp in months.items():
+        english_date = english_date.replace(eng, esp)
+    for eng, esp in days.items():
+        english_date = english_date.replace(eng, esp)
+    
+    return english_date
