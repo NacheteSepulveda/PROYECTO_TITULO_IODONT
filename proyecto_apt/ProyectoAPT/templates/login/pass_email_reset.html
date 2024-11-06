@@ -1,0 +1,21 @@
+{% autoescape off %}
+
+=== IODONT - Recuperación de Contraseña ===
+
+Hola,
+
+Has solicitado restablecer la contraseña de tu cuenta en IODONT. 
+
+Para restablecer tu contraseña, por favor haz clic en el siguiente enlace:
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+Si no has solicitado este cambio de contraseña, puedes ignorar este correo. 
+Tu cuenta está segura.
+
+Saludos,
+El equipo de IODONT
+
+-----------------------------------
+Este es un correo automático, por favor no responder.
+
+{% endautoescape %} 

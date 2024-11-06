@@ -22,6 +22,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import *
 from ProyectoAPT.views import filtrar_estudiantes
+from django.contrib.auth import views as auth_views
+
+
 
 
 urlpatterns = [
@@ -71,13 +74,37 @@ urlpatterns = [
     #eliminar paciente
     path('eliminar-paciente/<int:paciente_id>/', views.eliminar_paciente, name='eliminar_paciente'),
     path('horarios/', filtrar_estudiantes, name='horarios'),  
-    path('ver_ficha_clinica/<int:paciente_id>/', views.ver_ficha_clinica, name='ver_ficha_clinica')
+    path('ver_ficha_clinica/<int:paciente_id>/', views.ver_ficha_clinica, name='ver_ficha_clinica'),
     
 
-     
-    
-
-]
+    # contraseña olvidada
+    path('olvide-password/', 
+        auth_views.PasswordResetView.as_view(
+            template_name='login/olvide-pass.html',
+            email_template_name='login/pass_email_reset.html',
+            subject_template_name='login/password_reset_subject.txt',
+        ),
+        name='password_reset'
+    ),
+    path('reset-password-enviado/', 
+        auth_views.PasswordResetDoneView.as_view(
+            template_name='login/pass_confirm_email.html'
+        ),
+        name='password_reset_done'
+    ),
+    path('reset/<uidb64>/<token>/', 
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='login/reset-pass.html'
+        ),
+        name='password_reset_confirm'
+    ),
+    path('reset-password-completado/', 
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name='login/pass_complete.html'
+        ),
+        name='password_reset_complete'
+    ),
+    ]
 # Solo en modo de desarrollo
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

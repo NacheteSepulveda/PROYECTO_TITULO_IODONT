@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MinLengthValidator, RegexValidator
 from django.core.exceptions import ValidationError
 # Create your models here.
 from datetime import datetime
 from django.utils import timezone
-from datetime import time
+from datetime import date
 
 #TipoUsuario
 class TipoUsuario(models.Model):
@@ -69,17 +69,33 @@ class Comuna(models.Model):
 
 
 
-
+def validar_fecha_nacimiento(fecha):
+    if fecha >= date.today():
+        return False
+    return True
+        
         
 class customuser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True, null=True)
     rut = models.CharField(max_length=13, unique=True, null=True)
     id_tipo_user = models.ForeignKey('TipoUsuario', on_delete=models.SET_NULL, null=True)
-    descripcion = models.TextField(null=True)
+    descripcion = models.TextField(null=True, blank=True)
     imageBlob = models.ImageField(default="imagenes_usuario/profiledefault.jpg", upload_to='imagenes_usuario/', blank=True, null=True)
-    fecha_nac = models.DateField(null=True)
-    num_tel = models.IntegerField(null=True, max_length=9)
+    fecha_nac = models.DateField(
+        validators=[validar_fecha_nacimiento]
+    )
+    num_tel = models.CharField(
+        max_length=9,
+        null=True,
+        validators=[
+            MinLengthValidator(9, message='Asegúrate de que el numero tenga al menos 9 digitos'),
+            RegexValidator(
+                regex=r'^\d{9}$',
+                message='Ingresa un número válido de 9 dígitos'
+            )
+        ]
+    )
     direccion = models.TextField(null=True, blank=True)
     universidad = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True, blank=True)
     comuna = models.ForeignKey(Comuna, on_delete=models.SET_NULL, null=True, blank=True)
@@ -112,6 +128,10 @@ class customuser(AbstractUser):
 
     def clean(self):
         super().clean()
+        if self.fecha_nac and self.fecha_nac >= date.today():
+            raise ValidationError({
+                'fecha_nac': 'La fecha de nacimiento no puede ser la misma de hoy o futura.'
+            })
         # Validación del certificado durante la creación del usuario
         if not self.pk:  # Si es un nuevo usuario
             if self.id_tipo_user and self.id_tipo_user.nombre_tipo_usuario == 'Estudiante':
@@ -121,9 +141,12 @@ class customuser(AbstractUser):
                     })
 
     def save(self, *args, **kwargs):
-        # Generar un username basado en el email
-        if not self.username:
+        # Primero asignamos el username
+        if not self.username and self.email:
             self.username = self.email.split('@')[0]
+        # Luego hacemos la validación
+        self.full_clean()
+        # Finalmente guardamos
         super().save(*args, **kwargs)
 
     def __str__(self):
