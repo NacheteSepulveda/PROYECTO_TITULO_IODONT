@@ -89,3 +89,144 @@
         font-size: 2rem;
     }
 }
+
+/* ... tus estilos existentes ... */
+/* Estilos base del calendario */
+.fc {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    font-size: 0.9em !important;
+    background-color: white !important;
+}
+
+/* Días disponibles */
+.fc .fc-day.dia-disponible {
+    background-color: #e8f4ff !important;
+    cursor: pointer !important;
+}
+
+/* Días no disponibles */
+.fc .fc-day:not(.dia-disponible) {
+    background-color: #f5f5f5 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+/* Hover en días disponibles */
+.fc .fc-day.dia-disponible:hover {
+    background-color: #d1e8ff !important;
+}
+
+/* Contenedor del calendario */
+#calendario-container {
+    margin-top: 20px !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background-color: white !important;
+}
+
+/* Título del tratamiento */
+#tratamiento-seleccionado {
+    text-align: center !important;
+    margin-bottom: 20px !important;
+    color: #333 !important;
+    font-size: 1.2em !important;
+}
+
+/* Celdas del calendario */
+.fc .fc-daygrid-day {
+    height: 80px !important;
+}
+
+.fc .fc-daygrid-day-frame {
+    padding: 4px !important;
+    min-height: 80px !important;
+}
+
+/* Encabezados y títulos */
+.fc .fc-toolbar {
+    margin-bottom: 0.5em !important;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.5em !important;
+}
+
+.fc .fc-col-header-cell {
+    background-color: #f8f9fa !important;
+    padding: 8px !important;
+}
+
+/* Números de los días */
+.fc .fc-daygrid-day-number {
+    color: #0066cc !important;
+    padding: 4px !important;
+}
+
+/* Bordes */
+.fc td, .fc th {
+    border: 1px solid #ddd !important;
+}
+
+/* Botones de navegación */
+.fc .fc-button-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
+
+/* Asegurarse de que estos estilos sean más específicos */
+/* Días disponibles - color verde */
+.fc .fc-daygrid-day.dia-disponible {
+    background-color: #e8ffea !important; /* Verde claro */
+    cursor: pointer !important;
+}
+
+
+.fc .fc-daygrid-day:not(.dia-disponible) {
+    background-color: #f5f5f5 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+/* Resto de tus estilos... */
+/* Ajustar el tamaño del calendario */
+.fc {
+    max-width: 600px !important;  /* Reducido de 700px */
+    margin: 0 auto !important;
+    font-size: 0.85em !important;  /* Reducido de 0.9em */
+}
+
+/* Ajustar el tamaño de las celdas */
+.fc .fc-daygrid-day {
+    height: 60px !important;  /* Reducido de 80px */
+}
+
+.fc .fc-daygrid-day-frame {
+    padding: 2px !important;  /* Reducido de 4px */
+    min-height: 60px !important;  /* Reducido de 80px */
+}
+
+/* Ajustar el tamaño del contenedor */
+#calendario-container {
+    max-width: 650px !important;  /* Reducido de 800px */
+    padding: 15px !important;  /* Reducido de 20px */
+}
+
+/* Ajustar el tamaño del título del mes */
+.fc .fc-toolbar-title {
+    font-size: 1.2em !important;  /* Reducido de 1.5em */
+}
+
+/* Ajustar el padding de los encabezados */
+.fc .fc-col-header-cell {
+    padding: 6px !important;  /* Reducido de 8px */
+}

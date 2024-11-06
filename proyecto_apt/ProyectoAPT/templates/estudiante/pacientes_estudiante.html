@@ -80,6 +80,10 @@
                                 <a href="{% url 'ver_ficha_clinica' paciente.id %}" class="button">
                                     <i class="fas fa-eye"></i> Ver Ficha Clínica
                                 </a>
+                                <!-- ... dentro del bucle de pacientes ... -->
+                                <a href="{% url 'eliminar_paciente' paciente.id %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Eliminar Paciente
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -90,7 +94,11 @@
                     </div>
                 {% endif %}
             </div>
+ 
         </div>
     </div>
+</div>
+</div>
+</div>
 </body>
 {% endblock %}

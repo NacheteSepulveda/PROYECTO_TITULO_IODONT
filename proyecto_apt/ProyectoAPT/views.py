@@ -356,35 +356,51 @@ def registroHoras(request):
     }
     
     return render(request, 'APT/horarios.html', context)
+#eliminar paciente
+@login_required
+def eliminar_paciente(request, paciente_id):
+    # Obtener el paciente y todas sus citas asociadas con el estudiante actual
+    paciente = get_object_or_404(customuser, id=paciente_id)
+    citas = Cita.objects.filter(paciente=paciente, estudiante=request.user)
     
+    if request.method == 'POST':
+        # Eliminar todas las citas asociadas
+        citas.delete()
+        messages.success(request, f'El paciente {paciente.first_name} {paciente.last_name} ha sido eliminado de tu lista.')
+        return redirect('pacientes_est')
+        
+    return render(request, 'estudiante/eliminar_paciente.html', {
+        'paciente': paciente
+    })
 
 # Vista para obtener los horarios disponibles para un tratamiento en una fecha específica
 def obtener_horarios_disponibles(request):
     if request.method == 'GET':
         tratamiento_id = request.GET.get('tratamiento_id')
         fecha_seleccionada = request.GET.get('fecha_seleccionada')
-        
-        # Obtener solo los horarios del estudiante con id_tipo_user = 2
-        estudiante_id = request.GET.get('estudiante_id')  # ID del estudiante
+        estudiante_id = request.GET.get('estudiante_id')
 
-        idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario = 'Estudiante').first()
+        idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
 
-        # Obtenemos los horarios disponibles para el tratamiento, la fecha seleccionada y el estudiante
-        horarios_disponibles = horarios.objects.filter(
+        # Consulta base
+        query = horarios.objects.filter(
             tipoTratamiento_id=tratamiento_id,
-            fecha_seleccionada=fecha_seleccionada,
-            estudiante__id_tipo_user_id=idEstudianteTipo,  # Filtrar solo por el estudiante
-            estudiante_id=estudiante_id  # Filtrar solo por el estudiante
-        ).values('inicio')  # Cambia 'HoraInicial' a 'inicio' según tu modelo
-        print(f'tipo tratamiento')
-        print(f'fecha')
-        print(f'estudiate')
-        print(horarios_disponibles)
+            estudiante__id_tipo_user_id=idEstudianteTipo,
+            estudiante_id=estudiante_id
+        )
 
-        # Convertimos los horarios en una lista para enviarlos en formato JSON
+        # Si se proporciona una fecha específica, filtrar por esa fecha
+        if fecha_seleccionada:
+            query = query.filter(fecha_seleccionada=fecha_seleccionada)
+            horarios_disponibles = query.values('inicio')
+        else:
+            # Si no hay fecha específica, obtener todas las fechas disponibles
+            horarios_disponibles = query.values('fecha_seleccionada', 'inicio').distinct()
+
+        # Convertir los horarios en una lista para enviarlos en formato JSON
         horarios_list = list(horarios_disponibles)
 
-        # Devolvemos la respuesta como JSON
+        print('Horarios disponibles:', horarios_list)
         return JsonResponse(horarios_list, safe=False)
     
 @login_required

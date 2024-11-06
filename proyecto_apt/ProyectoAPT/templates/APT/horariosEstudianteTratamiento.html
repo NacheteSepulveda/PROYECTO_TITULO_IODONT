@@ -3,138 +3,187 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-<link type="text/css" rel="stylesheet" href='{% static "css/agenda_cita.css" %}'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Incluir FullCalendar y SweetAlert2 -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="{% static 'css/agenda_cita.css' %}">
 
-<main class="container">
-    <!-- Bloque para mostrar mensajes -->
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
-                    {{ message }}
+<div class="container">
+    <h2 class="titulo-principal">¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
+    <p class="subtitulo">Elige el servicio que necesitas agendar</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <!-- En la sección de los tratamientos -->
+        <div class="servicios-grid">
+            {% for tratamiento in estudiante.obtenerTratamiento %}
+                <div class="servicio-card">
+                    <div class="icono">
+                        <i class="fas fa-tooth"></i>
+                    </div>
+                    <h3>{{ tratamiento.nombreTratamiento }}</h3>
+                    <p>Servicio dental profesional</p>
+                    <button type="button"
+                        class="btn-servicio"
+                        onclick="mostrarCalendario('{{ tratamiento.id }}', '{{ tratamiento.nombreTratamiento }}')"
+                    >Seleccionar</button>
                 </div>
             {% endfor %}
         </div>
-    {% endif %}
 
-    <div class="servicios-container">
-        <h2 class="titulo-principal">¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
-        <p class="subtitulo">Elige el servicio que necesitas agendar</p>
-        
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="servicios-grid">
-                {% for tratamiento in estudiante.obtenerTratamiento %}
-                    <div class="servicio-card">
-                        <div class="icono">
-                            <i class="fas fa-tooth"></i>
-                        </div>
-                        <h3>{{ tratamiento.nombreTratamiento }}</h3>
-                        <p>Servicio dental profesional</p>
-                        <a
-                            class="btn-servicio"
-                            name="tratamiento"
-                            id="id_tratamiento_{{ tratamiento.id }}"
-                            role="button"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#modalTratamiento"
-                            data-tratamiento-id="{{ tratamiento.id }}"
-                            data-tratamiento-nombre="{{ tratamiento.nombreTratamiento }}"
-                        >Seleccionar</a>
-                    </div>
-                {% endfor %}
-            </div>
+        <!-- Campos ocultos del formulario -->
+        <div class="row" id="hiddenValues">
+            <input type="hidden" name="tratamiento" id="id_tratamiento">
+            <input type="hidden" name="tipotratamiento" id="nombreTratamiento">
+            <input type="hidden" name="fecha_seleccionada" id="id_fecha_seleccionada">
+            <input type="hidden" name="paciente" id="id_paciente" value="{{ actualUser }}">
+            <input type="hidden" name="estudiante" id="id_estudiante" value="{{ estudiante.id }}">
+            <input type="hidden" name="inicio" id="id_inicio">
+        </div>
+    </form>
 
-            <div class="row" id="hiddenValues">
-                {{ form.tratamiento }} 
-                <input type="hidden" name="tipotratamiento" id="nombreTratamiento" value="">
-                <input type="text" name="paciente" id="id_paciente" hidden value="{{ actualUser }}">
-                <input type="hidden" name="estudiante" id="id_estudiante" hidden value="{{ estudiante.id }}">
-            </div>
+    <!-- Calendario oculto inicialmente -->
+    <div id="calendario-container" style="display: none;">
+        <h3 id="tratamiento-seleccionado"></h3>
+        <div id="calendar"></div>
+    </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="modalTratamiento" tabindex="-1" aria-labelledby="modalTratamientoLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalTratamientoLabel">Selección de Horario</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <h3 id="tratamientoNombre"></h3>
-
-                            <div class="form-group">
-                                <label for="id_fecha_seleccionada">{{ form.fecha_seleccionada.label }}</label>
-                                {{ form.fecha_seleccionada }}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="id_HorIni">Horarios Disponibles</label>
-                                <select id="id_HorIni" name="inicio" class="form-select">
-                                    <option value="">Seleccione una hora</option>
-                                </select>
-                                <div id="no-horarios-message" style="display:none; color: red;">
-                                    No Hay Horarios Disponibles
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary">Agendar</button>
-                        </div>
-                    </div>
+    <!-- Modal para horarios -->
+    <div class="modal fade" id="horariosModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Horarios Disponibles</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="horarios-lista"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmarCita()">Agendar</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</main>
+</div>
 
 <script>
-// El mismo JavaScript que tenías antes
-document.addEventListener('DOMContentLoaded', function() {
-    var modalTratamiento = document.getElementById('modalTratamiento');
-    var tratamientoInput = document.getElementById('nombreTratamiento');
-    var horariosSelect = document.getElementById('id_HorIni');
-    var fechaSeleccionadaInput = document.getElementById('id_fecha_seleccionada');
-    var noHorariosMessage = document.getElementById('no-horarios-message');
-    var estudianteInput = document.getElementById('id_estudiante');
+let calendar;
 
-    modalTratamiento.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var tratamientoId = button.getAttribute('data-tratamiento-id');
-        var tratamientoNombre = button.getAttribute('data-tratamiento-nombre');
-
-        tratamientoInput.value = tratamientoId;
-        document.getElementById('tratamientoNombre').textContent = tratamientoNombre;
-
-        fechaSeleccionadaInput.addEventListener('change', function () {
-            var fechaSeleccionada = this.value;
-
-            if (tratamientoId && fechaSeleccionada) {
-                fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fechaSeleccionada}&estudiante_id=${estudianteInput.value}`)
-                .then(response => response.json())
-                .then(data => {
-                    horariosSelect.innerHTML = '';
-                    if (data.length > 0) {
-                        noHorariosMessage.style.display = 'none';
-                        data.forEach(function(horario) {
-                            var option = document.createElement('option');
-                            option.value = horario.inicio;
-                            option.text = horario.inicio;
-                            horariosSelect.appendChild(option);
-                        });
-                    } else {
-                        horariosSelect.innerHTML = '';
-                        noHorariosMessage.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Hubo un problema con la petición Fetch:', error);
-                });
-            }
+function mostrarCalendario(tratamientoId, nombreTratamiento) {
+    document.getElementById('calendario-container').style.display = 'block';
+    document.getElementById('tratamiento-seleccionado').textContent = nombreTratamiento;
+    
+    document.getElementById('id_tratamiento').value = tratamientoId;
+    document.getElementById('nombreTratamiento').value = tratamientoId;
+    
+    if (calendar) {
+        calendar.destroy();
+    }
+    
+    fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&estudiante_id={{ estudiante.id }}`)
+        .then(response => response.json())
+        .then(data => {
+            inicializarCalendario(tratamientoId, data);
         });
+}
+
+function inicializarCalendario(tratamientoId, diasDisponibles) {
+    console.log("Días disponibles recibidos:", diasDisponibles);
+    
+    var calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'es',
+        initialView: 'dayGridMonth',
+        selectable: true,
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth'
+        },
+        dayCellDidMount: function(arg) {
+            const fecha = arg.date.toISOString().split('T')[0];
+            console.log("Verificando fecha:", fecha);
+            
+            const esDiaDisponible = diasDisponibles.some(d => {
+                const fechaDisponible = d.fecha_seleccionada;
+                console.log("Comparando con:", fechaDisponible);
+                return fechaDisponible === fecha;
+            });
+            
+            if (esDiaDisponible) {
+                console.log("Día disponible encontrado:", fecha);
+                arg.el.classList.add('dia-disponible');
+                // Intentar forzar el estilo directamente
+                arg.el.style.backgroundColor = '#e8f4ff';
+                arg.el.style.cursor = 'pointer';
+            }
+        },
+        dateClick: function(info) {
+            if (info.dayEl.classList.contains('dia-disponible')) {
+                mostrarHorariosDisponibles(tratamientoId, info.dateStr);
+            }
+        }
     });
-});
+    
+    calendar.render();
+}
+
+function mostrarHorariosDisponibles(tratamientoId, fecha) {
+    document.getElementById('id_fecha_seleccionada').value = fecha;
+    
+    fetch(`/obtener-horarios-disponibles/?tratamiento_id=${tratamientoId}&fecha_seleccionada=${fecha}&estudiante_id={{ estudiante.id }}`)
+        .then(response => response.json())
+        .then(data => {
+            var horariosHtml = '';
+            if (data.length > 0) {
+                data.forEach(horario => {
+                    horariosHtml += `
+                        <button type="button" class="btn btn-outline-primary m-1" 
+                                onclick="seleccionarHorario('${horario.inicio}')">
+                            ${horario.inicio}
+                        </button>`;
+                });
+            } else {
+                horariosHtml = '<p>No hay horarios disponibles para esta fecha</p>';
+            }
+            document.getElementById('horarios-lista').innerHTML = horariosHtml;
+            new bootstrap.Modal(document.getElementById('horariosModal')).show();
+        });
+}
+
+function seleccionarHorario(hora) {
+    document.getElementById('id_inicio').value = hora;
+    document.querySelectorAll('#horarios-lista button').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline-primary');
+        if (btn.textContent.trim() === hora) {
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-primary');
+        }
+    });
+}
+
+function confirmarCita() {
+    const form = document.querySelector('form');
+    const formData = new FormData(form);
+
+    if (!formData.get('tipotratamiento') || !formData.get('fecha_seleccionada') || !formData.get('inicio')) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Por favor, selecciona todos los campos necesarios',
+            icon: 'error'
+        });
+        return;
+    }
+
+    form.submit();
+}
 </script>
+
+
+
 {% endblock %}

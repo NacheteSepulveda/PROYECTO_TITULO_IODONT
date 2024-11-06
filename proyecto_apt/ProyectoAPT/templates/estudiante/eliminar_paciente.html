@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h5 class="card-title">Confirmar eliminación</h5>
+            <p class="card-text">
+                ¿Está seguro que desea eliminar al paciente 
+                <strong>{{ paciente.first_name }} {{ paciente.last_name }}</strong> 
+                de su lista de pacientes?
+            </p>
+            <p class="text-muted">
+                Esta acción solo eliminará al paciente de su lista personal. 
+                El paciente podrá seguir usando la plataforma y agendar nuevas citas en el futuro.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sí, eliminar de mi lista
+                </button>
+                <a href="{% url 'pacientes_est' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> No, cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
