@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Contraseña Actualizada</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        Tu contraseña ha sido actualizada correctamente.
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

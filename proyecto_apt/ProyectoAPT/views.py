@@ -898,3 +898,16 @@ def spanish_date(date):
         english_date = english_date.replace(eng, esp)
     
     return english_date
+
+def test_email(request):
+    try:
+        send_mail(
+            'Prueba de correo',  # asunto
+            'Este es un correo de prueba desde Django',  # mensaje
+            os.getenv('EMAIL_HOST_USER'),  # remitente
+            [os.getenv('EMAIL_HOST_USER')],  # destinatario (enviamos al mismo correo)
+            fail_silently=False,
+        )
+        return HttpResponse('Correo enviado correctamente!')
+    except Exception as e:
+        return HttpResponse(f'Error al enviar el correo: {str(e)}')

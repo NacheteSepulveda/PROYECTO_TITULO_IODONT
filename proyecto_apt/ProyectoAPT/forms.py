@@ -6,6 +6,7 @@ from typing import Any #Te entrega todo (preguntarle a chatgpt)
 from django.utils import timezone
 from datetime import datetime, timedelta, time
 from django.core.validators import FileExtensionValidator
+from django.conf import settings
 
 # Set default values to use:
 inicioB = ["",time(9,0), time(11,0), time(13,0), time(15,0), time(17,00), time(19,00)]
@@ -260,3 +261,5 @@ class ModificarPerfil(forms.ModelForm):
         self.fields['comuna'].widget.attrs.update({'readonly': True})
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})
         
+
+
