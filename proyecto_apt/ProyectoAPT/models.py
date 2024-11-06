@@ -83,7 +83,9 @@ class customuser(AbstractUser):
     descripcion = models.TextField(null=True, blank=True)
     imageBlob = models.ImageField(default="imagenes_usuario/profiledefault.jpg", upload_to='imagenes_usuario/', blank=True, null=True)
     fecha_nac = models.DateField(
-        validators=[validar_fecha_nacimiento]
+        validators=[validar_fecha_nacimiento],
+        null=True,  # Permitir null
+        blank=True  # Permitir blank
     )
     num_tel = models.CharField(
         max_length=9,
@@ -127,12 +129,18 @@ class customuser(AbstractUser):
     objects = CustomUserManager()
 
     def clean(self):
+        # Si es staff, no hacemos validaciones
+        if self.is_staff:
+            return
+        
         super().clean()
+        # Validaciones solo para usuarios no staff
         if self.fecha_nac and self.fecha_nac >= date.today():
             raise ValidationError({
                 'fecha_nac': 'La fecha de nacimiento no puede ser la misma de hoy o futura.'
             })
-        # Validación del certificado durante la creación del usuario
+        
+        # Validación del certificado solo para estudiantes no staff
         if not self.pk:  # Si es un nuevo usuario
             if self.id_tipo_user and self.id_tipo_user.nombre_tipo_usuario == 'Estudiante':
                 if not self.Certificado:
@@ -141,12 +149,17 @@ class customuser(AbstractUser):
                     })
 
     def save(self, *args, **kwargs):
-        # Primero asignamos el username
+        # Si es staff, solo asignamos username si es necesario
+        if self.is_staff:
+            if not self.username and self.email:
+                self.username = self.email.split('@')[0]
+            super().save(*args, **kwargs)
+            return
+        
+        # Para usuarios no staff, hacemos todas las validaciones
         if not self.username and self.email:
             self.username = self.email.split('@')[0]
-        # Luego hacemos la validación
         self.full_clean()
-        # Finalmente guardamos
         super().save(*args, **kwargs)
 
     def __str__(self):
