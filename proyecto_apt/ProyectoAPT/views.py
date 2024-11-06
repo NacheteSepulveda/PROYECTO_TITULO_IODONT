@@ -445,7 +445,7 @@ def tratamientosForm(request, estudianteID):
             ).exclude(estudiante=estudiante).exists()
 
             if cita_misma:
-                messages.error(request, 'Ya tienes una cita agendada con este estudiante.')
+                messages.error(request, 'Ya tienes una cita agendada con este estudiante en esta fecha y hora.')
             elif cita_otro_estudiante:
                 messages.error(request, 'Ya tienes una cita agendada con otro estudiante en esta fecha y hora.')
             else:

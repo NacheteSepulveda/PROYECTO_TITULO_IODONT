@@ -9,7 +9,17 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="{% static 'css/agenda_cita.css' %}">
-
+{# Agregar esto cerca del inicio del contenido #}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="container">
     <h2 class="titulo-principal">¿QUÉ SERVICIO NECESITA AGENDAR?</h2>
     <p class="subtitulo">Elige el servicio que necesitas agendar</p>
