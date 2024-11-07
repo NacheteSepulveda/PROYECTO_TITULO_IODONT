@@ -24,6 +24,7 @@ from reportlab.pdfgen import canvas
 import os
 from django.conf import settings
 from reportlab.lib.utils import ImageReader
+import requests
 
 
 
@@ -82,11 +83,34 @@ def register(request):
                 # Asignar la universidad automáticamente en función del dominio
                 if "uch.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
-                user = form.save(commit=False)
-                user.universidad = universidad  # Asignar el objeto de universidad antes de guardar el usuario
-                user.estado_aprobacion = 'pendiente'  # Asignar el estado inicial como "pendiente"
                 
-                # Si es estudiante, verificar que se haya subido el certificado
+                user = form.save(commit=False)
+                user.universidad = universidad
+                user.estado_aprobacion = 'pendiente'
+                
+                # Procesar la comuna seleccionada
+                comuna_codigo = request.POST.get('comuna')
+                if comuna_codigo:
+                    try:
+                        # Hacer la llamada a la API
+                        response = requests.get('https://apis.modernizacion.cl/dpa/regiones/13/comunas')
+                        if response.status_code == 200:
+                            comunas_api = response.json()
+                            comuna_data = next(
+                                (c for c in comunas_api if str(c['codigo']) == comuna_codigo),
+                                None
+                            )
+                            
+                            if comuna_data:
+                                comuna, created = Comuna.objects.get_or_create(
+                                    codigo=comuna_data['codigo'],
+                                    defaults={'nombreComuna': comuna_data['nombre']}
+                                )
+                                user.comuna = comuna
+                    except Exception as e:
+                        print(f"Error al procesar comuna: {e}")
+                
+                # Verificar certificado para estudiantes
                 tipo_usuario = TipoUsuario.objects.get(id=form.cleaned_data['id_tipo_user'].id)
                 if tipo_usuario.nombre_tipo_usuario == 'Estudiante':
                     if 'Certificado' not in request.FILES:
@@ -94,11 +118,9 @@ def register(request):
                         return render(request, "autorizacion/registro.html", {"form": form})
                     user.Certificado = request.FILES['Certificado']
                 
-                user.save()  # Guardar el usuario sin iniciar sesión
-
-                # Informar al usuario que la cuenta está pendiente de aprobación
+                user.save()
                 messages.success(request, 'Tu cuenta ha sido creada y está pendiente de aprobación. Recibirás una notificación cuando sea revisada.')
-                return redirect('index')  # Redirigir al usuario a la página principal
+                return redirect('index')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
