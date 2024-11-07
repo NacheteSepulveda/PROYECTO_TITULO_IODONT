@@ -25,16 +25,34 @@ from .models import customuser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = customuser
-        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'universidad', 'Certificado', 'comuna']
+        fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'comuna', 'universidad', 'Certificado']
 
     def __init__(self, *args, **kwargs):
-        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
-         # Configuración del campo Certificado
-        self.fields['Certificado'] = forms.FileField(
-            required=False,
-            validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
-            widget=forms.FileInput(attrs={'accept': 'application/pdf'})
-        )
+        super().__init__(*args, **kwargs)
+        
+        # Si estamos editando un usuario existente y tiene comuna
+        if self.instance and self.instance.comuna:
+            # Convertir el campo comuna a un campo de texto de solo lectura
+            self.fields['comuna'] = forms.CharField(
+                initial=self.instance.comuna.nombreComuna,
+                widget=forms.TextInput(attrs={
+                    'class': 'form-control',
+                    'readonly': True,
+                    'id': 'id_comuna'
+                })
+            )
+        else:
+            # Si es un nuevo usuario, mantener el select normal
+            self.fields['comuna'] = forms.ModelChoiceField(
+                queryset=Comuna.objects.all().order_by('nombreComuna'),
+                empty_label="Seleccione una comuna",
+                required=False,
+                widget=forms.Select(attrs={
+                    'class': 'form-control',
+                    'id': 'id_comuna'
+                })
+            )
+
         self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Nombre'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Apellido'})
@@ -51,32 +69,24 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
         self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
-        self.fields['comuna'].widget.attrs.update({'placeholder': 'Universidad'})
-        
-       
-
-    def clean(self):
-        cleaned_data = super().clean()
-        tipo_usuario = cleaned_data.get('id_tipo_user')
-        certificado = cleaned_data.get('Certificado')
-        
-        if tipo_usuario and tipo_usuario.id == 2:  # ID para estudiante
-            if not certificado:
-                raise forms.ValidationError(
-                    "El certificado PDF es obligatorio para estudiantes."
-                )
-        return cleaned_data
 
     def clean(self):
         cleaned_data = super().clean()
         tipo_usuario = cleaned_data.get('id_tipo_user')
         documento = cleaned_data.get('Certificado')
+        comuna = cleaned_data.get('comuna')
         
+        # Validación del certificado para estudiantes
         if tipo_usuario and tipo_usuario.id == 2:  # ID para estudiante
             if not documento:
                 raise forms.ValidationError(
                     "El documento PDF es obligatorio para estudiantes."
                 )
+        
+        # Validación de comuna para no-staff
+        if tipo_usuario and tipo_usuario.id != 1 and not comuna:  # Si no es staff
+            self.add_error('comuna', 'Por favor seleccione una comuna')
+
         return cleaned_data
 
 
@@ -255,12 +265,25 @@ class ModificarPerfil(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModificarPerfil, self).__init__(*args, **kwargs)
         
-        # Si existe una instancia (el usuario), asigna el nombre de la universidad y comuna
+        # Si existe una instancia y tiene comuna
+        if self.instance and self.instance.comuna:
+            comuna_actual = self.instance.comuna
+            # Convertir el campo comuna a un campo de texto de solo lectura
+            self.fields['comuna'] = forms.CharField(
+                initial=comuna_actual.nombreComuna,
+                widget=forms.TextInput(attrs={
+                    'class': 'form-control',
+                    'readonly': True,
+                    'id': 'id_comuna',
+                })
+            )
+            # Forzar el valor mostrado
+            self.initial['comuna'] = comuna_actual.nombreComuna
+        
+        # Si existe una instancia (el usuario), asigna el nombre de la universidad
         if self.instance:
             if self.instance.universidad:
                 self.fields['universidad'].initial = self.instance.universidad.nombre
-            if self.instance.comuna:
-                self.fields['comuna'].initial = self.instance.comuna.nombreComuna
 
         # Configuración de otros campos
         self.fields['imageBlob'].widget.attrs.update({'placeholder': 'Subir imagen'})
@@ -273,10 +296,16 @@ class ModificarPerfil(forms.ModelForm):
         self.fields['descripcion'].widget.attrs.update({'placeholder': 'Descripción (Se enviará al paciente)'})
         self.fields['direccion'].widget.attrs.update({'placeholder': 'Ingrese su dirección'})
 
-        # Configurar campos de solo lectura para universidad y comuna
+        # Configurar campos de solo lectura para universidad
         self.fields['universidad'].widget.attrs.update({'readonly': True})
-        self.fields['comuna'].widget.attrs.update({'readonly': True})
         self.fields['tratamientos'].widget.attrs.update({'class': 'form-check-input tratamientos-checkbox'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Mantener el objeto Comuna original
+        if self.instance and self.instance.comuna:
+            cleaned_data['comuna'] = self.instance.comuna
+        return cleaned_data
         
 
 

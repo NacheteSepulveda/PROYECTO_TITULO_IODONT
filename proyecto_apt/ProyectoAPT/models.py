@@ -61,8 +61,11 @@ class tipoTratamiento(models.Model):
         return self.nombreTratamiento
 
 class Comuna(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nombreComuna= models.CharField(max_length=50)
+    id = models.CharField(max_length=10, primary_key=True)  # Usamos id pero contendrá el código
+    nombreComuna = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'proyectoapt_comuna'  # Especificamos el nombre exacto de la tabla
 
     def __str__(self):
         return self.nombreComuna

@@ -39,13 +39,18 @@
 
   <div class="infoPe">
     <h1>Información Personal</h1>
-  <div class="img">
     
-    <img src="{{ user.imageBlob.url }}" alt="Foto de perfil" width="150" height="150">
+    <!-- Agregamos el mensaje de contacto -->
+    <div class="alert alert-info" role="alert">
+      <p><strong>Nota:</strong> Para cualquier cambio a realizar, comunicarse con el soporte.</p>
+      <p>Contacto: <a href="mailto:proyectoapt134@gmail.com">proyectoapt134@gmail.com</a></p>
+    </div>
+
+    <div class="img">
+      <img src="{{ user.imageBlob.url }}" alt="Foto de perfil" width="150" height="150">
+    </div>
     
-    
-  </div>
-   <!-- MODIFICACION PARA QUE SE VEA BIEN LOS TRATAMIENTOS EN INFOPERSONAL -->
+    <!-- MODIFICACION PARA QUE SE VEA BIEN LOS TRATAMIENTOS EN INFOPERSONAL -->
     <!-- MIRAR FORM.PY class ModificarPerfil -->
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
