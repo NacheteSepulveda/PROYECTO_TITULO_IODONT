@@ -152,12 +152,19 @@ function mostrarHorariosDisponibles(tratamientoId, fecha) {
             var horariosHtml = '';
             if (data.length > 0) {
                 data.forEach(horario => {
-                    horariosHtml += `
-                        <button type="button" class="btn btn-outline-primary m-1" 
-                                onclick="seleccionarHorario('${horario.inicio}')">
-                            ${horario.inicio}
-                        </button>`;
+                    // Solo mostrar el horario si está realmente disponible
+                    if (!horario.reservado) {
+                        horariosHtml += `
+                            <button type="button" class="btn btn-outline-primary m-1" 
+                                    onclick="seleccionarHorario('${horario.inicio}')">
+                                ${horario.inicio}
+                            </button>`;
+                    }
                 });
+                // Si no hay horarios disponibles después del filtrado
+                if (horariosHtml === '') {
+                    horariosHtml = '<p>No hay horarios disponibles para esta fecha</p>';
+                }
             } else {
                 horariosHtml = '<p>No hay horarios disponibles para esta fecha</p>';
             }

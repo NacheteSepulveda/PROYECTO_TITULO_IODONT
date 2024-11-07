@@ -384,23 +384,35 @@ def obtener_horarios_disponibles(request):
 
         idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
 
-        # Consulta base
+        # Consulta base para horarios disponibles
         query = horarios.objects.filter(
             tipoTratamiento_id=tratamiento_id,
             estudiante__id_tipo_user_id=idEstudianteTipo,
             estudiante_id=estudiante_id
         )
 
-        # Si se proporciona una fecha específica, filtrar por esa fecha
+        # Obtener las citas ya reservadas para esta fecha y estudiante
+        citas_reservadas = Cita.objects.filter(
+            estudiante_id=estudiante_id,
+            fecha_seleccionada=fecha_seleccionada
+        ).values_list('inicio', flat=True)
+
+        # Si se proporciona una fecha específica
         if fecha_seleccionada:
             query = query.filter(fecha_seleccionada=fecha_seleccionada)
             horarios_disponibles = query.values('inicio')
+            
+            # Crear lista con información de disponibilidad
+            horarios_list = []
+            for horario in horarios_disponibles:
+                horarios_list.append({
+                    'inicio': horario['inicio'],
+                    'reservado': horario['inicio'] in citas_reservadas
+                })
         else:
-            # Si no hay fecha específica, obtener todas las fechas disponibles
+            # Si no hay fecha específica, obtener todas las fechas
             horarios_disponibles = query.values('fecha_seleccionada', 'inicio').distinct()
-
-        # Convertir los horarios en una lista para enviarlos en formato JSON
-        horarios_list = list(horarios_disponibles)
+            horarios_list = list(horarios_disponibles)
 
         print('Horarios disponibles:', horarios_list)
         return JsonResponse(horarios_list, safe=False)
