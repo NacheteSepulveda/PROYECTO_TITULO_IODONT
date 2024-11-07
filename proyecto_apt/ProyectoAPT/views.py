@@ -83,7 +83,6 @@ def register(request):
                 # Asignar la universidad automáticamente en función del dominio
                 if "uch.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
-                
                 user = form.save(commit=False)
                 user.universidad = universidad
                 user.estado_aprobacion = 'pendiente'
@@ -118,9 +117,65 @@ def register(request):
                         return render(request, "autorizacion/registro.html", {"form": form})
                     user.Certificado = request.FILES['Certificado']
                 
-                user.save()
+                user.save()  # Guardar el usuario sin iniciar sesión
+
+                # Mensaje para el usuario registrado
+                subject_user = "Bienvenido a IODONT - Tu cuenta está pendiente de aprobación"
+                html_message_user = f"""
+                    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                        <h2 style="color: #007BFF; text-align: center;">Bienvenido a IODONT</h2>
+                        <p>¡Hola {user.first_name}! Estamos encantados de tenerte en nuestra plataforma.</p>
+                        <p>Tu cuenta está en proceso de verificación. Te notificaremos cuando esté aprobada.</p>
+                        <footer style="font-size: 0.8em; color: #aaa; margin-top: 20px; text-align: center;">
+                            &copy; 2024 IODONT. Todos los derechos reservados.
+                        </footer>
+                    </div>
+                """
+                
+                # Mensaje para el administrador
+                subject_admin = "Nuevo usuario pendiente de aprobación en IODONT"
+                html_message_admin = f"""
+                    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                        <h3>Notificación de Nuevo Registro</h3>
+                        <p>Un nuevo usuario se ha registrado y está pendiente de aprobación:</p>
+                        <ul>
+                            <li><strong>Nombre:</strong> {user.first_name} {user.last_name}</li>
+                            <li><strong>Email:</strong> {user.email}</li>
+                            <li><strong>Tipo de Usuario:</strong> {tipo_usuario.nombre_tipo_usuario}</li>
+                            <li><strong>RUT:</strong> {user.rut}</li>
+                        </ul>
+                        <footer style="font-size: 0.8em; color: #aaa; margin-top: 20px; text-align: center;">
+                            &copy; 2024 IODONT. Todos los derechos reservados.
+                        </footer>
+                    </div>
+                """
+
+                # Enviar correo al usuario
+                send_mail(
+                    subject=subject_user,
+                    message="",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                    html_message=html_message_user
+                )
+
+                # Enviar correo al administrador
+                send_mail(
+                    subject=subject_admin,
+                    message="",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                    fail_silently=False,
+                    html_message=html_message_admin
+                )
+
+                
+
+                # Informar al usuario que la cuenta está pendiente de aprobación
                 messages.success(request, 'Tu cuenta ha sido creada y está pendiente de aprobación. Recibirás una notificación cuando sea revisada.')
                 return redirect('index')
+            
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -140,45 +195,7 @@ def vista_para_estudiantes_aprobados(request):
     if request.user.estado_aprobacion != 'aprobado':
         return HttpResponseForbidden("Su cuenta aún no ha sido aprobada.")
     # Lógica para estudiantes aprobados
-
-
-
-@login_required
-def actualizar_estado_estudiante(request, estudiante_id, estado):
-    estudiante = get_object_or_404(customuser, id=estudiante_id)
     
-    if estado == 'aprobado':
-        estudiante.estado_aprobacion = 'aprobado'
-        mensaje = 'Tu cuenta ha sido aprobada. Utiliza tu correo registrado para iniciar sesión y configura tu contraseña.'
-
-        # Enviar correo de aprobación
-        send_mail(
-            'Tu cuenta ha sido aprobada',
-            mensaje,
-            settings.EMAIL_HOST_USER,
-            [estudiante.email],
-            fail_silently=False,
-        )
-        messages.success(request, f"El estudiante {estudiante.email} ha sido aprobado y se ha enviado un correo.")
-    elif estado == 'rechazado':
-        estudiante.estado_aprobacion = 'rechazado'
-        mensaje = 'Tu solicitud ha sido rechazada debido a inconsistencias en los datos.'
-
-        # Enviar correo de rechazo
-        send_mail(
-            'Tu solicitud ha sido rechazada',
-            mensaje,
-            settings.EMAIL_HOST_USER,
-            [estudiante.email],
-            fail_silently=False,
-        )
-        messages.warning(request, f"El estudiante {estudiante.email} ha sido rechazado y se ha enviado un correo.")
-    
-    estudiante.save()
-    return redirect('revisar_estudiantes')
-
-
-
 
 def obtener_direccion_universidad(request):
     universidad_id = request.GET.get('universidad_id')
@@ -406,23 +423,35 @@ def obtener_horarios_disponibles(request):
 
         idEstudianteTipo = TipoUsuario.objects.filter(nombre_tipo_usuario='Estudiante').first()
 
-        # Consulta base
+        # Consulta base para horarios disponibles
         query = horarios.objects.filter(
             tipoTratamiento_id=tratamiento_id,
             estudiante__id_tipo_user_id=idEstudianteTipo,
             estudiante_id=estudiante_id
         )
 
-        # Si se proporciona una fecha específica, filtrar por esa fecha
+        # Obtener las citas ya reservadas para esta fecha y estudiante
+        citas_reservadas = Cita.objects.filter(
+            estudiante_id=estudiante_id,
+            fecha_seleccionada=fecha_seleccionada
+        ).values_list('inicio', flat=True)
+
+        # Si se proporciona una fecha específica
         if fecha_seleccionada:
             query = query.filter(fecha_seleccionada=fecha_seleccionada)
             horarios_disponibles = query.values('inicio')
+            
+            # Crear lista con información de disponibilidad
+            horarios_list = []
+            for horario in horarios_disponibles:
+                horarios_list.append({
+                    'inicio': horario['inicio'],
+                    'reservado': horario['inicio'] in citas_reservadas
+                })
         else:
-            # Si no hay fecha específica, obtener todas las fechas disponibles
+            # Si no hay fecha específica, obtener todas las fechas
             horarios_disponibles = query.values('fecha_seleccionada', 'inicio').distinct()
-
-        # Convertir los horarios en una lista para enviarlos en formato JSON
-        horarios_list = list(horarios_disponibles)
+            horarios_list = list(horarios_disponibles)
 
         print('Horarios disponibles:', horarios_list)
         return JsonResponse(horarios_list, safe=False)
@@ -482,7 +511,22 @@ def tratamientosForm(request, estudianteID):
 
                 subject = "Bienvenido a IODONT"
                 html_message = f"""
-                <div>Confirmación de cita...</div>
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h2 style="color: #007BFF; text-align: center;">Bienvenido a IODONT</h2>
+                    <p>
+                        IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
+                        con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
+                        método externo. ¡Una gran oportunidad para estos jóvenes!
+                    </p>
+                    <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
+                        por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
+                    <ul>
+                        <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
+                        <li>A las: {horario.inicio}</li>
+                        <li>El día: {horario.fecha_seleccionada}</li>
+                        <li>Tratamiento: {horario.tipotratamiento.nombreTratamiento}</li>
+                    </ul>
+                </div>
                 """
                 from_email = settings.EMAIL_HOST_USER
                 recipient_list = [request.user.email, estudiante.email]

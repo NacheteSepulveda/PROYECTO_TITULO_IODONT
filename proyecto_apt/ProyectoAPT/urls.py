@@ -47,7 +47,6 @@ urlpatterns = [
     path('logout/', views.custom_logout, name='logout'),
     path('obtener-direccion-universidad/', views.obtener_direccion_universidad, name='obtener_direccion_universidad'),
     path('revisar_estudiantes/', views.revisar_estudiantes, name='revisar_estudiantes'),
-    path('actualizar_estado_estudiante/<int:estudiante_id>/<str:estado>/', views.actualizar_estado_estudiante, name='actualizar_estado_estudiante'),
 
     #Servicios
     path('servicios/', views.servicios, name='servicios'),
