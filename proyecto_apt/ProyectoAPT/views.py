@@ -544,51 +544,64 @@ def calendar_est(request):
         fecha_seleccionada__gte=timezone.now().date()
     ).order_by('fecha_seleccionada', 'inicio')
 
-    # Verificar si el método es POST para procesar la creación de horarios
     if request.method == 'POST':
-        form = horariosForm(request.POST, user=request.user)  # Pasar el usuario al formulario
+        form = horariosForm(request.POST, user=request.user)
         if form.is_valid():
             try:
-                # Obtener las fechas seleccionadas del formulario
+                # Obtener las fechas seleccionadas del formulario y los horarios de inicio y fin
                 fechas_str = request.POST.get('fecha_seleccionada', '').split(',')
+                inicio_str = form.cleaned_data['inicio']
+                fin_str = form.cleaned_data['fin']
                 
                 if not fechas_str[0]:  # Si no hay fechas seleccionadas
                     messages.error(request, 'Por favor, selecciona al menos una fecha.')
                 else:
                     horarios_creados = 0
                     tipo_tratamiento = form.cleaned_data['tipoTratamiento']
-                    hora_inicio = form.cleaned_data['inicio']
-                    hora_fin = form.cleaned_data['fin']
-                    
-                    # Crear un horario para cada fecha seleccionada
+                    hora_inicio = datetime.strptime(inicio_str, '%H:%M').time()
+                    hora_fin = datetime.strptime(fin_str, '%H:%M').time()
+
+                    if hora_inicio >= hora_fin:
+                        messages.error(request, 'La hora de inicio debe ser antes que la hora de fin.')
+                        return render(request, 'estudiante/calendario_est.html', {'form': form, 'horarios_disponibles': horarios_disponibles})
+
                     for fecha_str in fechas_str:
                         fecha = datetime.strptime(fecha_str.strip(), '%Y-%m-%d').date()
-                        
-                        # Comprobar si ya existe un horario con el mismo tratamiento, fecha y hora para evitar duplicados
-                        if not horarios.objects.filter(
-                            estudiante=request.user,
-                            tipoTratamiento=tipo_tratamiento,
-                            fecha_seleccionada=fecha,
-                            inicio=hora_inicio
-                        ).exists():
-                            # Crear y guardar el horario
-                            horarios.objects.create(
+
+                        # Crear bloques de 45 minutos dentro del rango de tiempo seleccionado
+                        current_time = hora_inicio
+                        while current_time < hora_fin:
+                            end_time = (datetime.combine(fecha, current_time) + timedelta(minutes=45)).time()
+                            if end_time > hora_fin:
+                                break  # Terminar si el bloque supera la hora de fin
+
+                            # Verificar si ya existe un horario con el mismo tratamiento, fecha y hora para evitar duplicados
+                            if not horarios.objects.filter(
                                 estudiante=request.user,
                                 tipoTratamiento=tipo_tratamiento,
-                                inicio=hora_inicio,
-                                fin=hora_fin,
-                                fecha_seleccionada=fecha
-                            )
-                            horarios_creados += 1
-                    
-                    # Mostrar mensaje de éxito si se crearon horarios
+                                fecha_seleccionada=fecha,
+                                inicio=current_time,
+                                fin=end_time
+                            ).exists():
+                                # Crear y guardar el horario
+                                horarios.objects.create(
+                                    estudiante=request.user,
+                                    tipoTratamiento=tipo_tratamiento,
+                                    inicio=current_time,
+                                    fin=end_time,
+                                    fecha_seleccionada=fecha
+                                )
+                                horarios_creados += 1
+                            
+                            # Incrementar el tiempo de inicio al siguiente bloque de 45 minutos
+                            current_time = end_time
+
                     if horarios_creados > 0:
-                        messages.success(request, f'¡Se han creado {horarios_creados} horarios exitosamente!')
+                        messages.success(request, f'¡Se han creado {horarios_creados} bloques de horarios de 45 minutos exitosamente!')
                     else:
-                        messages.info(request, 'No se crearon horarios nuevos, ya existen horarios en las fechas seleccionadas.')
+                        messages.info(request, 'No se crearon horarios nuevos; ya existen horarios en las fechas y horas seleccionadas.')
                     
-                    # Redirigir al calendario
-                    return redirect('calendario')  # Aseguramos que el nombre de la URL sea correcto
+                    return redirect('calendario')
                 
             except Exception as e:
                 print(f"Error al guardar: {e}")
@@ -598,7 +611,7 @@ def calendar_est(request):
             print("Errores del formulario:", form.errors)
             messages.error(request, 'Por favor, verifica los datos del formulario.')
     else:
-        form = horariosForm(user=request.user)  # Pasar el usuario al formulario
+        form = horariosForm(user=request.user)
 
     context = {
         'form': form,
