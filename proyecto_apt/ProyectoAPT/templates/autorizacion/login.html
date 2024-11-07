@@ -55,10 +55,24 @@
   <div class="alert-container">
     {% for message in messages %}
       <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
+        {% if "Please enter a correct email and password" in message|stringformat:"s" %}
+          Por favor, ingrese un correo y contraseña correctos. Recuerde que ambos campos distinguen entre mayúsculas y minúsculas.
+        {% else %}
+          {{ message }}
+        {% endif %}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Bloque para errores del formulario -->
+{% if form.non_field_errors %}
+  <div class="alert-container">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      Por favor, ingrese un correo y contraseña correctos. Recuerde que ambos campos distinguen entre mayúsculas y minúsculas.
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   </div>
 {% endif %}
 
@@ -91,17 +105,5 @@
 
     </main>
 </div>
-
-<!-- Bloque para mostrar mensajes de Django -->
-{% if messages %}
-  <div class="alert-container">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
 
 {% endblock %}

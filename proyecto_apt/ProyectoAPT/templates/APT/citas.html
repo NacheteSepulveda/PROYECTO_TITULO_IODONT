@@ -21,21 +21,21 @@
                     <th>Tipo de Tratamiento</th>
                     <th>Fecha</th>
                     <th>Hora</th>
-                    <th>Direccion</th>
+                    <th>Dirección</th>
                     <th>Comuna</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for cita in citas %}
                 <tr>
-                    
                     <td>{{ cita.estudiante.first_name }} {{ cita.estudiante.last_name }}</td>
                     <td>{{ cita.tipotratamiento.nombreTratamiento }}</td>
                     <td>{{ cita.fecha_seleccionada }}</td>
                     <td>{{ cita.inicio }}</td>
-                    <td>{{ cita.estudiante.direccion }}</td> <!-- Mostrar la dirección del estudiante -->
+                    <td>{{ cita.estudiante.direccion }}</td>
+                    <td>{{ cita.estudiante.comuna.nombreComuna }}</td>
                     <td>
-                        <!-- Botón para anular la cita -->
                         <a href="{% url 'anular_cita' cita.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas anular esta cita?');">
                             Anular
                         </a>
@@ -43,7 +43,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">No tienes citas agendadas.</td>
+                    <td colspan="7">No tienes citas agendadas.</td>
                 </tr>
                 {% endfor %}
             </tbody>

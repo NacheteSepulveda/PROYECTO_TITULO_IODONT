@@ -110,8 +110,7 @@
                                             <td>
                                                 {% if horario.estudiante == request.user and not horario.paciente %}
                                                     <a href="{% url 'eliminar_horario' horario.id %}" 
-                                                       class="btn btn-danger btn-sm"
-                                                       onclick="return confirm('¿Estás seguro de que deseas eliminar este horario?');">
+                                                       class="btn btn-danger btn-sm">
                                                         Eliminar
                                                     </a>
                                                 {% endif %}

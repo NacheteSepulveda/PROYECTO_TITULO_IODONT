@@ -11,39 +11,61 @@
 
 
 .servicio {
-    background-color: #3498db;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
+.servicio:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
 .servicio img {
     width: 100%;
-    height: 150px;
+    height: 200px;
     object-fit: cover;
-    border-radius: 10px 10px 0 0;
+    border-bottom: 3px solid #3498db;
+}
+
+.servicio-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #3498db, #2980b9);
 }
 
 .servicio h3 {
-    margin-top: 10px;
-    color: aliceblue;
+    color: #004e88;
+    font-size: 1.3em;
+    margin: 15px 0;
+    text-align: center;
 }
 
 .servicio p {
-    margin-bottom: 20px;
-    color: aliceblue;
+    color: #004e88;
+    font-size: 0.95em;
+    line-height: 1.6;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0 15px 15px;
 }
 
 .row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
 }
 
 .col-md-4 {
-    width: 33.33%;
+    width: 100.33%;
     padding: 20px;
 }
 
@@ -140,3 +162,119 @@ label {
     margin-left: 8px;
 }
 /* CSS APLICADO EN HTML*/
+
+/* Estilos generales */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Estilos del título principal */
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: #3498db;
+}
+
+/* Estilos del subtítulo */
+h5 {
+    text-align: center;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    font-weight: 400;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 2em;
+    }
+    
+    .row {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.8em;
+    }
+    
+    h5 {
+        font-size: 0.9em;
+    }
+    
+    .servicio img {
+        height: 180px;
+    }
+}
+
+/* PIE DE PAGINA */
+.footer {
+    background-color: #006699; /* Color de fondo claro */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centra el texto */
+    position: relative; /* Posicionamiento relativo */
+}
+
+.footer-content {
+    display: flex; /* Flexbox para organizar las secciones */
+    justify-content: space-around; /* Espacio entre secciones */
+    margin-bottom: 15px; /* Espacio inferior entre contenido y pie */
+}
+
+.footer-section {
+    width: 30%; /* Ancho de las secciones del pie */
+}
+
+.footer-section h4 {
+    color: rgb(255, 255, 255); /* Color para los títulos */
+}
+
+.footer-bottom {
+    border-top: 1px solid #ccc; /* Línea superior para separar el contenido del pie */
+    padding-top: 10px; /* Espacio superior */
+    font-size: 0.9em; /* Tamaño de fuente más pequeño */
+    color: #fdffff; /* Color de texto para el pie */
+}
+
+.contact-info, .social-media {
+    margin: 10px 0;
+}
+
+.social-media {
+    display: flex;
+    justify-content: center; /* Centra los íconos */
+}
+
+.social-icon {
+    margin: 0 10px; /* Espacio entre los iconos */
+    color: #ffffff; /* Color de los iconos */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 24px; /* Tamaño de los íconos */
+}
+
+.social-icon:hover {
+    color: #007bff; /* Color al pasar el mouse */
+}
+
