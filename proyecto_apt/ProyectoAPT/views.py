@@ -407,28 +407,32 @@ def obtener_horarios_disponibles(request):
     
 @login_required
 def tratamientosForm(request, estudianteID):
-    # Inicializa el formulario
     form = CitaForm(request.POST or None)
-
-    # Obtiene el estudiante usando el ID proporcionado
     estudiante = get_object_or_404(customuser, id=estudianteID)
     actualUser = request.user.id
-    
-    context = {'form': form, 'estudianteID': estudianteID, 'actualUser': actualUser, 'estudiante': estudiante}
+
+    # Horarios ocupados
+    horarios_ocupados = Cita.objects.filter(
+        estudiante=estudiante,
+        fecha_seleccionada__gte=timezone.now().date()
+    ).values('fecha_seleccionada', 'inicio')
+
+    context = {
+        'form': form,
+        'estudianteID': estudianteID,
+        'actualUser': actualUser,
+        'estudiante': estudiante,
+        'horarios_ocupados': list(horarios_ocupados)  # Convertimos la QuerySet en una lista para JSON
+    }
+
     if request.method == 'POST':
         form = CitaForm(request.POST)
         if form.is_valid():
-            # Obtén los datos del formulario
             tipo_tratamiento = form.cleaned_data['tipotratamiento']
             fecha_seleccionada = form.cleaned_data['fecha_seleccionada']
             hora_inicio = form.cleaned_data['inicio']
 
-            # Verifica si el campo de la hora está vacío o no seleccionado
-            if not hora_inicio:
-                messages.error(request, 'Por favor, selecciona una hora válida.')
-                return render(request, 'APT/horariosEstudianteTratamiento.html', context)
-
-            # Verifica si ya existe una cita con el mismo estudiante, paciente, tipo de tratamiento, fecha y hora
+            # Verificar si ya existe una cita en el mismo horario y fecha
             cita_misma = Cita.objects.filter(
                 estudiante=estudiante,
                 paciente=request.user,
@@ -437,58 +441,30 @@ def tratamientosForm(request, estudianteID):
                 inicio=hora_inicio
             ).exists()
 
-            # Verifica si ya existe una cita para la misma fecha y hora con otro estudiante
-            cita_otro_estudiante = Cita.objects.filter(
-                paciente=request.user,
+            horario_ocupado = Cita.objects.filter(
+                estudiante=estudiante,
                 fecha_seleccionada=fecha_seleccionada,
                 inicio=hora_inicio
-            ).exclude(estudiante=estudiante).exists()
+            ).exclude(paciente=request.user).exists()
 
             if cita_misma:
-                messages.error(request, 'Ya tienes una cita agendada con este estudiante en esta fecha y hora.')
-            elif cita_otro_estudiante:
-                messages.error(request, 'Ya tienes una cita agendada con otro estudiante en esta fecha y hora.')
+                messages.error(request, 'Ya tienes una cita agendada en esta fecha y hora. Por favor, selecciona otro horario.')
+            elif horario_ocupado:
+                messages.error(request, 'Este horario no está disponible. Por favor, selecciona otro horario.')
+
             else:
                 horario = form.save(commit=False)
-
-                # Asigna el paciente actual y el estudiante al horario
                 horario.paciente = request.user
                 horario.estudiante = estudiante
                 horario.save()
 
-                # Configurar los detalles del correo
                 subject = "Bienvenido a IODONT"
                 html_message = f"""
-                <div style="font-family: Arial, sans-serif; color: #333;">
-                    <h3 style="color: #007BFF;">Bienvenido a IODONT</h3>
-                    <p>
-                        IODONT es una plataforma orientada a los estudiantes de odontología de diversas instituciones, 
-                        con la finalidad de que estos puedan acercarse a sus pacientes sin la necesidad de recurrir a un 
-                        método externo. ¡Una gran oportunidad para estos jóvenes!
-                    </p>
-                    <h6 style="color: #dc3545;">Si has recibido este enlace por error o te han llegado múltiples notificaciones no deseadas,
-                        por favor ignora este mensaje o bloquea al remitente. Gracias.</h6>
-                    <ul>
-                        <li>Tienes una cita con: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
-                        <li>A las: {horario.inicio}</li>
-                        <li>El día: {horario.fecha_seleccionada}</li>
-                        <li>Tratamiento: {horario.tipotratamiento.nombreTratamiento}</li>
-                    </ul>
-                </div>
+                <div>Confirmación de cita...</div>
                 """
-
                 from_email = settings.EMAIL_HOST_USER
                 recipient_list = [request.user.email, estudiante.email]
-
-                # Enviar el correo con el mensaje HTML
-                send_mail(
-                    subject,
-                    "",
-                    from_email,
-                    recipient_list,
-                    fail_silently=False,
-                    html_message=html_message
-                )
+                send_mail(subject, "", from_email, recipient_list, fail_silently=False, html_message=html_message)
 
                 messages.success(request, '¡Cita agendada con éxito!')
                 return redirect('index')
