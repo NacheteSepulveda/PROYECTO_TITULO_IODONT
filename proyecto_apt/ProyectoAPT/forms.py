@@ -113,7 +113,31 @@ class UserLoginForm(AuthenticationForm):
             raise forms.ValidationError("No existe un usuario con este email.")
         return email
     
+
+    
 class horariosForm(forms.ModelForm):
+    # Generamos los intervalos de 15 minutos para que el usuario elija
+    def generar_opciones_horario():
+        opciones = []
+        hora_actual = time(8, 0)  # Hora de inicio
+        while hora_actual <= time(20, 0):  # Hora de fin
+            opciones.append((hora_actual.strftime('%H:%M'), hora_actual.strftime('%H:%M')))
+            hora_actual = (datetime.combine(date.today(), hora_actual) + timedelta(minutes=60)).time()
+        return opciones
+
+    inicio = forms.ChoiceField(
+        choices=generar_opciones_horario(),
+        label="Hora de Inicio",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True  # Campo obligatorio
+    )
+    fin = forms.ChoiceField(
+        choices=generar_opciones_horario(),
+        label="Hora de Fin",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True  # Campo obligatorio
+    )
+
     class Meta:
         model = horarios
         fields = ['tipoTratamiento', 'inicio', 'fin']
@@ -121,31 +145,17 @@ class horariosForm(forms.ModelForm):
             'tipoTratamiento': forms.Select(attrs={
                 'class': 'form-control'
             }),
-            'inicio': forms.TimeInput(attrs={
-                'class': 'form-control',
-                'type': 'time',
-                'min': '06:00',
-                'max': '20:00'
-            }),
-            'fin': forms.TimeInput(attrs={
-                'class': 'form-control',
-                'type': 'time',
-                'min': '06:00',
-                'max': '20:00'
-            }),
         }
 
-    def __init__(self, *args, user=None, **kwargs):  # Acepta el argumento user
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['tipoTratamiento'].label = "Tipo de Tratamiento"
-        self.fields['inicio'].label = "Hora de Inicio"
-        self.fields['fin'].label = "Hora de Fin"
+        self.fields['tipoTratamiento'].required = True  # Campo obligatorio
 
-    # Filtrar tratamientos basados en los del perfil del estudiante
+        # Filtrar tratamientos basados en los del perfil del estudiante
         if user and user.tratamientos.exists():
             self.fields['tipoTratamiento'].queryset = user.tratamientos.all()
         else:
-            # Opción si el usuario no tiene tratamientos asociados
             self.fields['tipoTratamiento'].queryset = tipoTratamiento.objects.none()
 
     def clean(self):
@@ -154,11 +164,18 @@ class horariosForm(forms.ModelForm):
         fin = cleaned_data.get('fin')
 
         if inicio and fin:
-            if fin <= inicio:
+            # Convertir los valores de las horas en objetos de tiempo para la comparación
+            hora_inicio = datetime.strptime(inicio, '%H:%M').time()
+            hora_fin = datetime.strptime(fin, '%H:%M').time()
+            if hora_fin <= hora_inicio:
                 self.add_error('fin', 'La hora de fin debe ser posterior a la hora de inicio')
+        else:
+            if not inicio:
+                self.add_error('inicio', 'Este campo es obligatorio')
+            if not fin:
+                self.add_error('fin', 'Este campo es obligatorio')
 
         return cleaned_data
-
 
 class CitaForm(forms.ModelForm):
     class Meta:
