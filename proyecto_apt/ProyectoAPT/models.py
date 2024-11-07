@@ -212,13 +212,13 @@ class horarios(models.Model):
         customuser, 
         on_delete=models.CASCADE, 
         related_name='horarios_estudiante',
-        null=True,  # Permitimos null temporalmente
+        null=True,
         blank=True
     )
     tipoTratamiento = models.ForeignKey(
         tipoTratamiento, 
         on_delete=models.CASCADE,
-        null=True,  # Permitimos null temporalmente
+        null=True,
         blank=True
     )
     inicio = models.TimeField()
@@ -244,12 +244,8 @@ class horarios(models.Model):
 
     def __str__(self):
         if self.paciente:
-            return f"Cita con {self.paciente} el {self.fecha_seleccionada} a las {self.inicio}"
+            return f"Cita con {self.paciente.email} el {self.fecha_seleccionada} a las {self.inicio}"
         return f"Horario disponible el {self.fecha_seleccionada} a las {self.inicio}"
-
-
-    def __str__(self):
-        return f"Ficha Clínica de {self.paciente.email} - Última consulta: {self.fecha_ultima_consulta}"
 
 # models.py
 
