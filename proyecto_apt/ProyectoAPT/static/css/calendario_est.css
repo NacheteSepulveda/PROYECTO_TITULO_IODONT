@@ -145,3 +145,21 @@ nav {
     background-color: #0056b3 !important;
     border-color: #0056b3 !important;
 }
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.fw-medium {
+    font-weight: 500 !important;
+}

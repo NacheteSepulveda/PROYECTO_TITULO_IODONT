@@ -80,9 +80,45 @@
                         </div>
 
                         <h3>Horarios Disponibles</h3>
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filtroHora" class="form-label">Filtrar por Hora</label>
+                                    <select class="form-select" id="filtroHora">
+                                        <option value="">Todas las horas</option>
+                                        {% for horario in horarios_disponibles|dictsort:"inicio" %}
+                                            <option value="{{ horario.inicio|time:'H:i' }}">{{ horario.inicio|time:"H:i" }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filtroTratamiento" class="form-label">Filtrar por Tratamiento</label>
+                                    <select class="form-select" id="filtroTratamiento">
+                                        <option value="">Todos los tratamientos</option>
+                                        {% for horario in horarios_disponibles %}
+                                            <option value="{{ horario.tipoTratamiento.nombreTratamiento }}">
+                                                {{ horario.tipoTratamiento.nombreTratamiento }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="filtroEstado" class="form-label">Filtrar por Estado</label>
+                                    <select class="form-select" id="filtroEstado">
+                                        <option value="">Todos los estados</option>
+                                        <option value="Disponible">Disponible</option>
+                                        <option value="Reservado">Reservado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         {% if horarios_disponibles %}
                             <div class="table-responsive">
-                                <table class="table table-striped">
+                                <table class="table table-striped" id="tablaHorarios">
                                     <thead>
                                         <tr>
                                             <th>Fecha</th>
@@ -101,11 +137,18 @@
                                             <td>{{ horario.fin|time:"H:i" }}</td>
                                             <td>{{ horario.tipoTratamiento.nombreTratamiento }}</td>
                                             <td>
-                                                {% if horario.reservado %}
-                                                    <span class="badge bg-warning">Reservado</span>
-                                                {% else %}
-                                                    <span class="badge bg-info">Disponible</span>
-                                                {% endif %}
+                                                <div class="d-flex align-items-center">
+                                                    {% if horario.paciente %}
+                                                        <div class="d-inline-flex align-items-center">
+                                                            <span class="badge bg-warning me-2">Reservado</span>
+                                                            <span class="text-secondary" style="font-size: 1em;">
+                                                                por <span class="fw-bold text-dark">{{ horario.paciente.first_name }} {{ horario.paciente.last_name }}</span>
+                                                            </span>
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="badge bg-info">Disponible</span>
+                                                    {% endif %}
+                                                </div>
                                             </td>
                                             <td>
                                                 {% if horario.estudiante == request.user %}
@@ -195,6 +238,71 @@
             });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filtroHora = document.getElementById('filtroHora');
+            const filtroTratamiento = document.getElementById('filtroTratamiento');
+            const filtroEstado = document.getElementById('filtroEstado');
+            const tabla = document.getElementById('tablaHorarios');
+        
+            // Eliminar opciones duplicadas en los selectores
+            function eliminarDuplicados(selector) {
+                const opciones = new Set();
+                const options = Array.from(selector.options);
+                
+                options.forEach(option => {
+                    if (option.value !== '') {  // Mantener la opción "Todos"
+                        opciones.add(option.value);
+                    }
+                });
+                
+                // Limpiar y reconstruir el selector
+                while (selector.options.length > 1) {  // Mantener solo la primera opción ("Todos")
+                    selector.remove(1);
+                }
+                
+                // Agregar opciones únicas ordenadas
+                Array.from(opciones).sort().forEach(valor => {
+                    const option = new Option(valor, valor);
+                    selector.add(option);
+                });
+            }
+        
+            // Eliminar duplicados en los selectores
+            eliminarDuplicados(filtroHora);
+            eliminarDuplicados(filtroTratamiento);
+        
+            function filtrarTabla() {
+                const hora = filtroHora.value.toLowerCase();
+                const tratamiento = filtroTratamiento.value.toLowerCase();
+                const estado = filtroEstado.value.toLowerCase();
+        
+                const filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        
+                for (let fila of filas) {
+                    const horaInicio = fila.cells[1].textContent.toLowerCase();
+                    const tratamientoTexto = fila.cells[3].textContent.toLowerCase();
+                    const estadoTexto = fila.cells[4].textContent.toLowerCase();
+        
+                    const coincideHora = !hora || horaInicio.includes(hora);
+                    const coincideTratamiento = !tratamiento || tratamientoTexto.includes(tratamiento);
+                    const coincideEstado = !estado || estadoTexto.includes(estado);
+        
+                    if (coincideHora && coincideTratamiento && coincideEstado) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                }
+            }
+        
+            // Agregar event listeners a los filtros
+            filtroHora.addEventListener('change', filtrarTabla);
+            filtroTratamiento.addEventListener('change', filtrarTabla);
+            filtroEstado.addEventListener('change', filtrarTabla);
+        });
+        </script>
 
     <!-- Bootstrap Bundle con Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
