@@ -101,15 +101,15 @@
                                             <td>{{ horario.fin|time:"H:i" }}</td>
                                             <td>{{ horario.tipoTratamiento.nombreTratamiento }}</td>
                                             <td>
-                                                {% if horario.paciente %}
+                                                {% if horario.reservado %}
                                                     <span class="badge bg-warning">Reservado</span>
                                                 {% else %}
                                                     <span class="badge bg-info">Disponible</span>
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {% if horario.estudiante == request.user and not horario.paciente %}
-                                                    <a href="{% url 'eliminar_horario' horario.id %}" 
+                                                {% if horario.estudiante == request.user %}
+                                                    <a href="{% url 'eliminar_horario' horario_id=horario.id %}" 
                                                        class="btn btn-danger btn-sm">
                                                         Eliminar
                                                     </a>

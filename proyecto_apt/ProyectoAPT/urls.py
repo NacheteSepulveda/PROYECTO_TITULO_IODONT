@@ -37,7 +37,7 @@ urlpatterns = [
     
 
     # Eliminar horario
-    path('eliminar-horario/<int:id>/', views.eliminar_horario, name='eliminar_horario'),
+    path('eliminar-horario/<int:horario_id>/', views.eliminar_horario, name='eliminar_horario'),
 
 
 

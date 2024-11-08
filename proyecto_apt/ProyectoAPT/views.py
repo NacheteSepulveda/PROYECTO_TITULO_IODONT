@@ -560,11 +560,33 @@ def servicios(request):
 
 @login_required
 def calendar_est(request):
-    # Obtener los horarios disponibles del estudiante actual
+    # Obtener los horarios del estudiante actual
     horarios_disponibles = horarios.objects.filter(
         estudiante=request.user,
         fecha_seleccionada__gte=timezone.now().date()
     ).order_by('fecha_seleccionada', 'inicio')
+
+    # Obtener las citas reservadas
+    citas_reservadas = Cita.objects.filter(
+        estudiante=request.user,
+        fecha_seleccionada__gte=timezone.now().date()
+    ).values('fecha_seleccionada', 'inicio', 'paciente', 'tipotratamiento')
+
+    # Crear un diccionario para mapear las citas por fecha y hora
+    citas_map = {
+        (cita['fecha_seleccionada'], cita['inicio'].strftime('%H:%M')): cita 
+        for cita in citas_reservadas
+    }
+
+    # Actualizar el estado de los horarios
+    for horario in horarios_disponibles:
+        key = (horario.fecha_seleccionada, horario.inicio.strftime('%H:%M'))
+        if key in citas_map:
+            horario.reservado = True
+            horario.paciente_id = citas_map[key]['paciente']
+        else:
+            horario.reservado = False
+            horario.paciente_id = None
 
     if request.method == 'POST':
         form = horariosForm(request.POST, user=request.user)
@@ -619,7 +641,7 @@ def calendar_est(request):
                             current_time = end_time
 
                     if horarios_creados > 0:
-                        messages.success(request, f'Â¡Se han creado {horarios_creados} bloques de bloques de horarios de 45 minutos de 45 minutos exitosamente!')
+                        messages.success(request, f'¡Se han creado {horarios_creados} bloques de bloques de horarios de 45 minutos de 45 minutos exitosamente!')
                     else:
                         messages.info(request, 'No se crearon horarios nuevos; ya existen horarios en las fechas y horas seleccionadas.')
                     
@@ -645,13 +667,65 @@ def calendar_est(request):
 
 
 @login_required
-def eliminar_horario(request, id):
-    horario = get_object_or_404(horarios, id=id)
+def eliminar_horario(request, horario_id):
+    horario = get_object_or_404(horarios, id=horario_id)
+    
+    # Verificar que el horario pertenece al estudiante actual
+    if horario.estudiante != request.user:
+        messages.error(request, "No tienes permiso para eliminar este horario.")
+        return redirect('calendario')
 
     if request.method == 'POST':
-        horario.delete()  # Elimina el horario de la base de datos
-        return redirect('calendario')  # Redirige a la vista de calendario o donde desees
-
+        # Buscar cita asociada
+        cita = Cita.objects.filter(
+            estudiante=request.user,
+            fecha_seleccionada=horario.fecha_seleccionada,
+            inicio=horario.inicio
+        ).first()
+        
+        # Si existe una cita, enviar correo al paciente y eliminarla
+        if cita:
+            try:
+                subject = "Cancelación de Cita - IODONT"
+                html_message = f"""
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h3 style="color: #007BFF;">Cancelación de Cita</h3>
+                    <p>Estimado/a paciente,</p>
+                    <p>Le informamos que su cita ha sido cancelada:</p>
+                    <ul>
+                        <li>Fecha: {horario.fecha_seleccionada.strftime('%d/%m/%Y')}</li>
+                        <li>Hora: {horario.inicio.strftime('%H:%M')}</li>
+                        <li>Estudiante: {horario.estudiante.first_name} {horario.estudiante.last_name}</li>
+                        <li>Tratamiento: {horario.tipoTratamiento.nombreTratamiento}</li>
+                    </ul>
+                    <p>Por favor, ingrese nuevamente a la plataforma para agendar una nueva cita.</p>
+                    <p>Disculpe las molestias.</p>
+                    <br>
+                    <p>Atentamente,<br>Equipo IODONT</p>
+                </div>
+                """
+                
+                send_mail(
+                    subject,
+                    "",
+                    settings.EMAIL_HOST_USER,
+                    [cita.paciente.email],
+                    fail_silently=True,
+                    html_message=html_message
+                )
+                
+                cita.delete()
+                messages.success(request, "Se ha notificado al paciente sobre la cancelación.")
+            
+            except Exception as e:
+                messages.warning(request, f"El horario se eliminó pero hubo un error al enviar el correo: {str(e)}")
+        
+        # Eliminar el horario
+        horario.delete()
+        messages.success(request, "Horario eliminado correctamente")
+        return redirect('calendario')
+    
+    # Si es GET, mostrar la página de confirmación
     return render(request, 'estudiante/eliminar_horario.html', {'horario': horario})
 
 @login_required
