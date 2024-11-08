@@ -47,7 +47,8 @@ urlpatterns = [
     path('logout/', views.custom_logout, name='logout'),
     path('obtener-direccion-universidad/', views.obtener_direccion_universidad, name='obtener_direccion_universidad'),
     path('revisar_estudiantes/', views.revisar_estudiantes, name='revisar_estudiantes'),
-
+    #aptcha
+    path('captcha/', include('captcha.urls')),
     #Servicios
     path('servicios/', views.servicios, name='servicios'),
 

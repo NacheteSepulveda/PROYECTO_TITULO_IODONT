@@ -21,8 +21,9 @@ inicioA = ["", str(time(9,0).strftime('%H:%M:%S') + ' - ' + time(10,59).strftime
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import customuser
-
+from captcha.fields import CaptchaField
 class CustomUserCreationForm(UserCreationForm):
+    captcha = CaptchaField(label='Ingrese el texto de la imagen')
     class Meta:
         model = customuser
         fields = ['first_name', 'last_name', 'email', 'rut', 'id_tipo_user', 'password1', 'password2', 'num_tel', 'fecha_nac', 'direccion', 'comuna', 'universidad', 'Certificado']

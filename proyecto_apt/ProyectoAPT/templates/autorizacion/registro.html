@@ -217,6 +217,15 @@
                 <div class="error">{{ form.Certificado.errors|join:", " }}</div>
                 {% endif %}
             </div>
+            <div class="form-group">
+                <label for="{{ form.captcha.id_for_label }}">Verificación de seguridad</label>
+                {{ form.captcha }}
+                {% if form.captcha.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.captcha.errors }}
+                    </div>
+                {% endif %}
+            </div>
             
             <button type="submit" class="registerbtn">Enviar</button>
         </form>
