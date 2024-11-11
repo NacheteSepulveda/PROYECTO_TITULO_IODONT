@@ -146,3 +146,29 @@ input[type="file"] {
     border-radius: 4px;
     font-size: 14px;
 }
+
+/* Estilos para el captcha */
+.captcha {
+    width: 200px;  /* Ancho personalizado */
+    height: auto;  /* Altura automática para mantener proporción */
+    margin: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Contenedor del captcha */
+.form-group img.captcha {
+    transform: scale(1.2);  /* Hace el captcha 20% más grande */
+    margin: 15px 20px;
+    display: block;
+}
+
+/* Estilo para el input del captcha */
+#id_captcha_1 {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-top: 10px;
+}
