@@ -70,6 +70,11 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirmar Contraseña'})
         self.fields['universidad'].widget.attrs.update({'placeholder': 'Universidad'})
+        self.fields['Certificado'].widget.attrs.update({
+            'class': 'form-control',
+            'accept': '.pdf,application/pdf',
+            'placeholder': 'Seleccione un archivo PDF'
+        })
 
     def clean(self):
         cleaned_data = super().clean()
