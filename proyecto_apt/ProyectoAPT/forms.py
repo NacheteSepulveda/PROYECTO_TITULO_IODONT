@@ -22,6 +22,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import customuser
 from captcha.fields import CaptchaField
+
 class CustomUserCreationForm(UserCreationForm):
     captcha = CaptchaField(label='Ingrese el texto de la imagen')
     class Meta:

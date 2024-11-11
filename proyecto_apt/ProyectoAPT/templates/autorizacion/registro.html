@@ -1,17 +1,21 @@
 {% extends "base.html" %}
-{% load bootstrap4 %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block title %}Registro{% endblock %}
 {% block content %}
-{% load static %}
 <link type="text/css" rel="stylesheet" href='{% static "css/login_y_registro.css" %}'>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="{% static 'js/comunas.js' %}"></script>
+
 <script>
     $(document).ready(function () {
         // Mostrar u ocultar los campos de universidad, dirección y certificado según el tipo de usuario
         function toggleFields() {
             var tipoUsuario = $('#id_id_tipo_user').val();
+            
+            // Cambia la etiqueta del email según el tipo de usuario seleccionado
+            var emailLabel = tipoUsuario == '2' ? 'Ingrese email (Ingrese Dominio Correspondiente a la Universidad Donde Estudia):' : 'Ingrese email:';
+            $('label[for="id_email"]').text(emailLabel);
+            
             if (tipoUsuario == '2') {  // '2' es el ID del tipo 'Estudiante', modificar si es otro
                 $('#universidad-group').show();
                 $('#direccion-universidad-group').show();
@@ -20,9 +24,9 @@
                 $('#universidad-group').hide();
                 $('#direccion-universidad-group').hide();
                 $('#certificado-group').hide();
-                $('#id_universidad').val('');  // Limpiar el campo de universidad si no es estudiante
-                $('#direccion-universidad').text('');  // Limpiar la dirección de la universidad
-                $('#id_Certificado').val('');  // Limpiar el archivo si no es estudiante
+                $('#id_universidad').val('');
+                $('#direccion-universidad').text('');
+                $('#id_Certificado').val('');
             }
         }
 
@@ -30,16 +34,16 @@
         function asociarUniversidad() {
             var email = $('#id_email').val();
             var dominio = email.split('@')[1];
-            if (dominio == 'uch.cl') {
+            if (dominio == 'ug.uchile.cl') {
                 $('#id_universidad').val('1');  // ID de "Universidad de Chile"
             } else if (dominio == 'ua.cl') {
                 $('#id_universidad').val('2');  // ID de "Universidad Autónoma"
             } else if (dominio == 'uc.cl') {
                 $('#id_universidad').val('3');  // ID de "Universidad Católica"
             } else {
-                $('#id_universidad').val('');  // Limpiar si no es un correo válido
+                $('#id_universidad').val('');
             }
-            actualizarDireccionUniversidad();  // Actualizar dirección automáticamente
+            actualizarDireccionUniversidad();
         }
 
         // Actualizar la dirección de la universidad seleccionada
@@ -58,24 +62,14 @@
             }
         }
 
-        // Ejecutar toggleFields cuando el tipo de usuario cambia
         $('#id_id_tipo_user').change(function () {
             toggleFields();
         });
 
-        // Formatear el RUT al perder el enfoque
-        $("#id_rut").focusout(function () {
-            var rut = $(this).val();
-            var rut_formateado = formateaRut(rut);
-            $(this).val(rut_formateado);
-        });
-
-        // Detectar cambios en el correo electrónico y asociar universidad
         $('#id_email').on('input', function () {
             asociarUniversidad();
         });
 
-        // Ejecutar las funciones cuando la página cargue por primera vez
         toggleFields();
         actualizarDireccionUniversidad();
     });
@@ -126,11 +120,15 @@
                 {% endif %}
             </div>
 
-        
+            <!-- Dirección de la universidad -->
+            <div class="grupo" id="direccion-universidad-group" style="display: none;">
+                <label>Dirección de la Universidad:</label>
+                <p id="direccion-universidad"></p>
+            </div>
 
             <!-- Nombre -->
             <div class="grupo">
-                <label for="id_first_name">Ingrese nombre:</label>
+                <label for="id_first_name">Ingrese Nombre:</label>
                 {{ form.first_name }}
                 {% if form.first_name.errors %}
                 <div class="error">{{ form.first_name.errors|join:", " }}</div>
@@ -139,7 +137,7 @@
 
             <!-- Apellido -->
             <div class="grupo">
-                <label for="id_last_name">Ingrese apellido:</label>
+                <label for="id_last_name">Ingrese Apellido:</label>
                 {{ form.last_name }}
                 {% if form.last_name.errors %}
                 <div class="error">{{ form.last_name.errors|join:", " }}</div>
@@ -164,7 +162,7 @@
                 {% endif %}
             </div>
 
-            <!-- Confirmación de contraseña -->
+            <!-- Comuna -->
             <div class="grupo">
                 <label for="id_comuna">Ingrese Comuna:</label>
                 {{ form.comuna }}
@@ -184,7 +182,7 @@
             
             <!-- Contraseña -->
             <div class="grupo">
-                <label for="id_password1">Ingrese contraseña:</label>
+                <label for="id_password1">Ingrese Contraseña:</label>
                 {{ form.password1 }}
                 {% if form.password1.errors %}
                 <div class="error">{{ form.password1.errors|join:", " }}</div>
@@ -193,7 +191,7 @@
 
             <!-- Confirmación de contraseña -->
             <div class="grupo">
-                <label for="id_password2">Confirme contraseña:</label>
+                <label for="id_password2">Confirme Contraseña:</label>
                 {{ form.password2 }}
                 {% if form.password2.errors %}
                 <div class="error">{{ form.password2.errors|join:", " }}</div>
@@ -217,6 +215,7 @@
                 <div class="error">{{ form.Certificado.errors|join:", " }}</div>
                 {% endif %}
             </div>
+
             <div class="form-group">
                 <label for="{{ form.captcha.id_for_label }}">Verificación de seguridad</label>
                 {{ form.captcha }}
@@ -231,5 +230,4 @@
         </form>
     </main>
 </div>
-
 {% endblock %}

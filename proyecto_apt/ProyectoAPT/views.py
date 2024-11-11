@@ -81,7 +81,7 @@ def register(request):
                 messages.error(request, 'El RUT ya está registrado. Por favor, utiliza otro.')
             else:
                 # Asignar la universidad automáticamente en función del dominio
-                if "uch.cl" in dominio:
+                if "ug.uchile.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
                 user = form.save(commit=False)
                 user.universidad = universidad
@@ -176,9 +176,12 @@ def register(request):
                 messages.success(request, 'Tu cuenta ha sido creada y está pendiente de aprobación. Recibirás una notificación cuando sea revisada.')
                 return redirect('index')
             
+
+            
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
+                print(form.errors)
     else:
         form = CustomUserCreationForm()
 
@@ -468,6 +471,9 @@ def tratamientosForm(request, estudianteID):
         fecha_seleccionada__gte=timezone.now().date()
     ).values('fecha_seleccionada', 'inicio')
 
+    # Obtener la comuna Independencia para asignarla automáticamente
+    comuna_independencia, created = Comuna.objects.get_or_create(nombreComuna="Independencia")
+
     context = {
         'form': form,
         'estudianteID': estudianteID,
@@ -507,8 +513,12 @@ def tratamientosForm(request, estudianteID):
                 horario = form.save(commit=False)
                 horario.paciente = request.user
                 horario.estudiante = estudiante
+
+                # Asignar automáticamente la comuna Independencia
+                horario.comuna = comuna_independencia
                 horario.save()
 
+                # Notificación por correo
                 subject = "Bienvenido a IODONT"
                 html_message = f"""
                 <div style="font-family: Arial, sans-serif; color: #333;">
@@ -540,17 +550,16 @@ def tratamientosForm(request, estudianteID):
     return render(request, 'APT/horariosEstudianteTratamiento.html', context)
 
 
+@login_required
+def citas_pac(request):
+    paciente_id = request.user  # Obtener el usuario logueado
+    citas = Cita.objects.filter(paciente=paciente_id).select_related('estudiante__universidad')  # Filtrar las citas para el paciente logueado
+
+    return render(request, 'APT/citas.html', {
+        'citas': citas  # Pasar las citas al contexto
+    })
 
 
-def publicar_horario(request):
-    if request.method == 'POST':
-        form = (request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('calendario')
-    else:
-        form = horariosForm()
-    return render(request, 'publicar_horario.html', {'form': form})
 
 
 def servicios(request):
@@ -818,14 +827,7 @@ def pacientes_est(request):
     })
 
 
-@login_required
-def citas_pac(request):
-    paciente_id = request.user  # Obtener el usuario logueado
-    citas = Cita.objects.filter(paciente=paciente_id).select_related('estudiante__universidad')  # Filtrar las citas para el paciente logueado
 
-    return render(request, 'APT/citas.html', {
-        'citas': citas  # Pasar las citas al contexto
-    })
 
 
 @login_required

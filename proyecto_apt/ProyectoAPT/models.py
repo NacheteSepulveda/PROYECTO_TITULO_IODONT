@@ -256,9 +256,10 @@ class Cita(models.Model):
     paciente = models.ForeignKey(customuser, on_delete=models.CASCADE, related_name='citas_paciente')
     estudiante = models.ForeignKey(customuser, on_delete=models.CASCADE, related_name='citas_estudiante')
     tipotratamiento = models.ForeignKey(tipoTratamiento, on_delete=models.SET_NULL, null=True)
+    comuna = models.ForeignKey(Comuna, on_delete=models.SET_NULL, null=True)
     fecha_seleccionada = models.DateField()
     inicio = models.TimeField()
-    direccion =models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True)
+    direccion = models.ForeignKey(Universidad, on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return f"Cita de {self.paciente.email} con {self.estudiante.email} para {self.tipotratamiento.nombreTratamiento} el {self.fecha_seleccionada} a las {self.inicio}"
 
