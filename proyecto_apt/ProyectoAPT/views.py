@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .decorators import user_not_authenticated
@@ -63,6 +64,8 @@ def register_user(request):
             )
 
 
+User = get_user_model()
+
 def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST, request.FILES)
@@ -83,7 +86,17 @@ def register(request):
                 # Asignar la universidad automáticamente en función del dominio
                 if "ug.uchile.cl" in dominio:
                     universidad = get_object_or_404(Universidad, nombre="Universidad de Chile")
+                
+                # Generar un username único basado en el email
+                base_username = email.split('@')[0]
+                unique_username = base_username
+                counter = 1
+                while customuser.objects.filter(username=unique_username).exists():
+                    unique_username = f"{base_username}{counter}"
+                    counter += 1
+                
                 user = form.save(commit=False)
+                user.username = unique_username
                 user.universidad = universidad
                 user.estado_aprobacion = 'pendiente'
                 
@@ -170,13 +183,9 @@ def register(request):
                     html_message=html_message_admin
                 )
 
-                
-
                 # Informar al usuario que la cuenta está pendiente de aprobación
                 messages.success(request, 'Tu cuenta ha sido creada y está pendiente de aprobación. Recibirás una notificación cuando sea revisada.')
                 return redirect('index')
-            
-
             
         else:
             for error in list(form.errors.values()):
