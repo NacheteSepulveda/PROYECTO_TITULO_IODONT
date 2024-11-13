@@ -783,6 +783,7 @@ def infoestudiante(request):
             messages.error(request, 'Error al actualizar el perfil')
             print(form.errors)  # Mostrar errores en la consola para depuración
 
+
     # Actualizar los campos no editables en el formulario después de la actualización
     if estudiante.universidad:
         form.fields['universidad'].initial = estudiante.universidad.nombre
